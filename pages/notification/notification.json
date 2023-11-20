@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "title":"thông báo 1",
+        "discription":"đây là thông báo 1",
+        "time":"12/11/2023"
+    },
+    {
+        "id": 2,
+        "title":"thông báo 2",
+        "discription":"đây là thông báo 2",
+        "time":"12/11/2023"
+    },
+    {
+        "id": 3,
+        "title":"thông báo 3",
+        "discription":"đây là thông báo 3",
+        "time":"12/11/2023"
+    },
+    {
+        "id": 4,
+        "title":"thông báo 4",
+        "discription":"đây là thông báo 4",
+        "time":"12/11/2023"
+    },
+    {
+        "id": 5,
+        "title":"thông báo 5",
+        "discription":"đây là thông báo 5",
+        "time":"12/11/2023"
+    }
+]

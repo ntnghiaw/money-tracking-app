@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity  } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
-import { loginApi } from './loginApi';
 
 const styles = StyleSheet.create({
     container: {
@@ -13,7 +12,7 @@ const styles = StyleSheet.create({
     },
     input: {
       width: '80%',
-      marginVertical: 10,
+      marginVertical: 5,
       padding: 10,
       borderBottomWidth: 1,
       borderColor: 'black',
@@ -27,6 +26,8 @@ const styles = StyleSheet.create({
         fontSize: 50,
         margin: 0,
     },
+
+
     customButton: {
         width: '35%',
         height: 50,
@@ -40,29 +41,23 @@ const styles = StyleSheet.create({
         fontSize: 18,
       },
   });
-const Login = ({navigation, route}) => {
+const Register = () => {
+    const [name, setName] = useState('')
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    // const { setIsLoggedIn } = route.params;
-    const [message, setMessage] = useState(false);
+    const [repassword,setRepassword] = useState('');
     const handleLogin = () => {
-        loginApi(username, password)
-            .then(user => {
-                // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
-                // Sau đó, điều hướng đến màn hình Home
-                setMessage(false);
+        // Thực hiện xử lý đăng nhập ở đây
+        console.log('Fullname:', name);
+        console.log('Username:', username);
+        console.log('Password:', password);
+        console.log('RePassword:', repassword);
 
-                navigation.navigate('Welcome', { user:user });
-            })
-            .catch(error => {
-                // Hiển thị thông báo lỗi nếu xác thực không thành công
-                setMessage(true);
-                Alert.alert('Error', error.message);
-            });
       };
 
     return (
         <View style={styles.container}>
+
             <Image
                 source={require('../images/logo.jpg')} // Đường dẫn đến ảnh trong thư mục assets
                 style={styles.image}
@@ -70,6 +65,7 @@ const Login = ({navigation, route}) => {
             <Image
                 source={require('../images/effect.png')}
                 style={{width:'100%',height:50,marginTop:0,resizeMode:'stretch'}}
+
             />
             {/* <View style={{width:'80%'}}>
                 <Text onPress={{}}>
@@ -77,17 +73,20 @@ const Login = ({navigation, route}) => {
                 </Text>
             </View> */}
             <Text style={styles.login}>
-                Login
+                Sign Up
             </Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Full Name"
+                onChangeText={(text) => setName(text)}
+                value={name}
+            />
             <TextInput
                 style={styles.input}
                 placeholder="Email"
                 onChangeText={(text) => setUsername(text)}
                 value={username}
             />
-            {message &&
-                <Text style={{width:'80%',textAlign:'left',color:'red'}}>Tài khoản hoặc mật khẩu không chính xác</Text>
-            }
             <TextInput
                 style={styles.input}
                 placeholder="Password"
@@ -95,10 +94,17 @@ const Login = ({navigation, route}) => {
                 onChangeText={(text) => setPassword(text)}
                 value={password}
             />
+            <TextInput
+                style={styles.input}
+                placeholder="Re-enter Password"
+                secureTextEntry
+                onChangeText={(text) => setRepassword(text)}
+                value={repassword}
+            />
             {/* <Button title="Login" onPress={handleLogin} style={styles.button} color={'black'} fontSize={'10px'} /> */}
-            <View style={{width:'80%',alignItems:'flex-end',marginTop:30}}>
+            <View style={{width:'80%',alignItems:'flex-end',marginTop:10}}>
                 <TouchableOpacity style={styles.customButton} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Login</Text>
+                    <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -106,4 +112,4 @@ const Login = ({navigation, route}) => {
 };
 
 
-export default Login;
+export default Register;
