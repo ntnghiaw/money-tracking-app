@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity  } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity, KeyboardAvoidingView, Keyboard  } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
 import { loginApi } from './loginApi';
 
@@ -45,6 +45,22 @@ const Login = ({navigation, route}) => {
     const [password, setPassword] = useState('');
     // const { setIsLoggedIn } = route.params;
     const [message, setMessage] = useState(false);
+    const [keyboardOpen, setKeyboardOpen] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+          setKeyboardOpen(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+          setKeyboardOpen(false);
+        });
+    
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
+
     const handleLogin = () => {
         loginApi(username, password)
             .then(user => {
@@ -63,10 +79,15 @@ const Login = ({navigation, route}) => {
 
     return (
         <View style={styles.container}>
-            <Image
-                source={require('../images/logo.jpg')} // Đường dẫn đến ảnh trong thư mục assets
-                style={styles.image}
-            />
+            {
+                !keyboardOpen && (
+                    <Image
+                        source={require('../images/logo.jpg')} // Đường dẫn đến ảnh trong thư mục assets
+                        style={styles.image}
+                    />
+                )
+            }
+
             <Image
                 source={require('../images/effect.png')}
                 style={{width:'100%',height:50,marginTop:0,resizeMode:'stretch'}}
@@ -101,6 +122,7 @@ const Login = ({navigation, route}) => {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
+
         </View>
     );
 };
