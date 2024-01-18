@@ -3,18 +3,179 @@ import {View, Text, Dimensions, Button, StyleSheet, TextInput, TouchableOpacity,
 import MaskInput, { Masks } from 'react-native-mask-input'
 import MultiSelect from 'react-native-multiple-select';
 import SelectDropdown from 'react-native-select-dropdown'
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import icon từ thư viện
+import { useRoute } from '@react-navigation/native';
+import Colors from '../../constants/colors';
+import { useFonts, ABeeZee_400Regular, } from '@expo-google-fonts/abeezee';
+import {TitleText, BodyText, DangerousText} from '../../components/CustomizedText';
+import {Picker} from '@react-native-picker/picker';
+import {LogOut, ChevronRight} from 'react-native-feather';
+import Icon from 'react-native-vector-icons/Ionicons';
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
 
-import Toolbar from '../../components/Toolbar';
+
+
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
+
+const GENERATE_AVATAR_URL = 'https://ui-avatars.com/api/?name=';
+
+const user_infor = {
+    id: 5, 
+        username: 'ntnghiaw@gmail.com', 
+        password: 'TrungNghia0!',
+        name:'Nguyễn Trung Nghĩa',
+        date:'26/04/2002',
+        gender:'Nam',
+        phone:'0384042202',
+        email:'ntnghiaw@gmail.com',
+        avatar:'',
+      
+}
+
+
+const Profile = ({navigation, route}) => {
+    
+    const [selectedItems, setSelectedItems] = useState([]);
+    const user  = user_infor ;
+    const gender = ["Nam", "Nữ"]
+    const [date, setDate] = useState(user.date);
+
+   
+    let [fontsLoaded, fontError] = useFonts({
+        ABeeZee_400Regular,
+      });
+    if (!fontsLoaded && !fontError) {
+        return null;
+    }
+    return (
+        <View style={style.container}>
+            <View style={style.infor}>
+
+                <Image style={style.avatar} source={{uri: user.avatar ? user.avatar : `${GENERATE_AVATAR_URL + user.name}&background=random`}}/>
+                <View style={{marginTop: 20}}>
+                <TitleText size={20}>{user.name}</TitleText>
+
+                </View>
+
+            </View>
+            <View>
+                <View  style={style.item}>
+                    <View style={style.itemTitle}>
+                        <TitleText>Date of birth</TitleText>
+                    </View>
+                    <View style={style.itemBody}>
+                        <MaskInput
+                            value={date}
+                            onChangeText={setDate}
+                            mask={Masks.DATE_DDMMYYYY}
+                            style={{fontFamily: 'ABeeZee_400Regular', fontSize: 16, color: Colors.text.body}}
+                        />
+                    </View>
+                </View>
+                <View  style={style.item}>
+                    {/* <Text style={style.text_box_30}>Gender</Text> */}
+                    <View style={style.itemTitle}>
+
+                        <TitleText >Gender</TitleText>
+                    </View>
+                    <View style={style.itemBody}>
+                        <Picker
+                            selectedValue={selectedItems}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setSelectedItems(itemValue)
+
+                            }
+                            itemStyle={{ 
+                                backgroundColor: 'red'
+                            }}
+                            style={{
+                                width: '100%' ,
+                                height:screenHeight*0.024,
+                                display:'flex',
+                                flexDirection: 'column'
+                            }}
+                            mode='dropdown'
+
+                            >
+                            <Picker.Item label="Male" value="0"   style={{
+                                fontFamily: 'ABeeZee_400Regular',
+                                fontSize: 16,
+                                color: Colors.text.body,
+
+                            }}
+                              
+                            />
+                            <Picker.Item label="Female" value="1"   style={{
+                                fontFamily: 'ABeeZee_400Regular',
+                                fontSize: 16,
+                                color: Colors.text.body
+                            }}/>
+                        </Picker>
+                    </View>
+                   
+                </View>
+                <View  style={style.item}>
+                <View style={style.itemTitle}>
+
+                    <TitleText>Phone</TitleText>
+                    </View>
+                    <View style={style.itemBody}>
+
+                    <BodyText>{user.phone}</BodyText>
+                    </View>
+                </View>
+                <View  style={style.item}>
+                    <View style={style.itemTitle}>
+                        <TitleText>Email</TitleText>
+                    </View>
+                    <View  style={style.itemBody}>
+                        <BodyText>{user.email}</BodyText>
+                    </View>
+                </View>
+            </View>
+
+            <TouchableOpacity style={{ ...style.button, ...style.item, marginTop:30, marginBottom: 3}}>
+            <View style={{...style.itemTitle}}>
+                <Text>
+
+                    <Icon name="wallet-outline" size={26} color={Colors.text.title} />
+                </Text>
+                </View>
+                <View style={{...style.itemBody, flex: 6}}>
+                    <TitleText size={18}>
+                       My Wallet
+                    </TitleText>
+                    <ChevronRight stroke={Colors.icon.default}/>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={{ ...style.button, ...style.item}}>
+            <View style={{...style.itemTitle}}>
+                <Text>
+                
+                <SimpleLineIcon name='logout' size={22} color={Colors.text.title} />
+                </Text>
+                </View>
+                <View style={{...style.itemBody, flex: 6}} >
+                    <DangerousText size={18}>
+                        Logout
+                    </DangerousText>
+                </View>
+            </TouchableOpacity>
+            
+        </View>
+    );
+};
+
+export default Profile;
+
 
 const style = StyleSheet.create({
     container:{
         flex:1,
         // justifyContent:'center',
         alignItems:'center',
-        backgroundColor:'#F1F1F1',
+        backgroundColor:Colors.background.default,
     },
     
     infor:{
@@ -24,14 +185,16 @@ const style = StyleSheet.create({
         alignItems:'center',
         width:screenWidth,
         height:screenHeight*0.25,
+
         // backgroundColor:'blue',
     },
 
     avatar:{
-        borderRadius:60,
-        width:120,
-        height:120,
-        backgroundColor:'pink',
+        borderRadius:screenHeight*0.05,
+        borderColor:'white',
+        borderWidth:5,
+        width:screenHeight*0.1,
+        height:screenHeight*0.1,
         
     },
     infor_detail:{
@@ -42,13 +205,14 @@ const style = StyleSheet.create({
         justifyContent:'center',
         marginLeft:20,
         fontSize:15,
+
     },
     infor_box:{
         width:screenWidth*1,
         // height:screenWidth*0.2,
         // backgroundColor:'pink',
-        marginBottom:10,
-        display:'flex',
+        marginBottom:0,
+        display:'flex', 
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
@@ -58,48 +222,48 @@ const style = StyleSheet.create({
 
     },
     date:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     gender:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     phone:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     email:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     text_box_30:{
         width:screenWidth*0.3, 
@@ -119,7 +283,7 @@ const style = StyleSheet.create({
         fontSize:20,
     },
     button:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.07,
         backgroundColor:'white',
         display:'flex',
@@ -152,120 +316,29 @@ const style = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
     },
+    item: {
+        width: screenWidth,
+        height: screenHeight*0.07,
+        backgroundColor: 'white',
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        marginBottom: 2,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+    },
+    itemTitle: {
+        flex: 1,
+    },
+    itemBody: {
+        flex: 2 ,
+        display:'flex',
+        flexDirection:'row',
+        justifyContent: 'space-between',
+    },
     icon_items:{
         width:25,
         height:25,
     }
 })
-const user_infor = {
-        name:'Phuc',
-        email:'phanhoangphuc0311@gmail.com',
-}
-
-
-const Profile = ({navigation,route}) => {
-    const [selectedItems, setSelectedItems] = useState([]);
-    const {user} = route.params
-    const gender = ["Nam", "Nữ"]
-    const [date, setDate] = useState(user.date);
-
-    console.log(date)
-    return (
-        <View style={style.container}>
-            <View style={style.infor}>
-                <Image style={style.avatar} source={{uri:`${user.avatar}`}}/>
-                <Text style={{fontSize:25, marginTop:10}}>{user.name}</Text>
-
-            </View>
-            <View style={style.infor_box}>
-                <View style={style.date}>
-                    <View style={style.text_box_30}>
-                        <Text>Date of birth</Text>
-                    </View>
-                    <View style={style.text_box_65}>
-                        <MaskInput
-                            value={date}
-                            onChangeText={setDate}
-                            mask={Masks.DATE_DDMMYYYY}
-                        />
-                    </View>
-                </View>
-                <View style={style.gender}>
-                    <Text style={style.text_box_30}>Gender</Text>
-                    
-                    <SelectDropdown 
-                        data={gender}
-                        onSelect={(selectedItem, index) => {
-                            console.log(selectedItem, index)
-                        }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            return selectedItem
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return item
-                        }}
-                        defaultButtonText={user.gender} 
-                        buttonStyle={{
-                            width:screenWidth*0.45,
-                            backgroundColor: 'white',
-                            margin:0,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            // borderWidth: 1,
-                            // borderColor: 'rgba(0, 0, 0, 0.1)',
-                            borderRadius: 10,
-                        }}
-
-                    />
-                </View>
-                <View style={style.phone}>
-                    <View style={style.text_box_30}>
-                        <Text style={{fontSize:15}}>Phone</Text>
-                    </View>
-                    <View style={style.text_box_65}>
-                        <Text style={{fontSize:15}}>{user.phone}</Text>
-                    </View>
-                </View>
-                <View style={style.email}>
-                    <View style={style.text_box_30}>
-                        <Text style={{fontSize:15}}>Email</Text>
-                    </View>
-                    <View style={style.text_box_65}>
-                        <Text style={{fontSize:15}}>{user.email}</Text>
-                    </View>
-                </View>
-            </View>
-
-            <TouchableOpacity style={{...style.button, marginTop:20,marginBottom:30}}>
-                <View style={{width:screenWidth*0.2,display:'flex',justifyContent:'center',alignItems:'center'}}>
-                    <Image style={{width:20,height:20}} source={{uri:'https://cdn-icons-png.flaticon.com/512/3359/3359235.png'}}/>
-                </View>
-                <View style={{width:screenWidth*0.75}}>
-                    <Text style={{color:'black', fontSize:20}}>My Wallet</Text>
-                </View>
-            </TouchableOpacity>
-
-{/* 
-            <TouchableOpacity style={{...style.button, backgroundColor:'lightgreen', marginBottom:30}}>
-                <Text style={{color:'black', fontSize:20}}>Change password</Text>
-            </TouchableOpacity> */}
-
-            <TouchableOpacity style={{...style.button,marginBottom:30}}>
-                <View style={{width:screenWidth*0.2,display:'flex',justifyContent:'center',alignItems:'center'}}>
-                    <Image style={{width:20,height:20}} source={{uri:'https://cdn-icons-png.flaticon.com/128/152/152534.png'}}/>
-                </View>
-                <TouchableOpacity style={{width:screenWidth*0.75}} onPress={()=>navigation.navigate('Login')}>
-                    <Text style={{color:'red', fontSize:20}}>Logout</Text>
-                </TouchableOpacity>
-            </TouchableOpacity>
-            
-            <Toolbar/>
-        </View>
-    );
-};
-
-export default Profile;

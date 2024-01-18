@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Initial from '../../components/Initial'
 import Login from '../../components/Login'
 import Register from '../../components/Register'
+import NewWallet from '../../pages/Wallet/NewWallet'
 
 const AuthNavigator = () => {
     const AuthStack = createNativeStackNavigator()
@@ -15,7 +16,7 @@ const AuthNavigator = () => {
         }}/>
       <AuthStack.Screen name="Login" component={Login} options={{headerShown: false}}/>
       <AuthStack.Screen name="Register" component={Register} options={{headerShown: false}}/>
-
+      <AuthStack.Screen name="Welcome" component={NewWallet} options={{headerShown: false}}/>
     </AuthStack.Navigator>
   )
 }

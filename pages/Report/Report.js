@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 const Report = () => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={{...styles.box_form, marginTop:80}}>
+      <TouchableOpacity style={{...styles.box_form, marginTop:30}}>
         <Image style={{width:40,height:40,marginLeft:20,marginRight:20}} source={fin_logo}/>
         <Text>Financial Analysis</Text>
       </TouchableOpacity>

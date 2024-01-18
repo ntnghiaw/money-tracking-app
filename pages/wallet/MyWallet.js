@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, StyleSheet, View, Dimensions } from 'react-native'
-import Toolbar from '../../components/Toolbar'
+import BottomBar from '../../components/BottomBar'
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -45,7 +45,7 @@ const MyWallet = () => {
         <View style={styles.group_form}>
             <Text style={{fontSize:20, color:'#7D8895'}}>GROUPS</Text>
         </View>
-        <Toolbar/>
+        <BottomBar/>
     </View>
   )
 }

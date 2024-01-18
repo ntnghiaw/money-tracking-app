@@ -3,43 +3,6 @@ import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOp
 const screenWidth = Dimensions.get('window').width;
 import { loginApi } from './loginApi';
 
-const styles = StyleSheet.create({
-    container: {
-      flex:1,
-      alignItems: 'center',
-      width:screenWidth,
-      backgroundColor:'white',
-
-    },
-    input: {
-      width: '80%',
-      marginVertical: 10,
-      padding: 10,
-      borderBottomWidth: 1,
-      borderColor: 'black',
-    },
-    image:{
-        width: screenWidth ,
-        height: '35%' ,
-        resizeMode: 'cover',
-    },
-    login:{
-        fontSize: 50,
-        margin: 0,
-    },
-    customButton: {
-        width: '35%',
-        height: 50,
-        backgroundColor: '#3498db',
-        borderRadius: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
-      },
-  });
 const Login = ({navigation, route}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -68,7 +31,7 @@ const Login = ({navigation, route}) => {
                 // Sau đó, điều hướng đến màn hình Home
                 setMessage(false);
 
-                navigation.navigate('Welcome', { user:user });
+                navigation.navigate('Welcome', {user: user});
             })
             .catch(error => {
                 // Hiển thị thông báo lỗi nếu xác thực không thành công
@@ -129,3 +92,41 @@ const Login = ({navigation, route}) => {
 
 
 export default Login;
+
+const styles = StyleSheet.create({
+    container: {
+      flex:1,
+      alignItems: 'center',
+      width:screenWidth,
+      backgroundColor:'white',
+
+    },
+    input: {
+      width: '80%',
+      marginVertical: 10,
+      padding: 10,
+      borderBottomWidth: 1,
+      borderColor: 'black',
+    },
+    image:{
+        width: screenWidth ,
+        height: '35%' ,
+        resizeMode: 'cover',
+    },
+    login:{
+        fontSize: 50,
+        margin: 0,
+    },
+    customButton: {
+        width: '35%',
+        height: 50,
+        backgroundColor: '#3498db',
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+      },
+  });

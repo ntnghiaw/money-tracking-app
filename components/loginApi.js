@@ -39,7 +39,18 @@ const users = [
       phone:'0999999999',
       email:'nguyenthia@gmail.com',
       avatar:'https://www.lovethispic.com/uploaded_images/431671-Colorful-Flashing-Merry-Christmas-Gif.gif',
-    }
+    },
+    { id: 5, 
+      username: 'ntnghiaw@gmail.com', 
+      password: 'TrungNghia0!',
+      name:'Nguyễn Trung Nghĩa',
+      date:'26/04/2002',
+      gender:'Nam',
+      phone:'0384042202',
+      email:'ntnghiaw@gmail.com',
+      avatar:'https://www.lovethispic.com/uploaded_images/431671-Colorful-Flashing-Merry-Christmas-Gif.gif',
+    },
+    
   ];
   
   export const loginApi = (username, password) => {
