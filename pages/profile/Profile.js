@@ -174,7 +174,7 @@ const Profile = ({navigation,route}) => {
         <View style={style.container}>
             <View style={style.infor}>
                 <Image style={style.avatar} source={{uri:`${user.avatar}`}}/>
-                <Text style={{fontSize:25, marginTop:10}}>{user.name}</Text>
+                <Text style={{fontSize:25, marginTop:10}}>{user.fullname}</Text>
 
             </View>
             <View style={style.infor_box}>
@@ -191,8 +191,9 @@ const Profile = ({navigation,route}) => {
                     </View>
                 </View>
                 <View style={style.gender}>
-                    <Text style={style.text_box_30}>Gender</Text>
-                    
+                    <View style={style.text_box_30}>
+                        <Text>Gender</Text>
+                    </View>
                     <SelectDropdown 
                         data={gender}
                         onSelect={(selectedItem, index) => {
@@ -210,7 +211,7 @@ const Profile = ({navigation,route}) => {
                         }}
                         defaultButtonText={user.gender} 
                         buttonStyle={{
-                            width:screenWidth*0.45,
+                            width:screenWidth*0.65,
                             backgroundColor: 'white',
                             margin:0,
                             justifyContent: 'center',

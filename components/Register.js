@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity,  Keyboard  } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
+import axios from 'axios'
 
 const styles = StyleSheet.create({
     container: {
@@ -42,8 +43,8 @@ const styles = StyleSheet.create({
       },
   });
 const Register = () => {
-    const [name, setName] = useState('')
-    const [username, setUsername] = useState('');
+    const [fullname, setFullname] = useState('')
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repassword,setRepassword] = useState('');
     const [keyboardOpen, setKeyboardOpen] = useState(false);
@@ -62,12 +63,24 @@ const Register = () => {
         };
       }, []);
 
-    const handleLogin = () => {
+    const handleRegister = async () => {
         // Thực hiện xử lý đăng nhập ở đây
-        console.log('Fullname:', name);
-        console.log('Username:', username);
+        console.log('Fullname:', fullname);
+        console.log('Email:', email);
         console.log('Password:', password);
         console.log('RePassword:', repassword);
+        try{
+            const response = await axios.post('http://localhost:5000/register', {
+                fullname:fullname,
+                email: email,
+                password: password,
+            });
+            const data = response.data;
+            console.log(data)
+        }catch(error){
+            console.error('Register error:', error)
+        }
+
 
       };
 
@@ -99,14 +112,14 @@ const Register = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Full Name"
-                onChangeText={(text) => setName(text)}
-                value={name}
+                onChangeText={(text) => setFullname(text)}
+                value={fullname}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                onChangeText={(text) => setUsername(text)}
-                value={username}
+                onChangeText={(text) => setEmail(text)}
+                value={email}
             />
             <TextInput
                 style={styles.input}
@@ -124,7 +137,7 @@ const Register = () => {
             />
             {/* <Button title="Login" onPress={handleLogin} style={styles.button} color={'black'} fontSize={'10px'} /> */}
             <View style={{width:'80%',alignItems:'flex-end',marginTop:10}}>
-                <TouchableOpacity style={styles.customButton} onPress={handleLogin}>
+                <TouchableOpacity style={styles.customButton} onPress={handleRegister}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>

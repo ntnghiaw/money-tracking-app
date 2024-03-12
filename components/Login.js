@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import { Alert } from 'react-native';
+
 import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity, KeyboardAvoidingView, Keyboard  } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
 import { loginApi } from './loginApi';
-
+import axios from 'axios'
 const styles = StyleSheet.create({
     container: {
       flex:1,
@@ -41,11 +43,12 @@ const styles = StyleSheet.create({
       },
   });
 const Login = ({navigation, route}) => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     // const { setIsLoggedIn } = route.params;
     const [message, setMessage] = useState(false);
     const [keyboardOpen, setKeyboardOpen] = useState(false);
+    const [token, setToken] = useState('')
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -61,22 +64,43 @@ const Login = ({navigation, route}) => {
         };
       }, []);
 
-    const handleLogin = () => {
-        loginApi(username, password)
-            .then(user => {
-                // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
-                // Sau đó, điều hướng đến màn hình Home
-                setMessage(false);
+      const handleLogin = async () => {
+        try {
+            const user = await loginApi(email, password);
+            // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
+            // Sau đó, điều hướng đến màn hình Home
+            setMessage(false);
+            navigation.navigate('Welcome', { user });
+        } catch (error) {
+            // Hiển thị thông báo lỗi nếu xác thực không thành công
+            setMessage(true);
+            Alert.alert('Error', error.message);
+        }
+    };
 
-                navigation.navigate('Welcome', { user:user });
-            })
-            .catch(error => {
-                // Hiển thị thông báo lỗi nếu xác thực không thành công
-                setMessage(true);
-                Alert.alert('Error', error.message);
-            });
-      };
-
+    // const handleLogin = async () => {
+    //     try {
+    //         const response = await axios.post('http://localhost:5000/login', {
+    //             email: email,
+    //             password: password,
+    //         });
+    //         const token = response.data.token;
+    //         setToken(token);
+    //         setMessage(false);
+    
+    //         // Kiểm tra token trước khi điều hướng đến màn hình Welcome
+    //         if (token) {
+    //             navigation.navigate('Welcome', { user: response.data.user });
+    //         } else {
+    //             // Nếu không có token, đề nghị người dùng đăng nhập
+    //             setMessage(true);
+    //         }
+    //         console.log(token);
+    //     } catch (error) {
+    //         console.error('Login error:', error, email, password);
+    //         setMessage(true);
+    //     }
+    // }
     return (
         <View style={styles.container}>
             {
@@ -103,8 +127,8 @@ const Login = ({navigation, route}) => {
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                onChangeText={(text) => setUsername(text)}
-                value={username}
+                onChangeText={(text) => setEmail(text)}
+                value={email}
             />
             {message &&
                 <Text style={{width:'80%',textAlign:'left',color:'red'}}>Tài khoản hoặc mật khẩu không chính xác</Text>
