@@ -12,7 +12,7 @@ const screenHeight = Dimensions.get('window').height
 const style = StyleSheet.create({
     toolbar:{
         width:screenWidth,
-        height:screenHeight*0.08,
+        height:screenHeight*0.07,
         display:'flex',
         flexDirection:'row',
         justifyContent:'space-around',
@@ -23,7 +23,7 @@ const style = StyleSheet.create({
     },
     items:{
         width:screenWidth*0.2,
-        height:screenHeight*0.08,
+        height:screenHeight*0.07,
         display:'flex',
         justifyContent:'center',
         alignItems:'center',
