@@ -9,14 +9,14 @@ import Initial from './components/Initial'
 import Test from './components/Test';
 
 
-import Welcome from './pages/Welcome/Welcome';
-import NewWallet from './pages/Wallet/NewWallet'
-import MyWallet from './pages/Wallet/MyWallet';
+// import Welcome from './pages/Welcome/Welcome';
+// import NewWallet from './pages/Wallet/NewWallet'
+// import MyWallet from './pages/Wallet/MyWallet';
 
-import Profile from './pages/Profile/Profile';
-import Verification from './pages/Verification/Verification';
-import Notification from './pages/Notification/Notification';
-import SettingsNotification from './pages/Notification/SettingsNotification';
+// import Profile from './pages/Profile/Profile';
+// import Verification from './pages/Verification/Verification';
+// import Notification from './pages/Notification/Notification';
+// import SettingsNotification from './pages/Notification/SettingsNotification';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

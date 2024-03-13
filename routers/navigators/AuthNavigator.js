@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Initial from '../../components/Initial'
 import Login from '../../components/Login'
 import Register from '../../components/Register'
-import NewWallet from '../../pages/Wallet/NewWallet'
+import NewWallet from '../../pages/wallet/NewWallet'
 
 const AuthNavigator = () => {
     const AuthStack = createNativeStackNavigator()

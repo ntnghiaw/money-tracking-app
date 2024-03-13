@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const NewRecord = () => {
+const Camera = () => {
   return (
     <View>
-      <Text>NewRecord Screen</Text>
+      <Text>Camera</Text>
     </View>
   )
 }
 
-export default NewRecord
+export default Camera
