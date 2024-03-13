@@ -5,8 +5,8 @@ import Home from '../../pages/Home/Home'
 import Colors from '../../constants/colors'
 import * as Icon from "react-native-feather"
 import { useNavigation } from '@react-navigation/native'
-import Notification from '../../pages/Notification/Notification'
-import SettingsNotification from '../../pages/Notification/SettingsNotification'
+import Notification from '../../pages/notification/Notification'
+import SettingsNotification from '../../pages/notification/SettingsNotification'
 import Login from '../../components/Login'
 import { Image } from 'react-native'
 

@@ -12,9 +12,9 @@ const Router = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Auth" component={AuthNavigator} options={{
+        {/* <Stack.Screen name="Auth" component={AuthNavigator} options={{
           headerShown: false
-        }}/>
+        }}/> */}
         <Stack.Screen name="App" component={AppNavigator} options={{
           headerShown: false
         }} />

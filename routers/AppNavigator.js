@@ -6,7 +6,7 @@ import * as Icon from "react-native-feather";
 import Colors from '../constants/colors';
 import ProfileNavigator from './navigators/ProfileNavigator'
 import ReportNavigator from './navigators/ReportNavigator'
-import NewRecordNavigator from './navigators/NewRecordNavigator'
+import TransactionNavigator from './navigators/TransactionNavigator'
 import HomeNavigator from './navigators/HomeNavigator'
 import MoreNagivator from './navigators/MoreNagivator';
 import { Platform } from 'react-native';
@@ -35,7 +35,7 @@ const AppNavigator = ({navigation, route}) => {
                 return <Icon.Home width={24} height={24} stroke={focused ? Colors.icon.pressed : Colors.icon.default} />;
               } else if (route.name === 'ReportStack') {
                 return <Icon.BarChart2 width={24} height={24} stroke={focused ? Colors.icon.pressed : Colors.icon.default} />;
-              } else if (route.name === 'NewRecordStack') {
+              } else if (route.name === 'TransactionStack') {
                 return <Icon.PlusCircle width={40} height={40} stroke={focused ? Colors.icon.pressed : Colors.icon.default} />;
               } else if (route.name === 'MoreStack') {
                 return  <Icon.Grid  width={24} height={24}  stroke={focused ? Colors.icon.pressed : Colors.icon.default} />;
@@ -51,7 +51,7 @@ const AppNavigator = ({navigation, route}) => {
           
             <Tabs.Screen name="HomeStack" component={HomeNavigator} />
             <Tabs.Screen name="ReportStack" component={ReportNavigator} />
-            <Tabs.Screen name="NewRecordStack" component={NewRecordNavigator} />
+            <Tabs.Screen name="TransactionStack" component={TransactionNavigator} />
             <Tabs.Screen name="MoreStack" component={MoreNagivator} />
             <Tabs.Screen name="ProfileStack" component={ProfileNavigator} 
             // initialParams={{

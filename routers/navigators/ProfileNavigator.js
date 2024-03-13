@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Profile from '../../pages/Profile/Profile'
+import Profile from '../../pages/profile/Profile'
 import Color from '../../constants/colors'
 
 
