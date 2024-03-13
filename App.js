@@ -12,14 +12,18 @@ import Test from './components/Test';
 // import Welcome from './pages/Welcome/Welcome';
 // import NewWallet from './pages/Wallet/NewWallet'
 // import MyWallet from './pages/Wallet/MyWallet';
+import CreateWallet from './pages/wallet/CreateWallet';
 
-// import Profile from './pages/Profile/Profile';
-// import Verification from './pages/Verification/Verification';
-// import Notification from './pages/Notification/Notification';
-// import SettingsNotification from './pages/Notification/SettingsNotification';
+import Profile from './pages/profile/Profile';
+import Verification from './pages/verification/Verification';
+// import Notification from './pages/notification/Notification';
+import SettingsNotification from './pages/notification/SettingsNotification';
+import More from './pages/more/More';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import Report from './pages/Report/Report';
 import TabNavigator from './routers/AppNavigator';
 import Router from './routers/Router';
