@@ -12,6 +12,7 @@ import Test from './components/Test';
 import Welcome from './pages/welcome/Welcome';
 import NewWallet from './pages/wallet/NewWallet'
 import MyWallet from './pages/wallet/MyWallet';
+import CreateWallet from './pages/wallet/CreateWallet';
 
 import Profile from './pages/profile/Profile';
 import Verification from './pages/verification/Verification';
@@ -42,11 +43,13 @@ function App() {
 
           <Stack.Screen name="Profile" component={Profile} options={{ title: 'Profile', }}/>
 
-          <Stack.Screen name="NewWallet" component={NewWallet} options={{ title: 'NewWallet', }}/>
+          <Stack.Screen name="NewWallet" component={NewWallet} options={{ title: 'New Wallet', }}/>
           <Stack.Screen name="MyWallet" component={MyWallet} options={{title: 'MyWallet',}}/>
+          <Stack.Screen name="CreateWallet" component={CreateWallet} options={{title: 'New Wallet',}}/>
+          
           <Stack.Screen name="Verification" component={Verification} options={{ title: 'Verification', }}/>
           <Stack.Screen name="Notification" component={Notification} options={{ title: 'Notification', }}/>
-          <Stack.Screen name="SettingsNotification" component={SettingsNotification} options={{title:'SettingNotification'}}/>
+          <Stack.Screen name="SettingsNotification" component={SettingsNotification} options={{title:'Setting Notification'}}/>
           <Stack.Screen name="Report" component={Report} options={{title:'Report'}}/>
           <Stack.Screen name="Home" component={Home} options={{ title: 'Home', }}/>
           <Stack.Screen name="More" component={More} options={{ title: 'More', }}/>
