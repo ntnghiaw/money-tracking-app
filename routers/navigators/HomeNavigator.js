@@ -68,14 +68,15 @@ const HomeNavigator = ({navigation, route}) => {
           headerTintColor: Colors.text.title,
         }} />
           <HomeStack.Screen name="Wallet" component={MyWallet}  options={{
-          headerTitleAlign: 'center', 
-          headerTitleStyle: { color: Colors.text.title, fontSize: 18 },
-          headerRight: () => {
-            return  (
-            <TouchableOpacity onPress={() => navigation.navigate('CreateWallet')}>
-              <Icon.FolderPlus stroke={Colors.text.title} width={24} height={24} style={{marginRight: screenWidth*0.02}} />
-            </TouchableOpacity>
-            )
+            title: 'Wallets',
+            headerTitleAlign: 'center', 
+            headerTitleStyle: { color: Colors.text.title, fontSize: 18 },
+            headerRight: () => {
+              return  (
+              <TouchableOpacity onPress={() => navigation.navigate('CreateWallet')}>
+                <Icon.FolderPlus stroke={Colors.text.title} width={24} height={24} style={{marginRight: screenWidth*0.02}} />
+              </TouchableOpacity>
+              )
 
           }
         }} />
