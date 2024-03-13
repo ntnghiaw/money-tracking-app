@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 
-import Button from '../../components/Button';
+import Button from '../../components/PrimaryButton';
 import TransactionForm from '../../components/TransactionForm';
 
 const screenWidth = Dimensions.get('window').width;

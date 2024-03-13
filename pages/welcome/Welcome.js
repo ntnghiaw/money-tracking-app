@@ -20,16 +20,15 @@ const Welcome = ({navigation,route}) =>{
   return (
     <View style={styles.container}>
       <Text  style={{fontSize:30}}>Welcome {user.fullname}</Text>
-      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('NewWallet')}>NewWallet</Text>
-      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('MyWallet')}>My Wallet</Text>
-      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Profile',{user:user})}>Profile</Text>
-      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Verification')}>Verification</Text>
-      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Notification')}>Notification</Text>
+      <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('NewWallet')}>NewWallet</Text>
+      <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('MyWallet')}>My Wallet</Text>
+      <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('Profile',{user:user})}>Profile</Text>
+      <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('Verification')}>Verification</Text>
+      <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('Notification')}>Notification</Text>
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('SettingsNotification')}>Settings Notification</Text>
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Report')}>Report</Text>
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Home')}>Home</Text>
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('More')}>More</Text>
-      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('CreateWallet')}>New Wallet</Text>
 
     </View>
   )

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity,  Keyboard  } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
-// import axios from 'axios'
+import axios from 'axios'
 
 const styles = StyleSheet.create({
     container: {
@@ -69,17 +69,17 @@ const Register = () => {
         console.log('Email:', email);
         console.log('Password:', password);
         console.log('RePassword:', repassword);
-        // try{
-        //     const response = await axios.post('http://localhost:5000/register', {
-        //         fullname:fullname,
-        //         email: email,
-        //         password: password,
-        //     });
-        //     const data = response.data;
-        //     console.log(data)
-        // }catch(error){
-        //     console.error('Register error:', error)
-        // }
+        try{
+            const response = await axios.post('http://localhost:5000/register', {
+                fullname:fullname,
+                email: email,
+                password: password,
+            });
+            const data = response.data;
+            console.log(data)
+        }catch(error){
+            console.error('Register error:', error)
+        }
 
 
       };

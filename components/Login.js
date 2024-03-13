@@ -2,9 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { Alert } from 'react-native';
 
 import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity, KeyboardAvoidingView, Keyboard  } from 'react-native';
-const screenWidth = Dimensions.get('window').width;
 import { loginApi } from './loginApi';
-// import axios from 'axios'
+import axios from 'axios';
+
+
+
+const screenWidth = Dimensions.get('window').width;
 
 
 const styles = StyleSheet.create({

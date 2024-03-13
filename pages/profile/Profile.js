@@ -134,7 +134,7 @@ const Profile = ({navigation, route}) => {
                 </View>
             </View>
 
-            <TouchableOpacity style={{ ...style.button, ...style.item, marginTop:30, marginBottom: 3}}>
+            <TouchableOpacity style={{ ...style.button, ...style.item, marginTop:30, marginBottom: 3}} onPress={() => navigation.navigate('Wallet')}>
             <View style={{...style.itemTitle}}>
                 <Text>
 

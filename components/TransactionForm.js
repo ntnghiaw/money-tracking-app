@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, SafeAreaView, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NumericFormat } from 'react-number-format';
 import * as Icon from "react-native-feather";
-import PrimaryButton from '../components/Button';
+import PrimaryButton from './PrimaryButton';
 
 import React, {useEffect, useState} from 'react';
 import Colors from '../constants/colors';

@@ -9,4 +9,4 @@ const Camera = () => {
   )
 }
 
-export default Camera
+export default Camera;

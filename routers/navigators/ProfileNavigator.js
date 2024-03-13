@@ -2,6 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Profile from '../../pages/profile/Profile'
+import MyWallet from '../../pages/wallet/MyWallet'
 import Color from '../../constants/colors'
 
 
@@ -14,6 +15,10 @@ const ProfileNavigator = ({navigation, route}) => {
   return (
     <ProfileStack.Navigator >
         <ProfileStack.Screen name="Profile" component={Profile} initialParams={user} options={{
+          headerTitleAlign: 'center', 
+          headerTitleStyle: { color: Color.text.title, fontSize: 18 },
+        }} />
+         <ProfileStack.Screen name="Wallet" component={MyWallet} initialParams={user} options={{
           headerTitleAlign: 'center', 
           headerTitleStyle: { color: Color.text.title, fontSize: 18 },
         }} />
