@@ -40,7 +40,7 @@ const style = StyleSheet.create({
     }
   })
   
-const Notification = () => {
+const Notification = ({ navigation }) => {
   return (
     <View style={style.container}>
         <ScrollView contentContainerStyle={style.ScrollView_form}>

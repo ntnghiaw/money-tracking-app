@@ -49,7 +49,7 @@ const style = StyleSheet.create({
   },
 })
 
-const Verification = () => {
+const Verification = ({navigation}) => {
   return (
     <View style={style.container}>
       <View style={{marginTop:40,width:'90%'}}>

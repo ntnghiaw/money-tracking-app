@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const MyWallet = () => {
+const MyWallet = ({navigation}) => {
   return (
     <View style={styles.container}>
         <View style={styles.balance_form}>
@@ -45,7 +45,7 @@ const MyWallet = () => {
         <View style={styles.group_form}>
             <Text style={{fontSize:20, color:'#7D8895'}}>GROUPS</Text>
         </View>
-        <Toolbar/>
+        <Toolbar  navigation={navigation}/>
     </View>
   )
 }

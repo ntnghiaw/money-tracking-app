@@ -42,9 +42,9 @@ const users = [
     }
   ];
   
-  export const loginApi = (username, password) => {
+  export const loginApi = (email, password) => {
     return new Promise((resolve, reject) => {
-      const user = users.find(u => u.username === username && u.password === password);
+      const user = users.find(u => u.email === email && u.password === password);
       if (user) {
         resolve(user);
       } else {

@@ -9,6 +9,9 @@ import Toolbar from '../../components/Toolbar';
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
+import { useSelector } from 'react-redux'; // Import useSelector từ react-redux
+
+
 const style = StyleSheet.create({
     container:{
         flex:1,
@@ -163,9 +166,11 @@ const user_infor = {
 }
 
 
-const Profile = ({navigation,route}) => {
+const Profile = ({navigation}) => {
     const [selectedItems, setSelectedItems] = useState([]);
-    const {user} = route.params
+    // const {user} = route.params
+    const user = useSelector(state => state.auth.user);
+    console.log(user)
     const gender = ["Nam", "Nữ"]
     const [date, setDate] = useState(user.date);
 
@@ -174,7 +179,7 @@ const Profile = ({navigation,route}) => {
         <View style={style.container}>
             <View style={style.infor}>
                 <Image style={style.avatar} source={{uri:`${user.avatar}`}}/>
-                <Text style={{fontSize:25, marginTop:10}}>{user.name}</Text>
+                <Text style={{fontSize:25, marginTop:10}}>{user.fullname}</Text>
 
             </View>
             <View style={style.infor_box}>
@@ -191,8 +196,9 @@ const Profile = ({navigation,route}) => {
                     </View>
                 </View>
                 <View style={style.gender}>
-                    <Text style={style.text_box_30}>Gender</Text>
-                    
+                    <View style={style.text_box_30}>
+                        <Text>Gender</Text>
+                    </View>
                     <SelectDropdown 
                         data={gender}
                         onSelect={(selectedItem, index) => {
@@ -210,7 +216,7 @@ const Profile = ({navigation,route}) => {
                         }}
                         defaultButtonText={user.gender} 
                         buttonStyle={{
-                            width:screenWidth*0.45,
+                            width:screenWidth*0.65,
                             backgroundColor: 'white',
                             margin:0,
                             justifyContent: 'center',
@@ -263,7 +269,7 @@ const Profile = ({navigation,route}) => {
                 </TouchableOpacity>
             </TouchableOpacity>
             
-            <Toolbar/>
+            <Toolbar navigation={navigation}/>
         </View>
     );
 };
