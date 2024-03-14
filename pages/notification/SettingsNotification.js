@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const SettingsNotification = () => {
+const SettingsNotification = ({ navigation }) => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [isEnabled2, setIsEnabled2] = useState(false);
     const [isEnabled3, setIsEnabled3] = useState(false);

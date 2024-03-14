@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
       },
   });
-const Register = () => {
+const Register = ({ navigation }) => {
     const [fullname, setFullname] = useState('')
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

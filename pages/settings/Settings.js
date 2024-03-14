@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Transaction = () => {
+const Settings = ({navigation}) => {
   return (
     <View>
-      <Text>Transaction</Text>
+      <Text>Settings</Text>
     </View>
   )
 }
 
-export default Transaction
+export default Settings

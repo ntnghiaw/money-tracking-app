@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
   });
   
 
-const More = () => {
+const More = ({ navigation }) => {
   return (
     <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.gridContainer}>
             {more_items.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.cell}>
+                <TouchableOpacity key={index} style={styles.cell} onPress={() => navigation.navigate(`${item.path}`)}>
                     <View style={{...styles.icon, backgroundColor:(`${item.background}`)}}>
                       <Image style={{width: 35, height: 35}} source={item.image}/>
                     </View>
@@ -62,7 +62,7 @@ const More = () => {
                 </TouchableOpacity>
             ))}
         </ScrollView>
-        {/* <Toolbar/> */}
+        <Toolbar navigation={navigation}/>
     </View>
     
   )

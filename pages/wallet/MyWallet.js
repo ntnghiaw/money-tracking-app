@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
       }
 })
 
-const MyWallet = ({navigation, route}) => {
+const MyWallet = ({navigation}) => {
   return (
     <View style={styles.container}>
         <View style={styles.balance_form}>
@@ -180,7 +180,7 @@ const MyWallet = ({navigation, route}) => {
             
              </View>
         </View>
-        {/* <BottomBar/> */}
+        <Toolbar  navigation={navigation}/>
     </View>
   )
 }
