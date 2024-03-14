@@ -14,27 +14,11 @@ import Category from '../../pages/transaction/Category';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const transactionTypes = [
-    {
-      value: 'expense',
-      lable: 'Expense',
-    },
-    {
-      value: 'income',
-      lable: 'Income',
-    },
-    {
-      value: 'others',
-      lable: 'Others',
-    },
-
-  ];
 
 
 const TransactionHeader = ({navigation, route}) => {
     const [option, setOption] = useState('expense');
     const chooseOptionHandler = (e) => {
-      // navigation.navigate('Transaction', {type: e.value});
       navigation.setParams({type: e.value});
     }
     return (
