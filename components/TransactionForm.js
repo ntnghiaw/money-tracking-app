@@ -1,27 +1,44 @@
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, SafeAreaView, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NumericFormat } from 'react-number-format';
 import * as Icon from "react-native-feather";
-import PrimaryButton from './PrimaryButton';
 
 import React, {useEffect, useState} from 'react';
-import Colors from '../constants/colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import  { useSelector} from 'react-redux';
+import Colors from '../constants/colors';
+import PrimaryButton from './PrimaryButton';
+import Toolbar from './Toolbar';
+
+
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 
-const TransactionForm = ({navigation, route, onCreate, type}) => {
+const TransactionForm = ({navigation, onCreate, type}) => {
+    const transaction = useSelector(state => state.transaction);
     const [date, setDate] = useState(() => {
         return new Date() 
     });
-    
+    const [amount, setAmount] = useState(0);
     const [mode, setMode] = useState('date');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('Pay to Employee' );
+    const [category, setCategory] = useState('');
     const [show, setShow] = useState(false);
     const currentDate= `${date.getDate().toString().length > 1 ? date.getDate() : '0' + date.getDate().toString()} / ${date.getMonth() < 9 ? '0'+(date.getMonth()+1).toString(): date.getMonth()+1} / ${date.getFullYear()}`;
     const time = ` ${date.getHours().toString().length > 1 ? date.getHours() : '0' + date.getHours().toString()} : ${date.getMinutes().toString().length > 1 ? date.getMinutes():  '0' + date.getMinutes().toString() }` ;
+    
+    useEffect(() => {
+        if (transaction) {
+            
+            console.log(transaction)
+             setAmount(transaction.amount);
+             setDescription(transaction.description);
+             setCategory(transaction.category);
+            //  setDate(Date.parse(transaction.createAt));
+         }
+     }, [transaction]);
+    
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setShow(false);
@@ -40,16 +57,7 @@ const TransactionForm = ({navigation, route, onCreate, type}) => {
     const showTimepicker = () => {
         showMode('time');
     };
-    const [amount, setAmount] = useState( 0);
-    const {transaction} = route.params;
-    useEffect(() => {
-       if (transaction) {
-            setAmount(transaction.amount);
-            setDescription(transaction.description);
-            setCategory(transaction.category);
-            // setDate(Date.parse(transaction.createAt));
-        }
-    }, [transaction]);
+  
  
     const onCreateHandler = () => {
         
@@ -75,8 +83,8 @@ const TransactionForm = ({navigation, route, onCreate, type}) => {
             <View style={styles.amountInput}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <TextInput 
-                style={styles.amountText} 
-                value={amount.toString()} 
+                style={[styles.amountText, {color: transaction.type === 'expense' ? Colors.text.danger : Colors.text.primary}]} 
+                value={amount} 
                 placeholder='0' 
                 onChangeText={(amount) => setAmount(amount)}
                 keyboardType='numeric'
@@ -94,7 +102,7 @@ const TransactionForm = ({navigation, route, onCreate, type}) => {
                 <View style={styles.icon}>
                     <Icon.DollarSign width={24} height={24}  stroke="green"/>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('Category', {onCategoryChange})} style={styles.category} >
+                <TouchableOpacity onPress={() => navigation.navigate('Categories', {onCategoryChange})} style={styles.category} >
                 
                     <Text  style={styles.categoryLabel}>{category}</Text>
                     <Icon.ChevronRight width={24} height={24}  stroke={Colors.text.title}/>
@@ -154,9 +162,10 @@ const TransactionForm = ({navigation, route, onCreate, type}) => {
 
         </View>
         <View style={styles.createButton}>
-            <PrimaryButton title={transaction? 'Save': 'Create'} onPress={onCreateHandler}/>
+            <PrimaryButton title= 'Save' onPress={onCreateHandler}/>
 
         </View>
+
     </View>
   )
 }
@@ -201,7 +210,7 @@ const styles = StyleSheet.create({
         lineHeight: 60
     },
     amountText: {
-        // color: type === 'expense' ? Colors.text.danger : Colors.text.title,
+        
         fontSize: 32,
         fontWeight: '600',
         paddingVertical: 8,
@@ -265,4 +274,5 @@ const styles = StyleSheet.create({
     button: {
         paddingVertical: 12
     },
+   
 });

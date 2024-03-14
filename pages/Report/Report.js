@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
       },
 })
 
-const Report = () => {
+const Report = ({navigation}) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={{...styles.box_form, marginTop:30}}>

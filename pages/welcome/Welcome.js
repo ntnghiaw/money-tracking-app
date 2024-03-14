@@ -19,7 +19,7 @@ const Welcome = ({navigation,route}) =>{
 
   return (
     <View style={styles.container}>
-      <Text  style={{fontSize:30}}>Welcome {user.fullname}</Text>
+      <Text style={{fontSize:30}}>Welcome {user.fullname}</Text>
       <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('NewWallet')}>NewWallet</Text>
       <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('MyWallet')}>My Wallet</Text>
       <Text style={{color:'blue', fontSize:50}} onPress={() => navigation.navigate('Profile',{user:user})}>Profile</Text>
@@ -29,6 +29,7 @@ const Welcome = ({navigation,route}) =>{
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Report')}>Report</Text>
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Home')}>Home</Text>
       <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('More')}>More</Text>
+      <Text style={{color:'blue', fontSize:40}} onPress={() => navigation.navigate('Transaction')}>Transaction</Text>
 
     </View>
   )

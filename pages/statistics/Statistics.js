@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Camera = () => {
+const Statistics = ({navigation}) => {
   return (
     <View>
-      <Text>Camera</Text>
+      <Text>Statistics</Text>
     </View>
   )
 }
 
-export default Camera;
+export default Statistics

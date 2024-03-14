@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 
 })
 
-const NewWallet = ({navigation, route}) => {
+const NewWallet = ({navigation}) => {
   return (
     <View style={styles.container}>
         <Image style={styles.image} source={celebrate}/>
@@ -52,7 +52,7 @@ const NewWallet = ({navigation, route}) => {
             <Image style={{width:50,height:50}} source={{uri:'https://cdn-icons-png.flaticon.com/512/2474/2474450.png'}}/>
             <TextInput style={{width:screenWidth*0.65,borderBottomWidth:1,padding:1,marginLeft:10,textAlign:'center',fontSize:20}} placeholder='Balance'/>
         </View>
-        <TouchableOpacity style={styles.save_button} onPress={() => navigation.navigate('App' )}>
+        <TouchableOpacity style={styles.save_button} onPress={() => navigation.navigate('Home')}>
             <Text style={{fontSize:20,color:'white'}}>Save</Text>
         </TouchableOpacity>
     </View>

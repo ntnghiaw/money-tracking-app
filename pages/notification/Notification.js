@@ -11,7 +11,7 @@ const screenHeight = Dimensions.get('window').height
 
 
   
-const Notification = () => {
+const Notification = ({ navigation }) => {
   return (
     <View style={style.container}>
         <ScrollView contentContainerStyle={style.ScrollView_form}>
