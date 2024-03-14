@@ -8,8 +8,7 @@ import axios from 'axios';
 
 
 const screenWidth = Dimensions.get('window').width;
-import { loginApi } from './loginApi';
-import axios from 'axios'
+
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '../redux/auth/authActions';
 
