@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native'
 import BottomBar from '../../components/BottomBar'
 import * as Icon from 'react-native-feather'
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
       icon: {
         width: 40,
         height: 40,
-        backgroundColor: Colors.icon.background,
+        backgroundColor: Colors.icon?.backgroundColor,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 6
@@ -65,17 +66,17 @@ const styles = StyleSheet.create({
         lineHeight: 30,
         fontSize: 16,
         fontWeight: '500',
-        color: Colors.text.title
+        color: Colors.text?.title
       },
       balance: {
         fontSize: 12,
         fontWeight: '400',
-        color: Colors.text.body
+        color: Colors.text?.body
       },
        createAt: {
         fontSize: 12,
         fontWeight: '400',
-        color: Colors.text.body,
+        color: Colors.text?.body,
         marginVertical: 2
       },
       
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
         width: 'auto',
         fontWeight: '400',
         fontSize: 18,
-        color: Colors.text.danger,
+        color: Colors.text?.danger,
       }
 })
 

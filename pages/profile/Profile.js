@@ -11,6 +11,7 @@ import {Picker} from '@react-native-picker/picker';
 import {LogOut, ChevronRight} from 'react-native-feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
+import Toolbar from '../../components/Toolbar';
 
 
 
