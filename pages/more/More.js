@@ -42,22 +42,27 @@ const styles = StyleSheet.create({
         width:50,
         height:50,
         borderRadius: 8,
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
     },
   });
   
 
-const More = () => {
+const More = ({ navigation }) => {
   return (
     <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.gridContainer}>
             {more_items.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.cell}>
-                    <View style={{...styles.icon, backgroundColor:(`${item.background}`)}}></View>
-                    <Text>{item.content}</Text>
+                <TouchableOpacity key={index} style={styles.cell} onPress={() => navigation.navigate(`${item.path}`)}>
+                    <View style={{...styles.icon, backgroundColor:(`${item.background}`)}}>
+                      <Image style={{width: 35, height: 35}} source={item.image}/>
+                    </View>
+                    <Text style={{paddingTop:10, fontSize: 18}}>{item.content}</Text>
                 </TouchableOpacity>
             ))}
         </ScrollView>
-        <Toolbar/>
+        <Toolbar navigation={navigation}/>
     </View>
     
   )

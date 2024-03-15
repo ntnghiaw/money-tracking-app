@@ -1,32 +1,32 @@
 [
     {
         "id": 1,
-        "title":"thông báo 1",
-        "discription":"đây là thông báo 1",
+        "title":"Thông báo 1",
+        "description":"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet",
         "time":"12/11/2023"
     },
     {
         "id": 2,
-        "title":"thông báo 2",
-        "discription":"đây là thông báo 2",
+        "title":"Thông báo 2",
+        "description":"Tincidunt vitae semper quis lectus nulla at volutpat diam ut venenatis tellus in metus vulputate eu scelerisque felis imperdiet proin fermentum leo vel orci porta",
         "time":"12/11/2023"
     },
     {
         "id": 3,
-        "title":"thông báo 3",
-        "discription":"đây là thông báo 3",
+        "title":"Thông báo 3",
+        "description": "Placerat vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt dui ut ornare lectus sit amet est placerat in",
         "time":"12/11/2023"
     },
     {
         "id": 4,
-        "title":"thông báo 4",
-        "discription":"đây là thông báo 4",
+        "title":"Thông báo 4",
+        "description":"Tincidunt vitae semper quis lectus nulla at volutpat diam ut venenatis tellus in metus vulputate eu scelerisque felis imperdiet proin fermentum leo vel orci porta",
         "time":"12/11/2023"
     },
     {
         "id": 5,
-        "title":"thông báo 5",
-        "discription":"đây là thông báo 5",
+        "title":"Thông báo 5",
+        "description":"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
         "time":"12/11/2023"
     }
 ]

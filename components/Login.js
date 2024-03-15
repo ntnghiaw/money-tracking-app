@@ -2,9 +2,16 @@ import React, {useState, useEffect} from 'react';
 import { Alert } from 'react-native';
 
 import { View,Text, TextInput, Button, StyleSheet, Image,Dimensions, TouchableOpacity, KeyboardAvoidingView, Keyboard  } from 'react-native';
-const screenWidth = Dimensions.get('window').width;
 import { loginApi } from './loginApi';
-import axios from 'axios'
+import axios from 'axios';
+
+
+
+const screenWidth = Dimensions.get('window').width;
+
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../redux/auth/authActions';
+
 const styles = StyleSheet.create({
     container: {
       flex:1,
@@ -43,6 +50,9 @@ const styles = StyleSheet.create({
       },
   });
 const Login = ({navigation, route}) => {
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     // const { setIsLoggedIn } = route.params;
@@ -69,13 +79,21 @@ const Login = ({navigation, route}) => {
             const user = await loginApi(email, password);
             // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
             // Sau đó, điều hướng đến màn hình Home
+            console.log(user)
+            if(user)
+            {
+                dispatch(login(user));
+            }
             setMessage(false);
-            navigation.navigate('Welcome', { user });
+            navigation.navigate('NewWallet', { user });
         } catch (error) {
             // Hiển thị thông báo lỗi nếu xác thực không thành công
             setMessage(true);
             Alert.alert('Error', error.message);
         }
+        dispatch(login(user))
+
+
     };
 
     // const handleLogin = async () => {
@@ -153,3 +171,41 @@ const Login = ({navigation, route}) => {
 
 
 export default Login;
+
+// const styles = StyleSheet.create({
+//     container: {
+//       flex:1,
+//       alignItems: 'center',
+//       width:screenWidth,
+//       backgroundColor:'white',
+
+//     },
+//     input: {
+//       width: '80%',
+//       marginVertical: 10,
+//       padding: 10,
+//       borderBottomWidth: 1,
+//       borderColor: 'black',
+//     },
+//     image:{
+//         width: screenWidth ,
+//         height: '35%' ,
+//         resizeMode: 'cover',
+//     },
+//     login:{
+//         fontSize: 50,
+//         margin: 0,
+//     },
+//     customButton: {
+//         width: '35%',
+//         height: 50,
+//         backgroundColor: '#3498db',
+//         borderRadius: 15,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//       },
+//     buttonText: {
+//         color: 'white',
+//         fontSize: 18,
+//       },
+//   });

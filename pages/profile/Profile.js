@@ -3,18 +3,30 @@ import {View, Text, Dimensions, Button, StyleSheet, TextInput, TouchableOpacity,
 import MaskInput, { Masks } from 'react-native-mask-input'
 import MultiSelect from 'react-native-multiple-select';
 import SelectDropdown from 'react-native-select-dropdown'
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import icon từ thư viện
-
+import { useRoute } from '@react-navigation/native';
+import Colors from '../../constants/colors';
+import { useFonts, ABeeZee_400Regular, } from '@expo-google-fonts/abeezee';
+import {TitleText, BodyText, DangerousText} from '../../components/CustomizedText';
+import {Picker} from '@react-native-picker/picker';
+import {LogOut, ChevronRight} from 'react-native-feather';
+import Icon from 'react-native-vector-icons/Ionicons';
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Toolbar from '../../components/Toolbar';
+
+
+
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
+
+import { useSelector } from 'react-redux'; // Import useSelector từ react-redux
+
 
 const style = StyleSheet.create({
     container:{
         flex:1,
         // justifyContent:'center',
         alignItems:'center',
-        backgroundColor:'#F1F1F1',
+        backgroundColor:Colors.background.default,
     },
     
     infor:{
@@ -24,14 +36,16 @@ const style = StyleSheet.create({
         alignItems:'center',
         width:screenWidth,
         height:screenHeight*0.25,
+
         // backgroundColor:'blue',
     },
 
     avatar:{
-        borderRadius:60,
-        width:120,
-        height:120,
-        backgroundColor:'pink',
+        borderRadius:screenHeight*0.05,
+        borderColor:'white',
+        borderWidth:5,
+        width:screenHeight*0.1,
+        height:screenHeight*0.1,
         
     },
     infor_detail:{
@@ -42,13 +56,14 @@ const style = StyleSheet.create({
         justifyContent:'center',
         marginLeft:20,
         fontSize:15,
+
     },
     infor_box:{
         width:screenWidth*1,
         // height:screenWidth*0.2,
         // backgroundColor:'pink',
-        marginBottom:10,
-        display:'flex',
+        marginBottom:0,
+        display:'flex', 
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
@@ -58,48 +73,48 @@ const style = StyleSheet.create({
 
     },
     date:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     gender:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     phone:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     email:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.08,
-        marginBottom:5,
+        marginBottom:2,
         backgroundColor:'white',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
+        
     },
     text_box_30:{
         width:screenWidth*0.3, 
@@ -119,7 +134,7 @@ const style = StyleSheet.create({
         fontSize:20,
     },
     button:{
-        width:screenWidth*0.95,
+        width:screenWidth*1,
         height:screenHeight*0.07,
         backgroundColor:'white',
         display:'flex',
@@ -152,6 +167,27 @@ const style = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
     },
+    item: {
+        width: screenWidth,
+        height: screenHeight*0.07,
+        backgroundColor: 'white',
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        marginBottom: 2,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+    },
+    itemTitle: {
+        flex: 1,
+    },
+    itemBody: {
+        flex: 2 ,
+        display:'flex',
+        flexDirection:'row',
+        justifyContent: 'space-between',
+    },
     icon_items:{
         width:25,
         height:25,
@@ -163,9 +199,11 @@ const user_infor = {
 }
 
 
-const Profile = ({navigation,route}) => {
+const Profile = ({navigation}) => {
     const [selectedItems, setSelectedItems] = useState([]);
-    const {user} = route.params
+    // const {user} = route.params
+    const user = useSelector(state => state.auth.user);
+    console.log(user)
     const gender = ["Nam", "Nữ"]
     const [date, setDate] = useState(user.date);
 
@@ -264,7 +302,7 @@ const Profile = ({navigation,route}) => {
                 </TouchableOpacity>
             </TouchableOpacity>
             
-            <Toolbar/>
+            <Toolbar navigation={navigation}/>
         </View>
     );
 };

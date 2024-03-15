@@ -9,6 +9,8 @@ import {
   Dimensions, 
   
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+
 import { PieChart } from 'react-native-svg-charts';
 import Toolbar from './Toolbar';
 import change_icon from '../images/icons/change_icon.png';
@@ -188,7 +190,9 @@ const styles = StyleSheet.create({
 
 })
 
-const Home = () => {
+const Home = ({navigation}) => {
+  const dispatch = useDispatch();
+
   const data = [
     {
       key: 1,
@@ -294,19 +298,19 @@ const Home = () => {
         <View style={styles.easy_operations}>
           <Text style={styles.easy_operations_text}>Easy operations</Text>
           <View style={styles.easy_operations_items}>
-            <TouchableOpacity style={styles.easy_operations_item}>
+            <TouchableOpacity style={styles.easy_operations_item} onPress = {() => navigation.navigate('MyWallet')}>
                 <Image style={styles.easy_operations_icon} source={change_icon}></Image>
                 <Text style={{color:'#7D8895'}}>Change</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.easy_operations_item}>
+            <TouchableOpacity style={styles.easy_operations_item} onPress = {() => navigation.navigate('Records')}>
                 <Image style={styles.easy_operations_icon} source={plus_icon}></Image>
                 <Text style={{color:'#7D8895'}}>Records</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.easy_operations_item}>
+            <TouchableOpacity style={styles.easy_operations_item} onPress = {() => navigation.navigate('Group')}>
                 <Image style={styles.easy_operations_icon} source={group_icon}></Image>
                 <Text style={{color:'#7D8895'}}>Group</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.easy_operations_item}>
+            <TouchableOpacity style={styles.easy_operations_item} onPress = {() => navigation.navigate('More')}>
                 <Image style={styles.easy_operations_icon} source={more_icon}></Image>
                 <Text style={{color:'#7D8895'}}>More</Text>
             </TouchableOpacity>
@@ -342,7 +346,7 @@ const Home = () => {
           </View>
         </View>
       </View>
-      <Toolbar/>
+      <Toolbar navigation={navigation}/>
     </View>
   )
 }
