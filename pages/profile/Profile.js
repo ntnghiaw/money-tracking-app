@@ -283,9 +283,9 @@ const Profile = ({navigation}) => {
                 <View style={{width:screenWidth*0.2,display:'flex',justifyContent:'center',alignItems:'center'}}>
                     <Image style={{width:20,height:20}} source={{uri:'https://cdn-icons-png.flaticon.com/512/3359/3359235.png'}}/>
                 </View>
-                <View style={{width:screenWidth*0.75}}>
+                <TouchableOpacity style={{width:screenWidth*0.75}} onPress={()=> navigation.navigate('MyWallet')}>
                     <Text style={{color:'black', fontSize:20}}>My Wallet</Text>
-                </View>
+                </TouchableOpacity>
             </TouchableOpacity>
 
 {/* 
