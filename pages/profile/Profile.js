@@ -44,8 +44,9 @@ const style = StyleSheet.create({
         borderRadius:screenHeight*0.05,
         borderColor:'white',
         borderWidth:5,
-        width:screenHeight*0.1,
-        height:screenHeight*0.1,
+        width:screenHeight*0.17,
+        height:screenHeight*0.17,
+        borderRadius: 100,
         
     },
     infor_detail:{
