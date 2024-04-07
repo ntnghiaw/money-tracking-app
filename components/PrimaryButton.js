@@ -17,12 +17,14 @@ export default PrimaryButton;
 
 const styles = StyleSheet.create({
     button: {
+        alignSelf: 'center',
         borderRadius: 12,
         width: screenWidth*0.92,
         height: screenHeight*0.06,
         backgroundColor: Colors.background.primary,
-        paddingVertical: 16,
+        // paddingVertical: 12,
         paddingHorizontal: 12,
+        justifyContent: 'center'
     },
     text: {
         fontSize: 18,

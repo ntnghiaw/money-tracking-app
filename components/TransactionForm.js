@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, SafeAreaView, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, SafeAreaView, Alert, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
 import { NumericFormat } from 'react-number-format';
-import * as Icon from "react-native-feather";
+import { ChevronRight } from "react-native-feather";
 
 import React, {useEffect, useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -9,10 +9,18 @@ import  { useSelector} from 'react-redux';
 import Colors from '../constants/colors';
 import PrimaryButton from './PrimaryButton';
 import Toolbar from './Toolbar';
-
+import formatDate from '../utilities/formatDate';
+import AntDesgin from 'react-native-vector-icons/AntDesign';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
+
+const DismissKeyboard = ({ children}) => (
+    <TouchableWithoutFeedback onPress={() => console.log(1)}>
+        {children}
+    </TouchableWithoutFeedback>
+)
+
 
 
 const TransactionForm = ({navigation, onCreate, type}) => {
@@ -25,13 +33,12 @@ const TransactionForm = ({navigation, onCreate, type}) => {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
     const [show, setShow] = useState(false);
-    const currentDate= `${date.getDate().toString().length > 1 ? date.getDate() : '0' + date.getDate().toString()} / ${date.getMonth() < 9 ? '0'+(date.getMonth()+1).toString(): date.getMonth()+1} / ${date.getFullYear()}`;
-    const time = ` ${date.getHours().toString().length > 1 ? date.getHours() : '0' + date.getHours().toString()} : ${date.getMinutes().toString().length > 1 ? date.getMinutes():  '0' + date.getMinutes().toString() }` ;
-    
+
+    const [keyboardStatus, setKeyboardStatus] = useState('');
+
+  
     useEffect(() => {
         if (transaction) {
-            
-            console.log(transaction)
              setAmount(transaction.amount);
              setDescription(transaction.description);
              setCategory(transaction.category);
@@ -58,7 +65,8 @@ const TransactionForm = ({navigation, onCreate, type}) => {
         showMode('time');
     };
   
- 
+
+
     const onCreateHandler = () => {
         
         onCreate({
@@ -80,67 +88,56 @@ const TransactionForm = ({navigation, onCreate, type}) => {
     <View style={styles.form}>
         <View style={styles.amount}>
             <Text style={styles.amountLabel}>Amount</Text>
-            <View style={styles.amountInput}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <TextInput 
-                style={[styles.amountText, {color: transaction.type === 'expense' ? Colors.text.danger : Colors.text.primary}]} 
-                value={amount} 
-                placeholder='0' 
-                onChangeText={(amount) => setAmount(amount)}
-                keyboardType='numeric'
-             />
+            <DismissKeyboard>
+                <View style={styles.amountInput} >
+                <TextInput 
+                    style={[styles.amountText, {color: transaction.type === 'expense' ? Colors.text.danger : Colors.text.primary}]} 
+                    value={amount} 
+                    placeholder='0' 
+                    // onChangeText={ (text) => setAmount(text)}
+                    keyboardType='decimal-pad'
+                />
             
-             </TouchableWithoutFeedback>
                 <Text style={styles.currency}>₫</Text>
-            </View>
+                </View>
+             </DismissKeyboard>
             
             
 
         </View>
         <View style={styles.detailsContainer}>
-            <View style={styles.input}>
+            <View style={styles.item}>
                 <View style={styles.icon}>
-                    <Icon.DollarSign width={24} height={24}  stroke="green"/>
+                    <AntDesgin name='questioncircle' size={28}  color='orange'/>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('Categories', {onCategoryChange})} style={styles.category} >
-                
-                    <Text  style={styles.categoryLabel}>{category}</Text>
-                    <Icon.ChevronRight width={24} height={24}  stroke={Colors.text.title}/>
-
-                 </TouchableOpacity>
-
+                <View style={styles.input}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Categories', {onCategoryChange})} >
+                        <Text  style={styles.textInput}>Select your category</Text>
+                        <ChevronRight width={24} height={24}  stroke={Colors.text.title} style={styles.categoryIcon}/>
+                    </TouchableOpacity>
+                    <View style={styles.separator}></View>
+                </View>
             </View>
  
-            <View style={styles.input}>
+    
+            <View style={styles.item}>
                 <View style={styles.icon}>
-                    <Icon.Info width={24} height={24}  stroke="orange"/>
+                    <AntDesgin name='calendar' size={28}  color='orange'/>
                 </View>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder='Description'
-                    value={description}
-                    onChangeText={(text) => setDescription(text)}
-                />
-
-            </View>
-            <View style={styles.input}>
-                <View style={styles.icon}>
-                    <Icon.Calendar width={24} height={24}  stroke="#559BE6"/>
-                </View>
-                <SafeAreaView style={styles.calendar}>
+                <SafeAreaView style={styles.calendar} keyboardDismissMode="on-drag">
                     <View style={styles.buttonControl}>
                     
                         <TouchableOpacity
                             style={styles.button}
                             onPress={showDatepicker}
                             underlayColor='#fff'>
-                            <Text style={styles.loginText}>{currentDate}</Text>
+                            <Text style={styles.loginText}>{formatDate(date, 'dd/mm/yy')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.button}
                             onPress={showTimepicker}
                             underlayColor='#fff'>
-                            <Text style={styles.loginText}>{time}</Text>
+                            <Text style={styles.loginText}>{formatDate(date, 'hh/mm')}</Text>
                         </TouchableOpacity>
                     </View>
                  
@@ -159,7 +156,21 @@ const TransactionForm = ({navigation, onCreate, type}) => {
                 </SafeAreaView>
                
             </View>
+            
+            <View style={styles.input}>
+                <View style={styles.icon}>
+                    <AntDesgin name='calendar' size={28}  color='orange'/>
+                    
 
+                </View>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder='Description'
+                    value={description}
+                    onChangeText={setDescription}
+                />
+
+            </View>
         </View>
         <View style={styles.createButton}>
             <PrimaryButton title= 'Save' onPress={onCreateHandler}/>
@@ -203,7 +214,8 @@ const styles = StyleSheet.create({
     },
     amountInput:{
         flexDirection: 'row', 
-        justifyContent: 'center'
+        justifyContent: 'center',
+        // backgroundColor: 'red'
     },
     currency: {
         fontSize: 32, 
@@ -216,26 +228,30 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingRight: screenWidth*0.03
     },
-    input: {
+    item: {
         flexDirection: 'row',
         marginVertical: 12
     },
-    textInput: {
-        width: screenWidth*0.76,
-        fontSize: 18,
-        marginLeft: 16,
+    input: {
+        marginLeft: 12,
+        width: screenWidth*0.77,
+        position: 'relative'
+    },
+    separator: {
         borderBottomWidth: 0.5,
-        borderBottomColor: '#ccc',
-        paddingBottom: 24
+        borderBottomColor: Colors.text.body
+    },
+    textInput: {
+        fontSize: 16,
+        paddingBottom: 8,
+        color: Colors.text.title
     },
     icon: {
         width: 40,
         height: 40,
-        backgroundColor: Colors.icon.background,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 6
-        // backgroundColor: 'red'
     },
     category: {
         marginLeft: 16,
@@ -250,6 +266,10 @@ const styles = StyleSheet.create({
         color: Colors.text.title,
         paddingBottom: 24
 
+    },
+    categoryIcon: {
+        position: 'absolute',
+        right: 0
     },
     calendar: {
         width: screenWidth*0.76,

@@ -17,9 +17,9 @@ const Records = ({route, navigation}) => {
     <View style={styles.container}>
         <View>
           <TransactionForm navigation={navigation} route={route} onCreate={onCreateHandler} type='expense'/>
-          <View style={styles.bottomBar}><Toolbar navigation={navigation}/></View>
 
         </View>
+        <Toolbar navigation={navigation}/>
     </View>
   )
 }
@@ -28,15 +28,12 @@ export default Records;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: screenHeight*0.05,
     backgroundColor: 'white',
     height: screenHeight*0.9,
     borderRadius: 30,
     paddingHorizontal: screenWidth*0.04,
   },
-  bottomBar: {
-    width: screenWidth,
-    marginTop: screenHeight*0.21,
-    marginLeft: -16,
-}
+
 })

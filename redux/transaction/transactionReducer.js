@@ -20,6 +20,8 @@ const transactionReducer = (state = initialState, action) => {
           ...state,
           type: action.payload
         }
+      case 'GET_CATEGORY': 
+        return action.payload
       default:
         return state;
     }

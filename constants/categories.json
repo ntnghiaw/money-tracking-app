@@ -1,0 +1,25 @@
+{
+    "transport": [
+        {
+            "name": "Fuel",
+            "desciption": "",
+            "icon": ""
+        },
+        {
+            "name": "Fuel",
+            "desciption": "",
+            "icon": ""
+        }
+    ],
+    "bank": {},
+    "clothing": {},
+    "entertainment": {},
+    "foodndrink": {},
+    "giftsndonations": {},
+    "healthnfitness": {},
+    "home": {},
+    "kids": {},
+    "personal": {},
+    "pets": {},
+    "utilities": {}
+}

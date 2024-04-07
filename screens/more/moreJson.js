@@ -22,10 +22,10 @@ const more_items = [
 
     },
     {
-        content: "Budget",
+        content: "Financial Plans",
         image: budget_icon,
         background: '#18E8F5',
-        path:'Budget',
+        path:'FinancialPlan',
 
     },
     {

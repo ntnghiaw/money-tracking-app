@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet, Switch, Text, View } from 'react-native'
 import React,{useState} from 'react'
-import Notification from './Notification';
 import Colors from '../../constants/colors'
 // import App from './../../App';
 

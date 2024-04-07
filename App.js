@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, Image,TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
-import { SafeAreaView } from 'react-native';
+import { Plus } from 'react-native-feather';
 
 import Login from './components/Login';
 import Register from './components/Register'
@@ -10,31 +10,31 @@ import Test from './components/Test';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { SelectCountry } from 'react-native-element-dropdown';
-import Welcome from './pages/welcome/Welcome';
-import NewWallet from './pages/wallet/NewWallet'
-import MyWallet from './pages/wallet/MyWallet';
+import Welcome from './screens/welcome/Welcome';
+import NewWallet from './screens/wallet/NewWallet'
+import MyWallet from './screens/wallet/MyWallet';
 
-import Profile from './pages/profile/Profile';
-import Verification from './pages/verification/Verification';
-import Notification from './pages/notification/Notification';
-import SettingsNotification from './pages/notification/SettingsNotification';
-import More from './pages/more/More';
-import Investment from './pages/investment/Investment';
-import Budget from './pages/budget/Budget';
-import Debt from './pages/debt/Debt';
-import Records from './pages/records/Records';
-import ExportData from './pages/exportData/ExportData';
-import Settings from './pages/settings/Settings';
-import Group from './pages/group/Group';
+import Profile from './screens/profile/Profile';
+import Verification from './screens/verification/Verification';
+import Notification from './screens/notification/Notification';
+import SettingsNotification from './screens/notification/SettingsNotification';
+import More from './screens/more/More';
+import Investment from './screens/investment/Investment';
+import FinancialPlans from './screens/plan/FinancialPlans';
+import Debt from './screens/debt/Debt';
+import Records from './screens/records/Records';
+import ExportData from './screens/exportData/ExportData';
+import Settings from './screens/settings/Settings';
+import Group from './screens/group/Group';
 
 
-import Report from './pages/Report/Report';
+import Report from './screens/Report/Report';
 import Home from './components/Home';
-import Statistics from './pages/statistics/Statistics';
+import Statistics from './screens/statistics/Statistics';
 import Colors from './constants/colors';
-import History from './pages/records/History';
-import Category from './pages/records/Category';
-import Camera from './pages/records/Camera';
+import History from './screens/records/History';
+import Categories from './screens/records/Categories';
+import Camera from './screens/records/Camera';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -43,6 +43,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import store from './redux/auth/store';
 import { changeType } from './redux/transaction/transactionAction';
 import { Provider, useDispatch, useSelector } from 'react-redux';
+import NewBudget from './screens/plan/Budget';
 
 const Stack = createNativeStackNavigator();
 const screenWidth = Dimensions.get('window').width;
@@ -111,7 +112,7 @@ function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-          <Stack.Navigator >
+          <Stack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
             <Stack.Screen name="Initial" component={Initial} options={{ headerShown: false }}  />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
@@ -159,14 +160,22 @@ function App() {
 
 
             <Stack.Screen name="Investment" component={Investment} options={{ title: 'Investment', }}/>
-            <Stack.Screen name="Budget" component={Budget} options={{ title: 'Budget', }}/>
+            <Stack.Screen name="FinancialPlan" component={FinancialPlans} options={({ navigation }) => ({ 
+                title: 'Financial Plans', 
+                headerRight: () => (
+                  <TouchableOpacity onPress={() => navigation.navigate('NewBudget')}>
+                    <Plus width={24} height={24} stroke={Colors.text.title}/>
+                  </TouchableOpacity>
+                ),
+              })}/>
+            <Stack.Screen name='NewBudget' component={NewBudget} options={{ title: 'New Budget'}}/>
             <Stack.Screen name="Debt" component={Debt} options={{ title: 'Debt', }}/>
             <Stack.Screen name="Records" component={Records} options={{
                title: 'Records', 
                header: (props) => <TransactionHeader {...props} />
                
                }} />
-            <Stack.Screen name="Categories" component={Category} options={{title: 'Categories'}}/>
+            <Stack.Screen name="Categories" component={Categories} options={{title: 'Categories'}}/>
             <Stack.Screen name="Camera" component={Camera} options={{title: 'Scanner'}}/>
             <Stack.Screen  name="History" component={History} options={{title: 'Transactions'}}/>   
 

@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Budget = ({navigation}) => {
+const Camera = () => {
   return (
     <View>
-      <Text>Budget</Text>
+      <Text>Camera</Text>
     </View>
   )
 }
 
-export default Budget
+export default Camera;

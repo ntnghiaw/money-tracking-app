@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Dimensions } from 'react-native'
 import React from 'react'
-import celebrate from '../../images/celebrate_icon.png'
+import celebrate from '../../images/celebrate_icon.png';
+import PrimaryButton from '../../components/PrimaryButton';
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -15,14 +16,8 @@ const styles = StyleSheet.create({
         height:150,
         margin:50,
     },
-    save_button:{
-        width:screenWidth*0.8,
-        height:screenHeight*0.08,
-        backgroundColor:'#50C474',
-        display:'flex',
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:10,
+    button:{
+
         marginTop:75,
     },
     text:{
@@ -52,9 +47,11 @@ const NewWallet = ({navigation}) => {
             <Image style={{width:50,height:50}} source={{uri:'https://cdn-icons-png.flaticon.com/512/2474/2474450.png'}}/>
             <TextInput style={{width:screenWidth*0.65,borderBottomWidth:1,padding:1,marginLeft:10,textAlign:'center',fontSize:20}} placeholder='Balance'/>
         </View>
-        <TouchableOpacity style={styles.save_button} onPress={() => navigation.navigate('Home')}>
-            <Text style={{fontSize:20,color:'white'}}>Save</Text>
-        </TouchableOpacity>
+        <View style={styles.button}>
+
+            <PrimaryButton title="Create" onPress={() => navigation.navigate('Home')} />
+        </View>
+          
     </View>
   )
 }

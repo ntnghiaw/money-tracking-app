@@ -85,7 +85,7 @@ const Login = ({navigation, route}) => {
                 dispatch(login(user));
             }
             setMessage(false);
-            navigation.navigate('NewWallet', { user });
+            navigation.navigate('Home', { user });
         } catch (error) {
             // Hiển thị thông báo lỗi nếu xác thực không thành công
             setMessage(true);
