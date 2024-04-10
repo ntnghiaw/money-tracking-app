@@ -1,25 +1,337 @@
 {
-    "transport": [
+    "categories": [
+      
+            {
+                "icon": "taxi",
+                "label": "Auto & Transport",
+                "sub": [
+                {
+                    "label": "Fuel",
+                    "value": "Fuel",
+                    "desciption": "",
+                    "icon": "gas-station"
+                },
+                {
+                    "label": "Insurance",
+                    "value": "Insurance",
+                    "desciption": "",
+                    "icon": "shield-car"
+                },
+                {
+                    "label": "Parking",
+                    "value": "Parking",
+                    "desciption": "",
+                    "icon": "parking"
+                },
+                {
+                    "label": "Service & Parts",
+                    "value": "Service & Parts",
+                    "desciption": "",
+                    "icon": "car-door"
+                },
+                {
+                    "label": "Taxi",
+                    "value": "Taxi",
+                    "desciption": "",
+                    "icon": "car"
+                }
+            ]}
+        ,
+     {
+                "icon": "bank",
+                "label": "Bank",
+        
+                "sub": [
+                    {
+                        "label": "Transfer fee",
+                        "value": "Transfer fee",
+                        "desciption": "",
+                        "icon": "bank-transfer"
+                    }
+                ]
+            }
+        ,
         {
-            "name": "Fuel",
-            "desciption": "",
-            "icon": ""
-        },
+                "icon": "tshirt-v",
+                "label": "Clothing",
+        
+                "sub": [
+                    {
+                        "label": "Accessories",
+                        "value": "Accessories",
+                        "desciption": "",
+                        "icon": "watch-variant"
+                    },
+                    {
+                        "label": "Clothes",
+                        "value": "Clothes",
+                        "desciption": "",
+                        "icon": "tshirt-crew"
+                    },
+                    {
+                        "label": "Shoes",
+                        "value": "Shoes",
+                        "desciption": "",
+                        "icon": "shoe-sneaker"
+                    }
+                ]
+            }
+        ,
+       {
+                "icon": "movie",
+                "label": "Entertainment",
+        
+                "sub": [
+                    {
+                        "label": "Movies & DVDs",
+                        "value": "Movies & DVDs",
+                        "desciption": "",
+                        "icon": "popcorn"
+                    },
+                    {
+                        "label": "Music",
+                        "value": "Music",
+                        "desciption": "",
+                        "icon": "music"
+                    },
+                    {
+                        "label": "Travel",
+                        "value": "Travel",
+                        "desciption": "",
+                        "icon": "airplane"
+                    }
+                ]
+            }
+        ,
         {
-            "name": "Fuel",
-            "desciption": "",
-            "icon": ""
-        }
-    ],
-    "bank": {},
-    "clothing": {},
-    "entertainment": {},
-    "foodndrink": {},
-    "giftsndonations": {},
-    "healthnfitness": {},
-    "home": {},
-    "kids": {},
-    "personal": {},
-    "pets": {},
-    "utilities": {}
+                "icon": "food-fork-drink",
+                "label": "Food and Dining",
+        
+                "sub": [
+                    {
+                        "label": "Bars & Coffee",
+                        "value": "Bars & Coffee",
+                        "description": "",
+                        "icon": "coffee"
+                    },
+                    {
+                        "label": "Breakfast",
+                        "value": "Breakfast",
+                        "description": "",
+                        "icon": "noodles"
+                    },
+                    {
+                        "label": "Lunch",
+                        "value": "Lunch",
+                        "description": "",
+                        "icon": "rice"
+                    },
+                    {
+                        "label": "Dinner",
+                        "value": "Dinner",
+                        "description": "",
+                        "icon": "food-turkey"
+                    },
+                    {
+                        "label": "Fruits",
+                        "value": "Fruits",
+                        "description": "",
+                        "icon": "food-apple"
+                    },
+                   
+                    {
+                        "label": "Restaurant",
+                        "value": "Restaurant",
+                        "description": "",
+                        "icon": "food"
+                    }
+                ]
+            }
+        ,
+        {
+                "icon": "flower",
+                "label": "Gifts and Donations",
+        
+                "sub": [
+                    {
+                        "label": "Charity",
+                        "value": "Charity",
+                        "description": "",
+                        "icon": "charity"
+                    },
+                    {
+                        "label": "Gifts",
+                        "value": "Gifts",
+                        "description": "",
+                        "icon": "gift"
+                    }
+                ]
+            }
+        ,
+        {
+                "icon": "medical-bag",
+                "label": "Health & Fitness",
+                "sub": [
+                    {
+                        "label": "Doctor",
+                        "value": "Doctor",
+                        "description": "",
+                        "icon": "doctor"
+                    },
+                    {
+                        "label": "Pharmacy",
+                        "value": "Pharmacy",
+                        "description": "",
+                        "icon": "pill"
+                    },
+                    {
+                        "label": "Sports",
+                        "value": "Sports",
+                        "description": "",
+                        "icon": "badminton"
+                    },
+                    {
+                        "label": "Health Insurance",
+                        "value": "Health Insurance",
+                        "description": "",
+                        "icon": "hospital-box"
+                    }
+                ]
+        
+            }
+        ,
+        {
+                "icon": "home-city",
+                "label": "Home",
+                "sub": [
+                    {
+                        "label": "Furnishing",
+                        "value": "Furnishing",
+                        "description": "",
+                        "icon": "sofa-single"
+                    },
+                    {
+                        "label": "Mortgage & Rent",
+                        "value": "Mortgage & Rent",
+                        "description": "",
+                        "icon": "home-account"
+                    },
+                    {
+                        "label": "Home Services",
+                        "value": "Home Services",
+                        "description": "",
+                        "icon": "home-lightbulb"
+                    }
+                ]
+            }
+        ,
+
+        {
+                "icon": "human-male-child",
+                "label": "Kids",
+                "sub": [
+                    {
+                        "label": "Allowance",
+                        "value": "Allowance",
+                        "description": "",
+                        "icon": "wallet-giftcard"
+                    },
+                    {
+                        "label": "Baby Supplies",
+                        "value": "Baby Supplies",
+                        "description": "",
+                        "icon": "baby-bottle"
+                    },
+                    {
+                        "label": "Toys",
+                        "value": "Toys",
+                        "description": "",
+                        "icon": "gamepad-variant"
+                    },
+                    {
+                        "label": "Tuition",
+                        "value": "Tuition",
+                        "description": "",
+                        "icon": "school"
+                    }
+                ]
+            }
+        ,
+        {
+                "icon": "human-greeting-variant",
+                "label": "Personal",
+                "sub": [
+                    {
+                        "label": "Book",
+                        "value": "Book",
+                        "description": "",
+                        "icon": "book-education"
+                    },
+                    {
+                        "label": "Education",
+                        "value": "Education",
+                        "description": "",
+                        "icon": "school"
+                    },
+                    {
+                        "label": "Hobbies",
+                        "value": "Hobbies",
+                        "description": "",
+                        "icon": "kayaking"
+                    }
+                ]
+            }
+        ,
+        {
+                "icon": "dog",
+                "label": "Pets",
+                "sub": [
+                    {
+                        "label": "Dog",
+                        "value": "Dog",
+                        "description": "",
+                        "icon": "dog"
+                    }
+                ]
+        
+            }
+        ,
+        {
+                "icon": "cart",
+                "label": "Utilities",
+                "sub": [
+                    {
+                        "label": "Electricity",
+                        "value": "Electricity",
+                        "description": "",
+                        "icon": "lightbulb"
+                    },
+                    {
+                        "label": "Water",
+                        "value": "Water",
+                        "description": "",
+                        "icon": "water"
+                    },
+                    {
+                        "label": "Internet",
+                        "value": "Internet",
+                        "description": "",
+                        "icon": "wifi"
+                    },
+                    {
+                        "label": "Cable TV",
+                        "value": "Cable TV",
+                        "description": "",
+                        "icon": "television"
+                    },
+                    {
+                        "label": "Mobile Phone",
+                        "value": "Mobile Phone",
+                        "description": "",
+                        "icon": "cellphone"
+                    }
+                ]
+            }
+        
+    ]
 }
