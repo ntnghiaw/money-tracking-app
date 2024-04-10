@@ -15,7 +15,7 @@ const screenHeight = Dimensions.get('window').height;
 const Goals = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <View style={styles.budgetItem}>
+      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('GoalDetails')}>
         <View style={styles.header}>
           <View style={styles.icon}>
             <Facebook width={40} height={40}  fill="blue"/>
@@ -48,7 +48,7 @@ const Goals = ({navigation}) => {
           </View>
         </View>
       
-      </View>
+      </TouchableOpacity>
 
 
     </View>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  budgetItem: {
+  item: {
     marginTop: 20,
     backgroundColor: '#FFF',
     marginHorizontal: 16,
