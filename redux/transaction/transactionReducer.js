@@ -2,7 +2,10 @@
 
 const initialState = {
 
-    category: g
+    category: {
+      label: 'Select your category',
+      icon: "crown"
+    },
     amount: 0,
     createAt: new Date() ,
     type: 'expense'
