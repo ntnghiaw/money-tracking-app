@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import * as Icon from 'react-native-feather';
 import { SelectCountry } from 'react-native-element-dropdown';
 import { useDispatch } from 'react-redux';
-import {read} from '../../redux/transaction/transactionAction'
+import { read } from '../../redux/transaction/transactionAction';
 
 import Colors from '../../constants/colors'
 
@@ -16,42 +16,72 @@ const screenHeight = Dimensions.get('window').height;
 const data= [
   {
     id: 1,
-    category: 'Pay to Employees',
+    category:  {
+      label: "Education",
+      value: "Education",
+      description: "",
+      icon: "school"
+  },
     createAt: Date().toString(),
     amount: '1000000',
     type: 'expense',
   },
   {
     id: 2,
-    category: 'Grocery Shopping',
+    category:  {
+      label: "Education",
+      value: "Education",
+      description: "",
+      icon: "school"
+  },
     createAt: Date().toString(),
     amount: '500000',
     type: 'expense'
   },
   {
     id: 3,
-    category: 'Grocery Shopping',
+    category:  {
+      label: "Education",
+      value: "Education",
+      description: "",
+      icon: "school"
+  },
     createAt: Date().toString(),
     amount: '1200000',
     type: 'income'
   },
   {
     id:4,
-    category: 'Rental Income',
+    category:  {
+      label: "Education",
+      value: "Education",
+      description: "",
+      icon: "school"
+  },
     createAt: Date().toString(),
     amount: '1000000',
     type: 'income',
   },
   {
     id:5,
-    category: 'Salary',
+    category:  {
+      label: "Education",
+      value: "Education",
+      description: "",
+      icon: "school"
+  },
     createAt: Date().toString(),
     amount: '500000',
     type: 'income'
   },
   {
     id: 6,
-    category: 'Business Income',
+    category:  {
+      label: "Education",
+      value: "Education",
+      description: "",
+      icon: "school"
+  },
     createAt: Date().toString(),
     amount: '1200000',
     type: 'income'
@@ -100,7 +130,7 @@ const History = ({navigation}) => {
       </View>
       <View style={styles.details}>
         <View style={styles.description}>
-          <Text style={styles.category}>{category} </Text>
+          <Text style={styles.category}>{category.label} </Text>
           <Text style={styles.createAt}>{createAt.length > 20 ? createAt.substring(0,16): createAt} </Text>
 
         </View>
