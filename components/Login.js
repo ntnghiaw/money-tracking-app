@@ -79,7 +79,7 @@ const Login = ({navigation, route}) => {
             const user = await loginApi(email, password);
             // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
             // Sau đó, điều hướng đến màn hình Home
-            console.log(user)
+            // console.log(user)
             if(user)
             {
                 dispatch(login(user));
@@ -91,7 +91,7 @@ const Login = ({navigation, route}) => {
             setMessage(true);
             Alert.alert('Error', error.message);
         }
-        dispatch(login(user))
+        // dispatch(login(user))
 
 
     };

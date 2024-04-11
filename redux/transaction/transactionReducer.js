@@ -28,9 +28,11 @@ const transactionReducer = (state = initialState, action) => {
         ...state,
         category: action.payload
       }
+    case 'GET_CURRENT_SCREEN':
+      return action.payload
     default:
-      return state;
+      return state
   }
 };
 
-export default transactionReducer;
+export default transactionReducer
