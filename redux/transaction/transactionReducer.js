@@ -18,6 +18,7 @@ const transactionReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'READ':
       return action.payload
+      
     case 'CHANGE_TYPE': 
       return {
         ...state,
