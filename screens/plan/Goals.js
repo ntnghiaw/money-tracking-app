@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { Facebook } from 'react-native-feather';
-
+import { useDispatch } from 'react-redux';
 import Toolbar from '../../components/Toolbar';
 import Colors from '../../constants/colors';
-
 
 
 
@@ -13,6 +12,7 @@ const screenHeight = Dimensions.get('window').height;
 
 
 const Goals = ({navigation}) => {
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('GoalDetails')}>

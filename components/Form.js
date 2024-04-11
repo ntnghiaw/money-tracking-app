@@ -1,17 +1,17 @@
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, ScrollView, Alert, TouchableWithoutFeedback, Pressable } from 'react-native';
 import {  Calendar, ChevronRight } from 'react-native-feather'; 
-import React, {useEffect, useState} from 'react';
-import { Dropdown } from 'react-native-element-dropdown';
+import React, { useEffect, useState, useRef } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import  { useSelector} from 'react-redux';
-import  Icon from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo'
+import  { useSelector, useDispatch} from 'react-redux';
+import  Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Foundation from 'react-native-vector-icons/Foundation'
 
 
 import Colors from '../constants/colors';
 import PrimaryButton from './PrimaryButton';
-import Period from './Periods';
 import formatDate from '../utilities/formatDate';
+import { createBudget } from '../redux/plan/planAction';
 
 
 const periods = [
@@ -26,27 +26,31 @@ const periods = [
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const DismissKeyboard = ({ children}) => (
-    <TouchableWithoutFeedback onPress={() => console.log(1)}>
-        {children}
-    </TouchableWithoutFeedback>
-)
 
 
-
-const Form = ({navigation, onCreate, type}) => {
-    const transaction = useSelector(state => state.transaction);
+const Form = ({navigation}) => {
+    const dispatch = useDispatch();
+    const plan = useSelector(state => state.plan);
+    const [type, setType] = useState(plan.type);
     const [date, setDate] = useState(() => new Date());
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState(null);
     const [mode, setMode] = useState('date');
     const [name, setName] = useState('');
+    const [note, setNote] = useState('');
     const [category, setCategory] = useState('');
     const [show, setShow] = useState(false);
-    const [period, setPeriod] = useState('');
-    // const [keyboardStatus, setKeyboardStatus] = useState('');
-
-  
-
+    const [period, setPeriod] = useState(plan.period);  
+    const textInputRef = useRef(null);
+    const blurTextInput = () => {
+        if (textInputRef.current) {
+          textInputRef.current.blur();
+        }
+      };
+    useEffect(() => {
+        setPeriod(plan.period)
+        setType(plan.type)
+    }, [plan]);
+    
     
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -63,23 +67,17 @@ const Form = ({navigation, onCreate, type}) => {
         showMode('date');
     };
 
-    const showTimepicker = () => {
-        showMode('time');
-    };
-  
-
-
     const onCreateHandler = () => {
         
-        onCreate({
+        dispatch(createBudget({
+            name,
             amount,
             category,
-            description,
-            createAt: date,
-            type,
-        });
+            period,
+            startDate: date,
+        }));
         setAmount('');
-        setDescription('');
+        setName('');
         setCategory('Select the category');
         Alert.alert('Success!');
     }
@@ -97,7 +95,6 @@ const Form = ({navigation, onCreate, type}) => {
       };
   return (
     <View style={styles.form}>
-        
         <View style={styles.detailsContainer}>
             <View style={styles.item}>
                 <View style={styles.icon}>
@@ -117,13 +114,13 @@ const Form = ({navigation, onCreate, type}) => {
             </View>
             <View style={styles.item}>
                 <View style={styles.icon}>
-                    <Icon size={28} name='checkcircle' color={ Colors.text.primary} />
+                    <Foundation size={36} name='info' color={ Colors.text.primary} />
                 </View> 
                 <View style={styles.input}>
                     <TextInput
                         style={styles.textInput}
-                        placeholder='Amount'
-                        value={amount}
+                        placeholder={type === 'budget' ? `Amount` : 'Target Amount'}
+                        value={amount&&amount.toString()}
                         onChangeText={setAmount}
                         keyboardType='numeric'
                         />
@@ -131,33 +128,67 @@ const Form = ({navigation, onCreate, type}) => {
                 </View>
 
             </View>
+            {
+                type === 'budget' &&
             <View style={styles.item}>
-                <View style={styles.icon}>
-                    <Icon name='questioncircle' size={28}  color='orange' />
+                <View style={styles.categoryIcons}>
+                    <View style={styles.categoryIcon}>
+                        <Icon name='animation' size={22}  color='orange' />
+                    </View>
+                    <View style={[styles.categoryIcon, { left: 10, zIndex: -1 }]}>
+                        <Icon name='animation' size={22}  color='orange' />
+                    </View>
+                    <View style={[styles.categoryIcon, { left: 20, zIndex: -2 }]}>
+                        <Icon name='animation' size={22}  color='orange' />
+                    </View>
+
                 </View>
+                
                 <View style={styles.input}>
-                    <Pressable onPress={() => navigation.navigate('Categories')} style={styles.pressable} >
+                    <Pressable onPress={() => navigation.navigate('Categories', { edit: true})} style={styles.pressable} >
                         <Text  style={[styles.textInput, {paddingBottom: 12}]}>Select your category</Text>
-                        <ChevronRight width={24} height={24}  stroke={Colors.text.title} style={styles.categoryIcon}/>
+                        <ChevronRight width={24} height={24}  stroke={Colors.text.title} style={styles.rightIcon}/>
                     </Pressable>
                     <View style={styles.separator}></View>
                     
                 </View>
             </View>
-
+            }
+{
+                type === 'budget' &&
             <View style={styles.item}>
                 <View style={styles.icon}>
                     <Entypo name='ccw' size={28}  color='#d1adad'/>
                 </View>
                 <View style={styles.input}>
                     <Pressable onPress={() => navigation.navigate('Periods')} style={styles.pressable} >
-                        <Text  style={[styles.textInput, {paddingBottom: 12}]}>Repeat</Text>
-                        <ChevronRight width={24} height={24}  stroke={Colors.text.title} style={styles.categoryIcon}/>
+                        <Text  style={[styles.textInput, {paddingBottom: 12}]}>{period.label}</Text>
+                        <ChevronRight width={24} height={24}  stroke={Colors.text.title} style={styles.rightIcon}/>
                     </Pressable>
                     <View style={styles.separator}></View>
                 </View>
             </View>
- 
+}
+
+        {type === 'goal' && 
+            <View style={styles.item}>
+                <View style={styles.icon}>
+                    <Icon name='note-edit-outline' size={28}  color='orange' />
+                </View>
+                <View style={styles.input}>
+                    <TextInput
+                        style={[styles.textInput, ]}
+                        placeholder='Note'
+                        value={note}
+                        blurOnSubmit={true}
+                        numberOfLines={2}
+                        onChangeText={setNote}
+                        multiline
+                    />
+                    <View style={styles.separator}></View>
+                </View>
+            </View>
+            }
             
             <View style={styles.item}>
                 <View style={styles.icon}>
@@ -167,8 +198,8 @@ const Form = ({navigation, onCreate, type}) => {
                     <TouchableOpacity
                         onPress={showDatepicker}
                         underlayColor='#fff'>
-                        <Text  style={styles.textInput}>{`Start date`}</Text>
-                        <Text  style={styles.textInput}>{date && formatDate(date, 'dd/mm/yy')||`Start date`}</Text>
+                        <Text  style={styles.textInput}>{type === 'budget' ? `Start date` : 'Desired date'}</Text>
+                        <Text  style={styles.textInput}>{date && formatDate(date, 'dd/mm/yy')}</Text>
                     </TouchableOpacity>
                     <View style={styles.separator}></View>
                     <View style={styles.datePicker}>
@@ -186,7 +217,7 @@ const Form = ({navigation, onCreate, type}) => {
                 </ScrollView>
              
             </View>
-           
+    
         </View>
         <View style={styles.createButton}>
             <PrimaryButton title= 'Create' onPress={onCreateHandler}/>
@@ -194,6 +225,7 @@ const Form = ({navigation, onCreate, type}) => {
         </View>
 
     </View>
+
   )
 }
 
@@ -254,6 +286,25 @@ const styles = StyleSheet.create({
         color: Colors.text.title,
     },
     categoryIcon: {
+        marginHorizontal: 5,
+        width: 32,
+        height: 32,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 16,
+        backgroundColor: randomHexColorCode(),
+        position: 'absolute',
+        left: 0,
+        borderColor: 'white',
+        borderWidth: 2
+    },
+    categoryIcons: {
+        marginLeft: -10,
+        flexDirection: 'row',
+        position: 'relative',
+        marginRight: 50,
+    },
+    rightIcon: {
         position: 'absolute',
         right: 0
     },

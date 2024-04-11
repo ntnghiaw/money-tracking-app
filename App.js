@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, Image,TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-
-import { Plus } from 'react-native-feather';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Plus, Check, Edit3, ArrowLeft, Clock } from 'react-native-feather';
 
 import Login from './components/Login';
 import Register from './components/Register'
@@ -35,77 +35,52 @@ import Colors from './constants/colors';
 import History from './screens/records/History';
 import Categories from './screens/records/Categories';
 import Camera from './screens/records/Camera';
+import FinancialPlan from './screens/plan/FinancialPlan';
+import Periods from './components/Periods';
+import GoalDetails from './screens/plan/GoalDetails';
+import Amount from './screens/plan/Amount';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import { NativeRouter, Route } from 'react-router-native';
 
-import store from './redux/auth/store';
+import store from './redux/store';
+import CustomizedHeader from './components/CustomizedHeader';
 import { changeType } from './redux/transaction/transactionAction';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import NewBudget from './screens/plan/Budget';
+import { type } from './redux/plan/planAction';
+
 
 const Stack = createNativeStackNavigator();
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 
+const types = [
+  {
+    value: 'expense',
+    lable: 'Expense',
+  },
+  {
+    value: 'income',
+    lable: 'Income',
+  },
+  {
+    value: 'others',
+    lable: 'Others',
+  },
 
-const TransactionHeader = ({navigation, route}) => {
-  const dispatch = useDispatch();
-  const currentType = useSelector(state => state.transaction.type);
-  const transactionTypes = [
-    {
-      value: 'expense',
-      lable: 'Expense',
-    },
-    {
-      value: 'income',
-      lable: 'Income',
-    },
-    {
-      value: 'others',
-      lable: 'Others',
-    },
+];
 
-  ];
-  
-  const [option, setOption] = useState(currentType);
-  const chooseOptionHandler = (e) => {
-    // navigation.navigate('Transaction', {type: e.value});
-    setOption(e.value);
-    dispatch(changeType(e.value));
-  }
-  return (
-      <View style={styles.headerContainer}>
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate('History')}>
-              <MaterialCommunityIcons name="history" size={28} color={Colors.text.title}  />
-            </TouchableOpacity>
-          </View>
-      <SelectCountry
-      style={styles.dropdown}
-      selectedTextStyle={styles.selectedTextStyle}
-      iconStyle={styles.iconStyle}
-      imageStyle= {{display: 'none'}}
-      maxHeight={200}
-      value={option}
-      data={transactionTypes}
-      valueField="value"
-      labelField="lable"
-      onChange={chooseOptionHandler}
-    />
+const planTypes = [
+  {
+    value: 'budget',
+    lable: 'Budget',
+  },
+  {
+    value: 'goal',
+    lable: 'Goal',
+  },
+];
 
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-              <MaterialCommunityIcons name="qrcode" size={28} color={Colors.text.title} />
-            </TouchableOpacity>
-          </View>
-      </View>
 
-  )
- 
-}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -163,19 +138,73 @@ function App() {
             <Stack.Screen name="FinancialPlan" component={FinancialPlans} options={({ navigation }) => ({ 
                 title: 'Financial Plans', 
                 headerRight: () => (
-                  <TouchableOpacity onPress={() => navigation.navigate('NewBudget')}>
+                  <TouchableOpacity onPress={() => navigation.navigate('NewPlan')}>
                     <Plus width={24} height={24} stroke={Colors.text.title}/>
                   </TouchableOpacity>
                 ),
+
               })}/>
-            <Stack.Screen name='NewBudget' component={NewBudget} options={{ title: 'New Budget'}}/>
-            <Stack.Screen name="Debt" component={Debt} options={{ title: 'Debt', }}/>
-            <Stack.Screen name="Records" component={Records} options={{
-               title: 'Records', 
-               header: (props) => <TransactionHeader {...props} />
+            <Stack.Screen name='NewPlan' component={FinancialPlan} options={({navigation}) => ({
+                title: 'New Financial Plan', 
+                header: () => (
+                  
+                  <CustomizedHeader 
+                  dispatchFunction={type}
+                  headerLeft= {() => (
+                    <TouchableOpacity onPress={() => navigation.goBack()} >
+                      <ArrowLeft width={24} height={24} stroke={Colors.text.title}  />
+                    </TouchableOpacity>
+                  )}
+                  headerRight=  {() => (
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                      <Check width={24} height={24} stroke={Colors.text.title}  />
+                    </TouchableOpacity>
+                    ) }
+                  types={planTypes}
+                  reducer={'plan'}
+                  />
+                )
                
-               }} />
-            <Stack.Screen name="Categories" component={Categories} options={{title: 'Categories'}}/>
+              })}/>
+            <Stack.Screen name='GoalDetails' component={GoalDetails} options={{ 
+              title: 'Goal Details',
+              headerRight: () => (
+                <TouchableOpacity>
+                    <Edit3 width={20} height={20} stroke={Colors.text.title}/>
+                </TouchableOpacity>
+              )
+              }}/>
+
+            <Stack.Screen name="Debt" component={Debt} options={{ title: 'Debt', }}/>
+            <Stack.Screen name="Records" component={Records} options={ ({navigation}) => ({
+               title: 'Records', 
+               header: (props) => <CustomizedHeader 
+                dispatchFunction = {changeType}
+                headerLeft= {() => (            
+                  <TouchableOpacity onPress={() => navigation.navigate('History')}>
+                    <Clock width={24} height={24} stroke={Colors.text.title}  />
+                  </TouchableOpacity>
+                )} 
+                headerRight= { () => (
+                  <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
+                    <MaterialCommunityIcons name="qrcode" size={28} color={Colors.text.title} />
+                  </TouchableOpacity>
+                ) }
+                types = {types}
+                reducer = 'transaction'
+
+               />
+              })
+               }/>
+            <Stack.Screen name="Categories" component={Categories} options={{
+                title: 'Categories',
+                headerRight: () => (
+                  <TouchableOpacity>
+                    <Check width={24} height={24} stroke={Colors.text.title}/>
+                  </TouchableOpacity>          
+                )
+                
+                }}/>
             <Stack.Screen name="Camera" component={Camera} options={{title: 'Scanner'}}/>
             <Stack.Screen  name="History" component={History} options={{title: 'Transactions'}}/>   
 
@@ -183,7 +212,8 @@ function App() {
             <Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings', }}/>
             <Stack.Screen name="Group" component={Group} options={{ title: 'Group', }}/>
             <Stack.Screen name="Statistics" component={Statistics} options={{ title: 'Statistics', }}/>
-
+            <Stack.Screen name="Periods" component={Periods} options={{title: 'Repeat'}} />
+            <Stack.Screen name="Amount" component={Amount} options={{ title: 'New Amount'}} />
           </Stack.Navigator>
       </NavigationContainer>
     </Provider>
@@ -194,34 +224,6 @@ function App() {
 export default App;
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    height: screenHeight*0.1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingTop: screenHeight*0.04,
-    paddingHorizontal: screenWidth*0.04,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 0.5
-  },
-  dropdown: {
-    marginLeft: screenWidth*0.04,
-    height: screenHeight*0.03,
-    width: screenWidth*0.35,
-    backgroundColor: '#fff',
-    // borderRadius: 0,
-    paddingHorizontal: 12,
-  },
-  selectedTextStyle: {
-    fontSize: 20,
-    color: Colors.text.title,
-    fontWeight: 500,
-  },
-  iconStyle: {
-    width: 28,
-    height: 28,
-    tintColor: Colors.text.title
-  },
+  
 })
 

@@ -10,7 +10,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const ICON_SIZE = 60
 
-export default function GoalDetails() {
+export default function GoalDetails({ navigation }) {
 
     const target = 180000
     const current = 80000
@@ -50,7 +50,7 @@ export default function GoalDetails() {
         <Text style={styles.amount}>0 đ</Text>
       </View>
       <View style={styles.buttonsControl}>
-        <PrimaryButton  title='Add new amount' onPress={() => console.log('add amount')}/>
+        <PrimaryButton  title='Add new amount' onPress={() => navigation.navigate('Amount')}/>
         <Button  title='Set goal as reached' color={Colors.background.primary} backgroundColor={'white'} onPress={() => console.log('Set goal as reached')}/>
       </View>
     </View>
