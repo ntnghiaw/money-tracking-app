@@ -1,12 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import PieChart from 'react-native-pie-chart'
 
 import PrimaryButton from '../../components/PrimaryButton'
 import Button from '../../components/Button'
 import Colors from '../../constants/colors'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import { ProgressCircle } from 'react-native-svg-charts'
 
 const ICON_SIZE = 60
 
@@ -30,12 +29,11 @@ export default function GoalDetails({ navigation }) {
       </View>
       <View style={styles.chartContainer}>
         <View style={styles.chart}>
-            <PieChart 
-                widthAndHeight={200}
-                series={[70,30]}
-                sliceColor={[Colors.background.primary, '#bbb']}
-                coverRadius={0.8}
-                coverFill={'#FFF'}            
+            <ProgressCircle 
+                progress={0.7}
+                style={{ height: 200, width: 200 }}
+                strokeWidth={14}
+                progressColor={Colors.background.primary}
             />
         </View>
         <View style={styles.chartDesc}>
