@@ -1,9 +1,9 @@
-import { View, Text, Switch, SafeAreaView, StyleSheet, StatusBar, TouchableWithoutFeedback , TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { View, Text, Switch, SafeAreaView, StyleSheet, StatusBar, TouchableWithoutFeedback , TouchableOpacity, FlatList, Dimensions, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dropdown } from 'react-native-element-dropdown';
-import { ChevronDown } from 'react-native-feather';
+import { Check } from 'react-native-feather';
 
 
 
@@ -15,12 +15,13 @@ import randomHexColorCode from '../../utilities/colorCode';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
   
-  const categories = data.categories;
+const categories = data.categories;
 
 
 
 
-  const Item = ({ icon, label, subCategories, navigation, edit, allCategories }) => {
+  const Item = ({ icon, label, subCategories, navigation, isSelected, allCategories }) => {
+
     const [toggle, setToggle] = useState(false);
     const [selected, setSelected] = useState(false);
     const dispatch = useDispatch();
@@ -33,24 +34,20 @@ const screenHeight = Dimensions.get('window').height;
     }
 
     const selectedCategoriesHandler = () => {
-
-
-
       navigation.goBack();
 
     }
-
     return (
       <View>
       <TouchableOpacity style={styles.item} onPress={() => setToggle(!toggle)}>
-      <View style={[styles.icon, edit && { marginLeft: 20 }]}>
+      <View style={[styles.icon, isSelected && { marginLeft: 20 }]}>
         <Icon name={icon} size={28} color={randomHexColorCode() }/>
       </View>
       <Text style={styles.title}>{label}</Text>
-      <View style={[styles.itemOption, edit && { left: 8 }]} >
+      <View style={[styles.itemOption, isSelected && { left: 8 }]} >
         <Icon name={toggle ? `chevron-up` : `chevron-down`} size={24} color={Colors.text.body }/>
       </View>
-      { edit && 
+      { isSelected && 
       <TouchableOpacity  style={styles.selection} onPress={() => setSelected(!selected)} activeOpacity={1}>
         <Icon name={selected ? `checkbox-marked` : `checkbox-blank-outline`} size={24} color={selected ? `#a3ffbd` : `#ccc`} />
       </TouchableOpacity>
@@ -60,12 +57,12 @@ const screenHeight = Dimensions.get('window').height;
       <SafeAreaView style={styles.subContainer}> 
         {
           subCategories.map((item, index) => (
-            <TouchableOpacity style={[styles.item, styles.subItem]} key={item.value} disabled={edit} onPress={() => onChangeCategory(item)}>
+            <TouchableOpacity style={[styles.item, styles.subItem]} key={item.value} disabled={isSelected} onPress={() => onChangeCategory(item)}>
               <View style={styles.icon}>
                 <Icon name={item.icon} size={28} color={randomHexColorCode() }/>
               </View>
               <Text style={styles.title}>{item.label}</Text>
-              { edit && 
+              { isSelected && 
 
               <TouchableOpacity  style={styles.selection} onPress={() => setSelected(!selected)} activeOpacity={1}>
                 <Icon name={selected ? `checkbox-marked` : `checkbox-blank-outline`} size={24} color={selected ? `#a3ffbd` : `#ccc`} />
@@ -84,10 +81,28 @@ const screenHeight = Dimensions.get('window').height;
   const Categories = ({navigation, route}) => {
     const { edit } = route.params;
     const [isEnabled, setIsEnabled] = useState(false);
+
+    const submitCategoriesHandler = () => {
+      console.log('done!!')
+    }
+
+    React.useEffect(() => {
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable onPress={submitCategoriesHandler }>
+            <Check width={24} height={24} stroke={Colors.text.title}/>
+          </Pressable>
+        ),
+      });
+    }, [navigation]);
+
+
     const toggleSwitch = () => {
       setIsEnabled(previousState => !previousState)
     };
-    const renderItem = ({ item }) => <Item icon={item.icon} label={item.label} subCategories={item.sub} navigation={navigation} edit={edit} allCategories={isEnabled}/>;
+
+
+    const renderItem = ({ item }) => <Item  key={item.label} icon={item.icon} label={item.label} subCategories={item.sub} navigation={navigation} isSelected={edit} allCategories={isEnabled}/>;
 
     return (
     <SafeAreaView style={styles.container}>
