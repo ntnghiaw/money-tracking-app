@@ -106,6 +106,8 @@ const categories = data.categories;
 
     return (
     <SafeAreaView style={styles.container}>
+      {
+        edit && 
       <View style={styles.allCategoriesOption}>
         <Text style={styles.text}>All Categories</Text>
         <View style={styles.switchButton}>
@@ -119,10 +121,11 @@ const categories = data.categories;
         />
         </View>
       </View>
+      }
 
       <FlatList
         data={categories}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item, index) => index}
         renderItem={renderItem}></FlatList>
     </SafeAreaView>
     )
