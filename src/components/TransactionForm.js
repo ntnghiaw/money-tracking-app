@@ -12,7 +12,7 @@ import AntDesgin from 'react-native-vector-icons/AntDesign';
 
 
 
-import Colors from './colors';
+import Colors from './Colors';
 import PrimaryButton from './PrimaryButton';
 import Toolbar from './Toolbar';
 import formatDate from '../utils/formatDate';

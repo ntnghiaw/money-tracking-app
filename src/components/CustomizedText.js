@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { useFonts, ABeeZee_400Regular, } from '@expo-google-fonts/abeezee';
-import Colors from './colors';
+import Colors from './Colors';
 
 const TitleText = (props) => {
     

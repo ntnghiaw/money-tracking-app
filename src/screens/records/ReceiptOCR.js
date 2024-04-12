@@ -1,18 +1,23 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { View, Text, StyleSheet, StatusBar, Alert, Image, TouchableOpacity } from 'react-native'
-import { Camera, CameraType } from 'expo-camera'
+import { View, Text, StyleSheet, StatusBar, Alert, Image, TouchableOpacity, ActivityIndicator, Dimensions  } from 'react-native'
+import { Camera } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
+import * as ImagePicker from 'expo-image-picker'
+import { Image as ImageIcon, Zap, ZapOff, Repeat, Check,  } from 'react-native-feather'
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
 
 import CameraButton from '../../components/CameraButton'
-import { X, Image as ImageIcon, Zap, ZapOff, Repeat, Send, Check } from 'react-native-feather'
-import colors from '../../components/Colors'
 
 export default function ReceiptOCR  ({ navigation })  {
+  console.log(screenHeight, screenWidth)
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [image, setImage] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off) //flash on your device 
-
+  const [loading, setLoading] = useState(false);
   const cameraRef = useRef(null)
   
   useEffect(() => {
@@ -22,9 +27,7 @@ export default function ReceiptOCR  ({ navigation })  {
       const cameraStatus = await Camera.requestCameraPermissionsAsync()
       setHasCameraPermission(cameraStatus === 'granted')
     })()
-    // navigation.setOptions({ 
-    //   title: ''
-    // })
+
   }, [])
 
   const takePicture = async () => {
@@ -32,14 +35,9 @@ export default function ReceiptOCR  ({ navigation })  {
       try {
         const data = await cameraRef.current.takePictureAsync()
         setImage(data.uri)
-        navigation.setOptions({ 
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => setImage(null)}>
-              <X width={24} height={24} stroke={'white'} />
-            </TouchableOpacity>
-          )
-         })
-
+        navigation.setOptions({
+          headerBackVisible: false,
+        })
       } catch (error) {
         console.log(error)
       }
@@ -47,7 +45,7 @@ export default function ReceiptOCR  ({ navigation })  {
   }
 
   const changeFlashHandler = () => {
-    setFlash(!flash)
+    setFlash(flash === Camera.Constants.FlashMode.off ? Camera.Constants.FlashMode.on : Camera.Constants.FlashMode.off)
   }
 
   const saveImage = async () => {
@@ -63,11 +61,27 @@ export default function ReceiptOCR  ({ navigation })  {
   }
 
   const retakeHandler = () => {
+    navigation.setOptions({
+      headerBackVisible: true
+    })
     setImage(null)
   }
 
-  const accessLibraryHandler = () => {
+  const pickImageHandler = async () => {
+    setLoading(true);
 
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      // allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+    
+    setLoading(false);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri)
+    }
   }
 
   const cancelCameraHandler = () => {
@@ -82,32 +96,31 @@ export default function ReceiptOCR  ({ navigation })  {
       <StatusBar
         barStyle={'light-content'}
       />
+      {loading && <ActivityIndicator size="small" color="#0000ff" style={styles.loading}/>}
 
-      {!image ? 
-      <Camera 
-        style={styles.camera}
-        type={type}
-        flashMode={flash}
-        ref={cameraRef}
-        > 
-      <TouchableOpacity style={styles.flashMode} onPress={changeFlashHandler}>
-        { flash ? 
-        (<Zap width={24} height={24} stroke={'white'} />) 
-        : 
-        (<ZapOff width={24} height={24} stroke={'white'} />)
-        }
-      </TouchableOpacity>
-      </Camera>
-      :
-      <Image source={{uri: image}}  style={styles.camera}/>
+      {  (!image && !loading) ? (
+        <Camera 
+          style={styles.camera}
+          type={type}
+          flashMode={flash}
+          ref={cameraRef}
+          > 
 
-    }
+        <TouchableOpacity style={styles.flashMode} onPress={changeFlashHandler}>
+          { flash ? 
+          (<Zap width={24} height={24} stroke={'white'} />) 
+          : 
+          (<ZapOff width={24} height={24} stroke={'white'} />)
+          }
+        </TouchableOpacity>
+        </Camera>) 
+      : ( <Image source={{uri: image}}  style={styles.camera}/>)
+      }
     {
       !image ? 
       (
-        
       <View style={styles.buttonsControl} >
-          <TouchableOpacity style={styles.libraryButton} onPress={accessLibraryHandler}>
+          <TouchableOpacity style={styles.libraryButton} onPress={pickImageHandler}>
             <ImageIcon width={34} height={34} stroke={'grey'}/>
           </TouchableOpacity>
           <View style={styles.captureButton}>
@@ -125,9 +138,9 @@ export default function ReceiptOCR  ({ navigation })  {
        <View style={styles.buttonsControl}>
           <TouchableOpacity onPress={retakeHandler } style={{ flexDirection: 'row'}}>
             <Repeat width={28} height={28} stroke={'white'} />
-            <Text style={styles.text}>Retake</Text>
+            <Text style={styles.text}>Re-take</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flexDirection: 'row'}}>
+          <TouchableOpacity style={{ flexDirection: 'row'}} onPress={saveImage}>
             <Check width={28} height={28} stroke={'white'} />
           </TouchableOpacity>
       </View>
@@ -155,8 +168,16 @@ const styles = StyleSheet.create({
     top: 120,
     right: 16
   },
+  loading: {
+    position: 'absolute',
+    top: 0.4*screenHeight,
+    left: 0.5*screenWidth,
+  },
+
   camera: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   buttonsControl: {
     width: '100%',
