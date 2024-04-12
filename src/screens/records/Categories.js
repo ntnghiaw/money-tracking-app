@@ -8,7 +8,7 @@ import { Check } from 'react-native-feather';
 
 
 import Colors from '../../components/Colors';
-import data from '../../../constants/categories.json';
+import data from './categories.json';
 import { getCategory } from '../../redux/transaction/transactionAction';  
 import randomHexColorCode from '../../utils/colorCode';
   
