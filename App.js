@@ -1,53 +1,49 @@
 import React, {useState} from 'react';
-import { View, Text, Image,TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Image,TouchableOpacity,} from 'react-native';
+import { Provider } from 'react-redux';
 import { Plus, Check, Edit3, ArrowLeft, Clock } from 'react-native-feather';
-
-import Login from './components/Login';
-import Register from './components/Register'
-import Initial from './components/Initial'
-import Test from './components/Test';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
-import { SelectCountry } from 'react-native-element-dropdown';
-import Welcome from './screens/welcome/Welcome';
-import NewWallet from './screens/wallet/NewWallet'
-import MyWallet from './screens/wallet/MyWallet';
-
-import Profile from './screens/profile/Profile';
-import Verification from './screens/verification/Verification';
-import Notification from './screens/notification/Notification';
-import SettingsNotification from './screens/notification/SettingsNotification';
-import More from './screens/more/More';
-import Investment from './screens/investment/Investment';
-import FinancialPlans from './screens/plan/FinancialPlans';
-import Debt from './screens/debt/Debt';
-import Records from './screens/records/Records';
-import ExportData from './screens/exportData/ExportData';
-import Settings from './screens/settings/Settings';
-import Group from './screens/group/Group';
 
 
-import Report from './screens/Report/Report';
-import Home from './components/Home';
-import Statistics from './screens/statistics/Statistics';
-import Colors from './constants/colors';
-import History from './screens/records/History';
-import Categories from './screens/records/Categories';
-import Camera from './screens/records/Camera';
-import FinancialPlan from './screens/plan/FinancialPlan';
-import Periods from './components/Periods';
-import GoalDetails from './screens/plan/GoalDetails';
-import Amount from './screens/plan/Amount';
+import Login from './src/components/Login';
+import Register from './src/components/Register';
+import Initial from './src/components/Initial';
+import Welcome from './src/screens/welcome/Welcome';
+import MyWallet from './src/screens/wallet/MyWallet';
+import NewWallet from './src/screens/wallet/NewWallet';
+import Profile from './src/screens/profile/Profile';
+import Verification from './src/screens/verification/Verification';
+import Notification from './src/screens/notification/Notification';
+import SettingsNotification from './src/screens/notification/SettingsNotification';
+import More from './src/screens/more/More';
+import Investment from './src/screens/investment/Investment';
+import FinancialPlans from './src/screens/plan/FinancialPlans';
+import Debt from './src/screens/debt/Debt';
+import Records from './src/screens/records/Records';
+import ExportData from './src/screens/exportData/ExportData';
+import Settings from './src/screens/settings/Settings';
+import Group from './src/screens/group/Group';
+import Report from './src/screens/report/Report';
+import Home from './src/components/Home';
+import Statistics from './src/screens/statistics/Statistics';
+import History from './src/screens/records/History';
+import Categories from './src/screens/records/Categories';
+import ReceiptOCR from './src/screens/records/ReceiptOCR';
+import FinancialPlan from './src/screens/plan/FinancialPlan';
+import Periods from './src/components/Periods';
+import GoalDetails from './src/screens/plan/GoalDetails';
+import Amount from './src/screens/plan/Amount';
+
+import Colors from './src/components/Colors';
+import CustomizedHeader from './src/components/CustomizedHeader';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// import { NativeRouter, Route } from 'react-router-native';
 
-import store from './redux/store';
-import CustomizedHeader from './components/CustomizedHeader';
-import { changeType } from './redux/transaction/transactionAction';
-import { type } from './redux/plan/planAction';
+import store from './src/redux/store';
+import { changeType } from './src/redux/transaction/transactionAction';
+import { type } from './src/redux/plan/planAction';
 
 
 const Stack = createNativeStackNavigator();
@@ -106,7 +102,7 @@ function App() {
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('SettingsNotification')}>
                     <Image
-                      source={require('./images/icons/sets_icon.png')}
+                      source={require('./assets/images/icons/sets_icon.png')}
                       style={{ width: 30, height: 30, marginRight: 10 }}
                     />
                   </TouchableOpacity>
@@ -124,7 +120,7 @@ function App() {
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
                     <Image
-                      source={require('./images/icons/notification_icon.png')}
+                      source={require('./assets/images/icons/notification_icon.png')}
                       style={{ width: 30, height: 30, marginRight: 10 }}
                     />
                   </TouchableOpacity>
@@ -198,6 +194,7 @@ function App() {
                }/>
             <Stack.Screen name="Categories" component={Categories} options={{
                 title: 'Categories',
+                
                 headerRight: () => (
                   <TouchableOpacity>
                     <Check width={24} height={24} stroke={Colors.text.title}/>
@@ -205,9 +202,8 @@ function App() {
                 )
                 
                 }}/>
-            <Stack.Screen name="Camera" component={Camera} options={{title: 'Scanner'}}/>
+            <Stack.Screen name="Camera" component={ReceiptOCR} options={{title: 'Capture Receipt', headerTintColor: 'white', headerStyle: {backgroundColor: 'black'}}}/>
             <Stack.Screen  name="History" component={History} options={{title: 'Transactions'}}/>   
-
             <Stack.Screen name="Export_Data" component={ExportData} options={{ title: 'Export_Data', }}/>
             <Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings', }}/>
             <Stack.Screen name="Group" component={Group} options={{ title: 'Group', }}/>
@@ -223,7 +219,4 @@ function App() {
 
 export default App;
 
-const styles = StyleSheet.create({
-  
-})
 
