@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
       justifyContent:'space-between',
     },
     easy_operations_item:{
-      width: '60',
-      height:'80',
+      width: 60,
+      height: 80,
       display:'flex',
       flexDirection:'column',
       alignItems:'center',
