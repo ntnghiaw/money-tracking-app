@@ -8,7 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Foundation from 'react-native-vector-icons/Foundation'
 
 
-import Colors from './colors';
+import Colors from './Colors';
 import PrimaryButton from './PrimaryButton';
 import formatDate from '../utils/formatDate';
 import { createBudget } from '../redux/plan/planAction';
