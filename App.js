@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Image,TouchableOpacity,} from 'react-native';
 import { Provider } from 'react-redux';
-import { Plus, Check, Edit3, ArrowLeft, Clock } from 'react-native-feather';
+import { Plus, Check, Edit3, ArrowLeft, Clock, ChevronLeft } from 'react-native-feather';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -85,7 +85,7 @@ function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
+          <Stack.Navigator screenOptions={{headerTitleAlign: 'center', headerBackTitleVisible: false}}>
             <Stack.Screen name="Initial" component={Initial} options={{ headerShown: false }}  />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
@@ -136,6 +136,7 @@ function App() {
             <Stack.Screen name="Investment" component={Investment} options={{ title: 'Investment', }}/>
             <Stack.Screen name="FinancialPlan" component={FinancialPlans} options={({ navigation }) => ({ 
                 title: 'Financial Plans', 
+                headerBackTitleVisible: false,
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('NewPlan')}>
                     <Plus width={24} height={24} stroke={Colors.text.title}/>
@@ -145,20 +146,11 @@ function App() {
               })}/>
             <Stack.Screen name='NewPlan' component={FinancialPlan} options={({navigation}) => ({
                 title: 'New Financial Plan', 
-                header: () => (
-                  
+                headerBackTitleVisible: false,
+                
+                headerTitle: () => (
                   <CustomizedHeader 
                   dispatchFunction={type}
-                  headerLeft= {() => (
-                    <TouchableOpacity onPress={() => navigation.goBack()} >
-                      <ArrowLeft width={24} height={24} stroke={Colors.text.title}  />
-                    </TouchableOpacity>
-                  )}
-                  headerRight=  {() => (
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                      <Check width={24} height={24} stroke={Colors.text.title}  />
-                    </TouchableOpacity>
-                    ) }
                   types={planTypes}
                   reducer={'plan'}
                   />
@@ -176,19 +168,15 @@ function App() {
 
             <Stack.Screen name="Debt" component={Debt} options={{ title: 'Debt', }}/>
             <Stack.Screen name="Records" component={Records} options={ ({navigation}) => ({
-               title: 'Records', 
-               header: (props) => <CustomizedHeader 
-                dispatchFunction = {changeType}
-                headerLeft= {() => (            
-                  <TouchableOpacity onPress={() => navigation.navigate('History')}>
-                    <Clock width={24} height={24} stroke={Colors.text.title}  />
-                  </TouchableOpacity>
-                )} 
-                headerRight= { () => (
+                title: 'Records', 
+                headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-                    <MaterialCommunityIcons name="qrcode" size={28} color={Colors.text.title} />
-                  </TouchableOpacity>
-                ) }
+                  <MaterialCommunityIcons name="qrcode" size={28} color={Colors.text.title} />
+                </TouchableOpacity>
+                ),
+                headerTitle: (props) => <CustomizedHeader
+                dispatchFunction = {changeType}
+               
                 types = {types}
                 reducer = 'transaction'
 
