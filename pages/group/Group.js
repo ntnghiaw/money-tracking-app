@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const Group = () => {
+const Group = ({navigation}) => {
   const group_list = [
     {
       name:'Family group',
@@ -70,7 +70,7 @@ const Group = () => {
       </View>
       {
         group_list.map((item, index) => (
-          <View key={index}>
+          <TouchableOpacity key={index} onPress={()=>navigation.navigate('FamilyGroup')}>
             <View style={styles.group_container}>
               <View style={styles.icon_container}>
                 <Image style={{width:40, height:40}} source={group_icon}/>
@@ -87,7 +87,7 @@ const Group = () => {
                 <Image style={{width:40, height:40}} source={edit_icon}/>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         ))
       }
       <View style={{width:screenWidth*0.9}}>

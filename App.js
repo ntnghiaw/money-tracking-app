@@ -25,8 +25,10 @@ import Debt from './pages/debt/Debt';
 import Records from './pages/records/Records';
 import ExportData from './pages/exportData/ExportData';
 import Settings from './pages/settings/Settings';
-import Group from './pages/group/Group';
 
+import Group from './pages/group/Group';
+import FamilyGroup from './pages/group/FamilyGroup';
+import TransactionHistory from './pages/group/TransactionHistory';
 
 import Report from './pages/Report/Report';
 import Home from './components/Home';
@@ -153,6 +155,7 @@ function App() {
                     />
                   </TouchableOpacity>
                 ),
+                headerTitleAlign:'center',
               })}
             />
             <Stack.Screen name="More" component={More} options={{ title: 'More', }}/>
@@ -173,6 +176,24 @@ function App() {
             <Stack.Screen name="Export_Data" component={ExportData} options={{ title: 'Export_Data', }}/>
             <Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings', }}/>
             <Stack.Screen name="Group" component={Group} options={{ title: 'Group', }}/>
+            <Stack.Screen 
+              name="FamilyGroup" 
+              component={FamilyGroup} 
+              options={({navigation}) => ({ 
+                title: 'Group settings', 
+                headerTitleAlign:'center',
+                headerRight: () => (
+                  <TouchableOpacity onPress={() => navigation.navigate('TransactionHistory')}>
+                    <Image
+                      source={require('./images/icons/history_icon.png')}
+                      style={{ width: 30, height: 30, marginRight: 10 }}
+                    />
+                  </TouchableOpacity>
+                ),
+              })}
+            />
+            <Stack.Screen name="TransactionHistory" component={TransactionHistory} options={{ title: 'Transaction History', }}/>
+
             <Stack.Screen name="Statistics" component={Statistics} options={{ title: 'Statistics', }}/>
 
           </Stack.Navigator>
