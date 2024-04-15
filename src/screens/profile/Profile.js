@@ -44,8 +44,9 @@ const style = StyleSheet.create({
         borderRadius:screenHeight*0.05,
         borderColor:'white',
         borderWidth:5,
-        width:screenHeight*0.1,
-        height:screenHeight*0.1,
+        width:screenHeight*0.17,
+        height:screenHeight*0.17,
+        borderRadius: 100,
         
     },
     infor_detail:{
@@ -283,9 +284,9 @@ const Profile = ({navigation}) => {
                 <View style={{width:screenWidth*0.2,display:'flex',justifyContent:'center',alignItems:'center'}}>
                     <Image style={{width:20,height:20}} source={{uri:'https://cdn-icons-png.flaticon.com/512/3359/3359235.png'}}/>
                 </View>
-                <View style={{width:screenWidth*0.75}}>
+                <TouchableOpacity style={{width:screenWidth*0.75}} onPress={()=> navigation.navigate('MyWallet')}>
                     <Text style={{color:'black', fontSize:20}}>My Wallet</Text>
-                </View>
+                </TouchableOpacity>
             </TouchableOpacity>
 
 {/* 
