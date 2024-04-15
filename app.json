@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "FinaceMange",
-    "slug": "FinaceMange",
+    "name": "FinancialManagement",
+    "slug": "FinancialManagement",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
