@@ -234,7 +234,7 @@ const FamilyGroup = ({ navigation }) => {
             </View>
             <View style={styles.group_member_text}>
                 <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Group members ({totalMembers}/{20})</Text>
-                <TouchableOpacity onPress={handleNextPage}>
+                <TouchableOpacity>
                     <Image source={more_vertical} style={{ width: 20, height: 30 }} />
                 </TouchableOpacity>
             </View>
