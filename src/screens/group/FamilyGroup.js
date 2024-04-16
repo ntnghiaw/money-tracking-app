@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, Switch } from 'react-native';
-import more_vertical from '../../images/icons/more_vertical.png';
-import Panh from '../../images/avatars/Panh.jpg'
-import BachKhoa from '../../images/avatars/BachKhoa.jpg'
+import more_vertical from '../../../assets/images/icons/more_vertical.png';
+import Panh from '../../../assets/images/avatars/Panh.jpg'
+import BachKhoa from '../../../assets/images/avatars/BachKhoa.jpg'
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

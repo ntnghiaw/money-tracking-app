@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
-import group_icon from '../../images/icons/group_icon.png'
-import edit_icon from '../../images/icons/edit_icon.png'
+import group_icon from '../../../assets/images/icons/group_icon.png'
+import edit_icon from '../../../assets/images/icons/edit_icon.png'
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
