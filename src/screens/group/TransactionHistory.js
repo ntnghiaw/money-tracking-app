@@ -6,6 +6,8 @@ import { Picker } from '@react-native-picker/picker';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
+import BachKhoa from '../../../assets/images/avatars/BachKhoa.jpg'
+
 const styles = StyleSheet.create({
   container:{
     flex: 1,
@@ -49,17 +51,48 @@ const styles = StyleSheet.create({
   container_infor:{
     width: screenWidth*0.9,
     height: screenHeight*0.13,
-    backgroundColor: 'pink',
+    backgroundColor: 'white',
+    borderRadius: 10,
     marginBottom: 10,
+    display: 'flex',
+    flexDirection:'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   avatar:{
-    
+    width: screenWidth * 0.18,
+    height:screenWidth *0.18,
+    borderRadius: screenWidth*0.1,
+    backgroundColor: 'blue',
+    marginLeft: 10,
   },
-  cotainer_text1:{
-
+  container_text:{
+    width: screenWidth*0.65,
+    height: screenHeight*0.13,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'green',
+  },
+  container_text1:{
+    display:'flex',
+    flexDirection:'row',
+    height: screenHeight*0.065,
+    width: screenWidth*0.65,
+    // backgroundColor: 'yellow',
+    justifyContent:'space-between',
+    alignItems:'center',
+    paddingRight:10
   },
   container_text2:{
-
+    display:'flex',
+    flexDirection:'row',
+    height: screenHeight*0.065,
+    width: screenWidth*0.65,
+    // backgroundColor: 'yellow',
+    justifyContent:'space-between',
+    
   },
   pagination:{
     display:'flex',
@@ -97,42 +130,88 @@ const TransactionHistory = ({navigation}) => {
 
   const transactions =[
     {
-      avatar:'',
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
     },
     {
-      avatar:'',
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
     },
     {
-      avatar:'',
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
     },
     {
-      avatar:'',
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
     },
     {
-      avatar:'',
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
     },
     {
-      avatar:'',
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
-    },    {
-      avatar:'',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
-    },    {
-      avatar:'',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
       name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023'
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Phúc Anh',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Phúc Anh',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Phúc Anh',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Phúc Anh',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Phúc Anh',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Phúc Anh',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
     },
   ]
   const itemsPerPage = 5;
@@ -176,20 +255,20 @@ const TransactionHistory = ({navigation}) => {
       <View style={styles.container_items}>
         {
           displayedItems.map((item, index) => (
-          <View style={styles.container_infor}>
-            <Image/>
-            <View>
-              <View>
-                <Text>
-
+          <View style={styles.container_infor} key={index}>
+            <Image style={styles.avatar} source={item.avatar}/>
+            <View style={styles.container_text}> 
+              <View style={styles.container_text1}> 
+                <Text style={{color: '#50C474'}}>
+                  {item.status}
                 </Text>
                 <Text>
-
+                  {item.timestamp}
                 </Text>
               </View>
-              <View>
+              <View style={styles.container_text2}> 
                 <Text>
-
+                Trần Phúc Anh added a new member to the group
                 </Text>
               </View>
             </View>
