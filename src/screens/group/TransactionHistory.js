@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TextInput, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker';
 
 
@@ -124,9 +124,10 @@ const styles = StyleSheet.create({
 })
 
 const TransactionHistory = ({navigation}) => {
-  const [selectValue, setSelectValue] = useState('Status')
-  
+  const [selectValue, setSelectValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
 
   const transactions =[
     {
@@ -137,7 +138,13 @@ const TransactionHistory = ({navigation}) => {
     },
     {
       avatar: BachKhoa,
-      name:'Trần Phúc Anh',
+      name:'Nguyễn Trung Nghĩa',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Phan Hoàng Phúc',
       timestamp: '9:06:52 22/10/2023',
       status:'Accepted',
     },
@@ -187,13 +194,7 @@ const TransactionHistory = ({navigation}) => {
       avatar: BachKhoa,
       name:'Trần Phúc Anh',
       timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
+      status:'Declined',
     },
     {
       avatar: BachKhoa,
@@ -215,87 +216,146 @@ const TransactionHistory = ({navigation}) => {
     },
   ]
   const itemsPerPage = 5;
-  const totalItems = transactions.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const handleNextPage = () =>{
-    setCurrentPage(currentPage < totalPages? currentPage + 1 : currentPage );
-  }
-  const handlePrevPage = () => {
-    setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage);
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages()));
   };
 
-  const generatePageNumbers = () =>{
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const generatePageNumbers = () => {
     const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
+    for (let i = 1; i <= totalPages(); i++) {
+      pages.push(i);
     }
     return pages;
-  }
+  };
 
-  const startIndex = (currentPage - 1 ) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const displayedItems = transactions.slice(startIndex, endIndex);
+  const handleSearch = (text) => {
+    setSearchInput(text);
+    setCurrentPage(1); // Reset to first page after search
+  };
+
+  const getTotalPages = () => {
+    const filtered = transactions.filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchInput.toLowerCase())
+      )
+    );
+    const filteredByStatus =
+      selectValue !== ''
+        ? filtered.filter((item) => item.status === selectValue)
+        : filtered;
+    return Math.ceil(filteredByStatus.length / itemsPerPage);
+  };
+
+  const totalPages = () => {
+    if (searchInput && !selectValue) {
+      return getTotalPages(); // Chỉ có searchInput
+    } else if (!searchInput && selectValue) {
+      return getTotalPages(); // Chỉ có selectValue
+    } 
+    else if(searchInput && selectValue)
+    {
+      return getTotalPages(); // Chỉ có selectValue
+    }
+    else {
+      // Cả hai đều có hoặc không có gì
+      return Math.ceil(transactions.length / itemsPerPage);
+    }
+  };
+
+  useEffect(() => {
+    // Filter transactions based on search input, status, and current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const filtered = transactions.filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchInput.toLowerCase())
+      )
+    );
+    const filteredByStatus =
+      selectValue !== ''
+        ? filtered.filter((item) => item.status === selectValue)
+        : filtered;
+    setFilteredTransactions(filteredByStatus.slice(startIndex, endIndex));
+  }, [searchInput, currentPage, selectValue]);
+
   return (
     <View style={styles.container}>
       <View style={styles.input_container}>
-        {/* <Image/> */}
-        <TextInput style={styles.search}>
-          Name
-        </TextInput>
+        <TextInput
+          style={styles.search}
+          placeholder="Search by name"
+          value={searchInput}
+          onChangeText={handleSearch}
+        />
         <View style={styles.status}>
-          <Picker 
+          <Picker
             selectedValue={selectValue}
-            onValueChange={(itemValue, itemIndex) => setSelectValue(itemValue)}
+            onValueChange={(itemValue) => {
+              setSelectValue(itemValue);
+              // Apply filtering based on selectValue here
+            }}
           >
-            <Picker.Item label='Accepted' value='accepted'/>
-            <Picker.Item label='Status' value='status'/>
+            <Picker.Item label="All" value="" />
+            <Picker.Item label="Accepted" value="Accepted" />
+            <Picker.Item label="Declined" value="Declined" />
+            <Picker.Item label="Waiting" value="Waiting" />
           </Picker>
         </View>
       </View>
       <View style={styles.container_items}>
-        {
-          displayedItems.map((item, index) => (
+        {filteredTransactions.map((item, index) => (
           <View style={styles.container_infor} key={index}>
-            <Image style={styles.avatar} source={item.avatar}/>
-            <View style={styles.container_text}> 
-              <View style={styles.container_text1}> 
-                <Text style={{color: '#50C474'}}>
-                  {item.status}
-                </Text>
-                <Text>
-                  {item.timestamp}
-                </Text>
+            <Image style={styles.avatar} source={item.avatar} />
+            <View style={styles.container_text}>
+              <View style={styles.container_text1}>
+                <Text style={{ color: '#50C474' }}>{item.status}</Text>
+                <Text>{item.timestamp}</Text>
               </View>
-              <View style={styles.container_text2}> 
-                <Text>
-                Trần Phúc Anh added a new member to the group
-                </Text>
+              <View style={styles.container_text2}>
+                <Text>{item.name} added a new member to the group</Text>
               </View>
             </View>
           </View>
-          )
-          )
-        }        
+        ))}
       </View>
       <View style={styles.pagination}>
-        <TouchableOpacity onPress={handlePrevPage} style={{marginRight:10}}>
-            <Text>{`<`} Previous</Text>
+        <TouchableOpacity onPress={handlePrevPage} style={{ marginRight: 10 }}>
+          <Text>{`<`} Previous</Text>
         </TouchableOpacity>
         {generatePageNumbers().map((page) => (
-            <TouchableOpacity 
-                key={page} 
-                onPress={() => setCurrentPage(page)}
-                style={currentPage === page ? styles.currentPage_container : styles.pageNumber_container}
+          <TouchableOpacity
+            key={page}
+            onPress={() => setCurrentPage(page)}
+            style={
+              currentPage === page
+                ? styles.currentPage_container
+                : styles.pageNumber_container
+            }
+          >
+            <Text
+              style={
+                currentPage === page ? styles.currentPage : styles.pageNumber
+              }
             >
-                <Text style={currentPage === page ? styles.currentPage : styles.pageNumber}>{page}</Text>
-            </TouchableOpacity>
+              {page}
+            </Text>
+          </TouchableOpacity>
         ))}
-        <TouchableOpacity onPress={handleNextPage} style={{marginLeft:10}}>
-            <Text>Next {`>`}</Text>
+        <TouchableOpacity onPress={handleNextPage} style={{ marginLeft: 10 }}>
+          <Text>Next {`>`}</Text>
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default TransactionHistory
+export default TransactionHistory;
