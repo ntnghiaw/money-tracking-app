@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Platform, Dimensions } from 'react-native'
 import React, { useState,  } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ArrowLeft } from 'react-native-feather';
 import { SelectCountry } from 'react-native-element-dropdown';
-
+import { useHeaderHeight } from '@react-navigation/elements';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-export default function  CustomizedHeader  ({navigation, route, reducer, headerLeft, headerRight, dispatchFunction, types })  {
+export default function  CustomizedHeader  ({navigation, route, reducer, dispatchFunction, types, props })  {
+    const headerHeight = useHeaderHeight();
     const dispatch = useDispatch();
     const currentType = useSelector(state => state[reducer].type);
     const [option, setOption] = useState(currentType);
@@ -18,11 +19,12 @@ export default function  CustomizedHeader  ({navigation, route, reducer, headerL
       dispatch(dispatchFunction(e.value));
     }
     return (
-        <View style={styles.headerContainer}>
-            <View>
+        <View style={[styles.headerContainer,]}>
+            {/* <View>
                 {headerLeft()}
-            </View>
+            </View> */}
         <SelectCountry
+        itemContainerStyle={styles.itemContainerStyle}
         style={styles.dropdown}
         selectedTextStyle={styles.selectedTextStyle}
         iconStyle={styles.iconStyle}
@@ -34,9 +36,9 @@ export default function  CustomizedHeader  ({navigation, route, reducer, headerL
         labelField="lable"
         onChange={chooseOptionHandler}
       />
-            <View>
+            {/* <View>
                 {headerRight()}
-            </View>
+            </View> */}
         </View>
   
     )
@@ -47,15 +49,15 @@ export default function  CustomizedHeader  ({navigation, route, reducer, headerL
 
 const styles = StyleSheet.create({
     headerContainer: {
-        height: screenHeight*0.1,
-        flexDirection: 'row',
+
         justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'white',
-        paddingTop: screenHeight*0.04,
+        // paddingTop:  Platform.OS === 'ios' ? screenHeight*0.04: screenHeight*0.02,
         paddingHorizontal: screenWidth*0.04,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 0.5
+        // borderBottomColor: '#ccc',
+        // borderBottomWidth: 0.5
       },
       dropdown: {
         marginLeft: screenWidth*0.04,
@@ -75,5 +77,8 @@ const styles = StyleSheet.create({
         height: 28,
         tintColor: Colors.text.title
       },
+      itemContainerStyle: {
+        paddingHorizontal: 8,
+      }
 
 })

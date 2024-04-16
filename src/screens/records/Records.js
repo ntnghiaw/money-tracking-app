@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 
-import Button from '../../components/PrimaryButton';
 import TransactionForm from '../../components/TransactionForm';
 import Toolbar from '../../components/Toolbar';
 
@@ -17,7 +16,6 @@ const Records = ({route, navigation}) => {
     <View style={styles.container}>
         <View>
           <TransactionForm navigation={navigation} route={route} onCreate={onCreateHandler} type='expense'/>
-
         </View>
         <Toolbar navigation={navigation}/>
     </View>
