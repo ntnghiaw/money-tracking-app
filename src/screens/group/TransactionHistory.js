@@ -135,84 +135,98 @@ const TransactionHistory = ({navigation}) => {
       name:'Trần Phúc Anh',
       timestamp: '9:06:52 22/10/2023',
       status:'Accepted',
+      color:'#50C474',
     },
     {
       avatar: BachKhoa,
       name:'Nguyễn Trung Nghĩa',
       timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
+      status:'Waiting',
+      color: '#C1C9D1',
     },
     {
       avatar: BachKhoa,
       name:'Phan Hoàng Phúc',
       timestamp: '9:06:52 22/10/2023',
       status:'Accepted',
+      color:'#50C474',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Antony',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+      color:'#50C474',
     },
     {
       avatar: BachKhoa,
       name:'Trần Phúc Anh',
       timestamp: '9:06:52 22/10/2023',
       status:'Accepted',
+      color:'#50C474',
     },
     {
       avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
-      timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
-    },
-    {
-      avatar: BachKhoa,
-      name:'Trần Phúc Anh',
+      name:'Trịnh Công Sơn',
       timestamp: '9:06:52 22/10/2023',
       status:'Declined',
+      color:'#FF3C3C',
     },
     {
       avatar: BachKhoa,
       name:'Trần Phúc Anh',
       timestamp: '9:06:52 22/10/2023',
       status:'Accepted',
+      color:'#50C474',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Nguyễn Quang Huy',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Declined',
+      color:'#FF3C3C',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trần Văn Hải',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Waiting',
+      color: '#C1C9D1',
     },
     {
       avatar: BachKhoa,
       name:'Trần Phúc Anh',
       timestamp: '9:06:52 22/10/2023',
-      status:'Accepted',
+      status:'Decline',
+      color:'#FF3C3C',
     },
     {
       avatar: BachKhoa,
-      name:'Trần Phúc Anh',
+      name:'Nguyễn Hồng Ngọc Thảo',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Declined',
+      color:'#FF3C3C',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Nguyễn Thanh Tùng',
       timestamp: '9:06:52 22/10/2023',
       status:'Accepted',
+      color:'#50C474',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Trịnh Trần Phương Tuấn',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+      color:'#50C474',
+    },
+    {
+      avatar: BachKhoa,
+      name:'Nguyễn Văn Bé Ba',
+      timestamp: '9:06:52 22/10/2023',
+      status:'Accepted',
+      color:'#50C474',
     },
   ]
   const itemsPerPage = 5;
@@ -317,11 +331,11 @@ const TransactionHistory = ({navigation}) => {
             <Image style={styles.avatar} source={item.avatar} />
             <View style={styles.container_text}>
               <View style={styles.container_text1}>
-                <Text style={{ color: '#50C474' }}>{item.status}</Text>
+                <Text style={{ color: item.color }}>{item.status}</Text>
                 <Text>{item.timestamp}</Text>
               </View>
               <View style={styles.container_text2}>
-                <Text>{item.name} added a new member to the group</Text>
+                <Text>{item.name}</Text>
               </View>
             </View>
           </View>
