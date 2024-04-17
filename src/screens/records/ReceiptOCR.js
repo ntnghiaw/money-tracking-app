@@ -70,12 +70,17 @@ export default function ReceiptOCR  ({ navigation })  {
         uploadBytes(storageRef, blob, metadata).then((snapshot) => {
           const { bucket, fullPath } = snapshot.metadata
           imageUrl = `https://storage.googleapis.com/${bucket}/${fullPath}`
+          console.log(imageUrl)
           return imageUrl
+          // setImage(null)
           
+        }).then((url) => {
+          return axios.post(`http://localhost:5000/transaction/ocr?imageUrl=${imageUrl}`)
+        } 
+
+        ).then(result => {
+          console.log(result)
         }).catch(err => console.log(err));
-        const receipt = await axios.get(`http://localhost:5000/ocr?imageUrl=${imageUrl}`)
-        const result = receipt.data;
-        console.log(result);
         setLoading(false)
   }
 
