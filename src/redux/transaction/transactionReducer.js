@@ -31,6 +31,12 @@ const transactionReducer = (state = initialState, action) => {
       }
     case 'GET_CURRENT_SCREEN':
       return action.payload
+    
+    case 'OCR':
+      return {
+        ...state,
+        amount: action.payload
+      }
     default:
       return state
   }

@@ -4,15 +4,24 @@ import { Camera } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker'
 import { Image as ImageIcon, Zap, ZapOff, Repeat, Check,  } from 'react-native-feather'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+
+import { ref, uploadBytesResumable, getDownloadURL, uploadBytes, getStorage  } from 'firebase/storage'
+
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 
+
 import CameraButton from '../../components/CameraButton'
+import { storage } from '../../../firebaseConfig'
+import { OCR } from '../../redux/transaction/transactionAction'
+
 
 export default function ReceiptOCR  ({ navigation })  {
-  console.log(screenHeight, screenWidth)
+  const dispatch = useDispatch();
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [image, setImage] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
@@ -48,16 +57,26 @@ export default function ReceiptOCR  ({ navigation })  {
     setFlash(flash === Camera.Constants.FlashMode.off ? Camera.Constants.FlashMode.on : Camera.Constants.FlashMode.off)
   }
 
-  const saveImage = async () => {
-    if (image) {
-      try {
-        await MediaLibrary.createAssetAsync(image)
-        alert('Picture saved!')
-        setImage(null)
-      } catch (error) {
-        console.log(error)
-      }
-    }
+  const uploadImage = async () => {
+        const metadata = {
+          contentType: 'image/jpeg',
+        };
+        setLoading(true)
+        const response = await fetch(image)
+        const blob = await response.blob()
+        const filename = image.substring(image.lastIndexOf('/')+1)
+        const storageRef = ref(storage, '/images/' + filename)
+        let imageUrl
+        uploadBytes(storageRef, blob, metadata).then((snapshot) => {
+          const { bucket, fullPath } = snapshot.metadata
+          imageUrl = `https://storage.googleapis.com/${bucket}/${fullPath}`
+          return imageUrl
+          
+        }).catch(err => console.log(err));
+        const receipt = await axios.get(`http://localhost:5000/ocr?imageUrl=${imageUrl}`)
+        const result = receipt.data;
+        console.log(result);
+        setLoading(false)
   }
 
   const retakeHandler = () => {
@@ -114,7 +133,7 @@ export default function ReceiptOCR  ({ navigation })  {
           }
         </TouchableOpacity>
         </Camera>) 
-      : ( <Image source={{uri: image}}  style={styles.camera}/>)
+      : ( <Image source={{uri: image }}  style={styles.camera}/>)
       }
     {
       !image ? 
@@ -140,7 +159,7 @@ export default function ReceiptOCR  ({ navigation })  {
             <Repeat width={28} height={28} stroke={'white'} />
             <Text style={styles.text}>Re-take</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flexDirection: 'row'}} onPress={saveImage}>
+          <TouchableOpacity style={{ flexDirection: 'row'}} onPress={uploadImage}>
             <Check width={28} height={28} stroke={'white'} />
           </TouchableOpacity>
       </View>
