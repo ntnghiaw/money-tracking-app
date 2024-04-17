@@ -58,10 +58,10 @@ export default function ReceiptOCR  ({ navigation })  {
   }
 
   const uploadImage = async () => {
+        setLoading(true)
         const metadata = {
           contentType: 'image/jpeg',
         };
-        setLoading(true)
         const response = await fetch(image)
         const blob = await response.blob()
         const filename = image.substring(image.lastIndexOf('/')+1)
@@ -70,18 +70,20 @@ export default function ReceiptOCR  ({ navigation })  {
         uploadBytes(storageRef, blob, metadata).then((snapshot) => {
           const { bucket, fullPath } = snapshot.metadata
           imageUrl = `https://storage.googleapis.com/${bucket}/${fullPath}`
-          console.log(imageUrl)
           return imageUrl
           // setImage(null)
           
         }).then((url) => {
-          return axios.post(`http://localhost:5000/transaction/ocr?imageUrl=${imageUrl}`)
+          console.log(url)
+          return axios.post(`http://172.17.22.23:5000/transaction/ocr?imageUrl=${url}`)
         } 
 
         ).then(result => {
-          console.log(result)
+          console.log(result.data)
+          dispatch(OCR(result.data.data))
+          navigation.navigate('Records')
         }).catch(err => console.log(err));
-        setLoading(false)
+        // setLoading(false)
   }
 
   const retakeHandler = () => {
@@ -120,9 +122,8 @@ export default function ReceiptOCR  ({ navigation })  {
       <StatusBar
         barStyle={'light-content'}
       />
-      {loading && <ActivityIndicator size="small" color="#0000ff" style={styles.loading}/>}
 
-      {  (!image && !loading) ? (
+      {  (!image) ? (
         <Camera 
           style={styles.camera}
           type={type}
@@ -138,8 +139,11 @@ export default function ReceiptOCR  ({ navigation })  {
           }
         </TouchableOpacity>
         </Camera>) 
-      : ( <Image source={{uri: image }}  style={styles.camera}/>)
+      : ( <Image source={{uri: image }}  style={styles.camera} resizeMode='contain'/>)
+      
       }
+      {loading && <ActivityIndicator size="large" color="#0000ff" style={styles.loading}/>}
+
     {
       !image ? 
       (
