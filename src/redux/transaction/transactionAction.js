@@ -20,3 +20,8 @@ export const getCurrentScreen = (screen) => ({
   type: 'GET_CURRENT_SCREEN',
   payload: screen
 })
+
+export const OCR = (transaction) => ({
+  type: 'OCR',
+  payload: transaction
+})

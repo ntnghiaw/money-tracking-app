@@ -31,6 +31,9 @@ const transactionReducer = (state = initialState, action) => {
       }
     case 'GET_CURRENT_SCREEN':
       return action.payload
+    
+    case 'OCR':
+      return {...action.payload , category: state.category, type: 'expense'}
     default:
       return state
   }
