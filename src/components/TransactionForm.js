@@ -93,7 +93,7 @@ const TransactionForm = ({navigation, onCreate, type}) => {
                 <View style={styles.amountInput} >
                 <TextInput 
                     style={[styles.amountText, ]} 
-                    value={typeof(amount) === 'string' ? amount : amount && amount.toString()} 
+                    value={amount ? amount : '0'} 
                     placeholder='0' 
                     keyboardType='decimal-pad'
                     onChangeText={setAmount}
