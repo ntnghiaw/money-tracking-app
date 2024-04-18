@@ -21,7 +21,7 @@ export const getCurrentScreen = (screen) => ({
   payload: screen
 })
 
-export const OCR = (amount) => ({
+export const OCR = (transaction) => ({
   type: 'OCR',
-  payload: amount
+  payload: transaction
 })

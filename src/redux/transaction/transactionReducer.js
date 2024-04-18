@@ -33,10 +33,7 @@ const transactionReducer = (state = initialState, action) => {
       return action.payload
     
     case 'OCR':
-      return {
-        ...state,
-        amount: action.payload
-      }
+      return {...action.payload , category: state.category, type: 'expense'}
     default:
       return state
   }
