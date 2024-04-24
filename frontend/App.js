@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import { Image,TouchableOpacity,} from 'react-native';
 import { Provider } from 'react-redux';
-import { Plus, Check, Edit3, ArrowLeft, Clock, ChevronLeft } from 'react-native-feather';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Plus, Check, Edit3, Settings as SettingIcon, Clock, Bell } from 'react-native-feather';
 import { NavigationContainer } from '@react-navigation/native';
 
 
@@ -25,7 +24,7 @@ import ExportData from './src/screens/exportData/ExportData';
 import Settings from './src/screens/settings/Settings';
 import Group from './src/screens/group/Group';
 import Report from './src/screens/report/Report';
-import Home from './src/components/Home';
+import Home from './src/screens/home/Home';
 import Statistics from './src/screens/statistics/Statistics';
 import History from './src/screens/records/History';
 import Categories from './src/screens/records/Categories';
@@ -103,10 +102,8 @@ function App() {
                 title: 'Notification', 
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('SettingsNotification')}>
-                    <Image
-                      source={require('./assets/images/icons/sets_icon.png')}
-                      style={{ width: 30, height: 30, marginRight: 10 }}
-                    />
+                    <SettingIcon width={24} height={24} stroke={Colors.text.title}/>
+
                   </TouchableOpacity>
                 ),
               })}
@@ -114,20 +111,17 @@ function App() {
             />
             <Stack.Screen name="SettingsNotification" component={SettingsNotification} options={{title:'SettingNotification'}}/>
             <Stack.Screen name="Report" component={Report} options={{title:'Report'}}/>
-            <Stack.Screen 
-              name="Home" 
-              component={Home} 
+            <Stack.Screen   name="Home" component={Home} 
               options={({ navigation }) => ({ 
                 title: 'Home', 
+                headerBackVisible: false,
+                headerTitleAlign:'center',
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-                    <Image
-                      source={require('./assets/images/icons/notification_icon.png')}
-                      style={{ width: 30, height: 30, marginRight: 10 }}
-                    />
+                    <Bell width={24} height={24} stroke={Colors.text.title}/>
+                   
                   </TouchableOpacity>
                 ),
-                headerTitleAlign:'center',
               })}
             />
             <Stack.Screen name="More" component={More} options={{ title: 'More', }}/>
@@ -169,11 +163,7 @@ function App() {
             <Stack.Screen name="Debt" component={Debt} options={{ title: 'Debt', }}/>
             <Stack.Screen name="Records" component={Records} options={ ({navigation}) => ({
                 title: 'Records', 
-                headerRight: () => (
-                  <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-                  <MaterialCommunityIcons name="qrcode" size={28} color={Colors.text.title} />
-                </TouchableOpacity>
-                ),
+            
                 headerTitle: (props) => <CustomizedHeader
                 dispatchFunction = {changeType}
                

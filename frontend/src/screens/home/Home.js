@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   View,
   SafeAreaView,
@@ -12,13 +12,13 @@ import {
 import { useDispatch } from 'react-redux';
 
 import { PieChart } from 'react-native-svg-charts';
-import Toolbar from './Toolbar';
-import change_icon from '../images/icons/change_icon.png';
-import plus_icon from '../images/icons/plus_icon.png';
-import group_icon from '../images/icons/group_icon.png';
-import more_icon from '../images/icons/more_icon.png';
-import home_icon from  '../images/icons/home_icon.png';
-import grocery_cart_icon from '../images/icons/grocery_cart_icon.png';
+import Toolbar from '../../components/Toolbar';
+import change_icon from '../../../assets/images/icons/change_icon.png';
+import plus_icon from '../../../assets/images/icons/plus_icon.png';
+import group_icon from '../../../assets/images/icons/group_icon.png';
+import more_icon from '../../../assets/images/icons/more_icon.png';
+import home_icon from  '../../../assets/images/icons/home_icon.png';
+import grocery_cart_icon from '../../../assets/images/icons/grocery_cart_icon.png';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
       justifyContent:'space-between',
     },
     easy_operations_item:{
-      width: '60',
-      height:'80',
+      width: 60,
+      height:80,
       display:'flex',
       flexDirection:'column',
       alignItems:'center',
@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
+ 
 
   const data = [
     {
