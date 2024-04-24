@@ -10,7 +10,7 @@ import Foundation from 'react-native-vector-icons/Foundation'
 
 import Colors from './Colors';
 import PrimaryButton from './PrimaryButton';
-import formatDate from '../../frontend/src/utils/formatDate';
+import formatDate from '../utils/formatDate';
 import { createBudget } from '../redux/plan/planAction';
 
 

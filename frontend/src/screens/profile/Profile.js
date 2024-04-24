@@ -1,17 +1,10 @@
 import React,{useState} from 'react';
 import {View, Text, Dimensions, Button, StyleSheet, TextInput, TouchableOpacity, Image, Platform} from 'react-native'
 import MaskInput, { Masks } from 'react-native-mask-input'
-import MultiSelect from 'react-native-multiple-select';
 import SelectDropdown from 'react-native-select-dropdown'
-import { useRoute } from '@react-navigation/native';
-import Colors from '../../../../src/components/Colors';
-import { useFonts, ABeeZee_400Regular, } from '@expo-google-fonts/abeezee';
-import {TitleText, BodyText, DangerousText} from '../../../../src/components/CustomizedText';
-import {Picker} from '@react-native-picker/picker';
-import {LogOut, ChevronRight} from 'react-native-feather';
-import Icon from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
-import Toolbar from '../../../../src/components/Toolbar';
+import Colors from '../../components/Colors';
+
+import Toolbar from '../../../src/components/Toolbar';
 
 
 

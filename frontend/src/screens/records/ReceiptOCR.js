@@ -17,7 +17,7 @@ const screenHeight = Dimensions.get('window').height;
 
 
 
-import CameraButton from '../../../../src/components/CameraButton'
+import CameraButton from '../../../src/components/CameraButton'
 import { storage } from '../../../firebaseConfig'
 import { OCR } from '../../redux/transaction/transactionAction'
 

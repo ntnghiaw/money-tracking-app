@@ -4,7 +4,7 @@ import data from './notification.json'
 
 import logo from '../../../assets/images/logo_notification.png'
 import * as Icon from 'react-native-feather'
-import colors from '../../../../src/components/Colors'
+import Colors from '../../components/Colors'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height

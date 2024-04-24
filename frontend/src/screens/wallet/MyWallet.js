@@ -1,9 +1,8 @@
 import React from 'react'
 import { Text, StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native'
-import BottomBar from '../../../../src/components/BottomBar'
 import * as Icon from 'react-native-feather'
-import Toolbar from '../../../../src/components/Toolbar'
-import Colors from '../../../../src/components/Colors';
+import Toolbar from '../../../src/components/Toolbar'
+import Colors from '../../components/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

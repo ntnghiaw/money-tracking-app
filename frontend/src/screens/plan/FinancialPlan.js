@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 
-import Form from '../../../../src/components/Form';
+import Form from '../../../src/components/Form';
 
 
 const FinancialPlan = ({navigation}) => {

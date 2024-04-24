@@ -5,7 +5,7 @@ import { SelectCountry } from 'react-native-element-dropdown';
 import { useDispatch } from 'react-redux';
 import { read } from '../../redux/transaction/transactionAction';
 
-import Colors from '../../../../src/components/Colors'
+import Colors from '../../components/Colors'
 
 
 

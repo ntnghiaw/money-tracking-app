@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 
-import TransactionForm from '../../../../src/components/TransactionForm';
-import Toolbar from '../../../../src/components/Toolbar';
+import TransactionForm from '../../../src/components/TransactionForm';
+import Toolbar from '../../../src/components/Toolbar';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

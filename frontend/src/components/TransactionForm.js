@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, SafeAreaView, Alert, TouchableWithoutFeedback } from 'react-native';
 import  { useSelector} from 'react-redux';
 
-import { NumericFormat } from 'react-number-format';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { ChevronRight } from "react-native-feather";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -14,9 +12,8 @@ import AntDesgin from 'react-native-vector-icons/AntDesign';
 
 import Colors from './Colors';
 import PrimaryButton from './PrimaryButton';
-import Toolbar from './Toolbar';
-import formatDate from '../../frontend/src/utils/formatDate';
-import randomHexColorCode from '../../frontend/src/utils/colorCode';
+import formatDate from '../utils/formatDate';
+import randomHexColorCode from '../utils/colorCode';
 
 
 const screenWidth = Dimensions.get('window').width;

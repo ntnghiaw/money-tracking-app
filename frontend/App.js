@@ -6,9 +6,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-import Login from '../src/components/Login';
-import Register from '../src/components/Register';
-import Initial from '../src/components/Initial';
+import Login from './src/components/Login';
+import Register from './src/components/Register';
+import Initial from './src/components/Initial';
 import Welcome from './src/screens/welcome/Welcome';
 import MyWallet from './src/screens/wallet/MyWallet';
 import NewWallet from './src/screens/wallet/NewWallet';
@@ -25,19 +25,19 @@ import ExportData from './src/screens/exportData/ExportData';
 import Settings from './src/screens/settings/Settings';
 import Group from './src/screens/group/Group';
 import Report from './src/screens/report/Report';
-import Home from '../src/components/Home';
+import Home from './src/components/Home';
 import Statistics from './src/screens/statistics/Statistics';
 import History from './src/screens/records/History';
 import Categories from './src/screens/records/Categories';
 import ReceiptOCR from './src/screens/records/ReceiptOCR';
 import FinancialPlan from './src/screens/plan/FinancialPlan';
-import Periods from '../src/components/Periods';
+import Periods from './src/components/Periods';
 import GoalDetails from './src/screens/plan/GoalDetails';
 import Amount from './src/screens/plan/Amount';
 import FamilyGroup from './src/screens/group/FamilyGroup';
 import TransactionHistory from './src/screens/group/TransactionHistory';
-import Colors from '../src/components/Colors';
-import CustomizedHeader from '../src/components/CustomizedHeader';
+import Colors from './src/components/Colors';
+import CustomizedHeader from './src/components/CustomizedHeader';
 
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -45,7 +45,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import store from './src/redux/store';
 import { changeType } from './src/redux/transaction/transactionAction';
-import { type } from '../src/redux/plan/planAction';
+import { type } from './src/redux/plan/planAction';
 
 
 const Stack = createNativeStackNavigator();

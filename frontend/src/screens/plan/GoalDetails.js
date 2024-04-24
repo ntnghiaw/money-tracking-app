@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-import PrimaryButton from '../../../../src/components/PrimaryButton'
-import Button from '../../../../src/components/Button'
-import Colors from '../../../../src/components/Colors'
+import PrimaryButton from '../../../src/components/PrimaryButton'
+import Button from '../../../src/components/Button'
+import Colors from '../../../src/components/Colors'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { ProgressCircle } from 'react-native-svg-charts'
 

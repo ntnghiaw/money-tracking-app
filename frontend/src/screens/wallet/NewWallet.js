@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Dimensions } from 'react-native'
 import React from 'react'
 import celebrate from '../../../assets//images/celebrate_icon.png';
-import PrimaryButton from '../../../../src/components/PrimaryButton';
+import PrimaryButton from '../../../src/components/PrimaryButton';
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height

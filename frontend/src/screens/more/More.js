@@ -10,7 +10,7 @@ import {
 
 import React, {useState, useEffect} from 'react';
 
-import Toolbar from '../../../../src/components/Toolbar';
+import Toolbar from '../../../src/components/Toolbar';
 
 import more_items from './moreJson'
 

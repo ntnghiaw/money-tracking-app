@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MoreVertical, Plus } from 'react-native-feather';
-import { useIsFocused } from '@react-navigation/native';
 
 
-import Toolbar from '../../../../src/components/Toolbar';
-import Colors from '../../../../src/components/Colors';
+
+import Toolbar from '../../../src/components/Toolbar';
 import Budgets from './Budgets';
 import Goals from './Goals';
 
