@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingTop: 10,
         paddingBottom: 30,
-        paddingHorizontal: 10
     },
     amount: {
         height: screenHeight*0.16,
