@@ -4,11 +4,9 @@
     "slug": "FinancialManagement",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icons/ewallet.png",
     "userInterfaceStyle": "light",
-    "developer": {
-      "uiRenderingMode": "basic"
-    },
+
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -28,7 +26,12 @@
       "package": "com.app.financialManagement"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/icons/ewallet.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f7c5e139-04de-45fc-b718-6c8a92e2bd30"
+      }
     }
   }
 }

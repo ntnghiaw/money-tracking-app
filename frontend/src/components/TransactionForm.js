@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, SafeAreaView, Alert, TouchableWithoutFeedback } from 'react-native';
 import  { useSelector} from 'react-redux';
 
+import { NumericFormat } from 'react-number-format';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { ChevronRight } from "react-native-feather";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -12,6 +14,7 @@ import AntDesgin from 'react-native-vector-icons/AntDesign';
 
 import Colors from './Colors';
 import PrimaryButton from './PrimaryButton';
+import Toolbar from './Toolbar';
 import formatDate from '../utils/formatDate';
 import randomHexColorCode from '../utils/colorCode';
 
@@ -90,7 +93,7 @@ const TransactionForm = ({navigation, onCreate, type}) => {
                 <View style={styles.amountInput} >
                 <TextInput 
                     style={[styles.amountText, ]} 
-                    value={amount ? amount : '0'} 
+                    value={amount? amount.toString(): ''} 
                     placeholder='0' 
                     keyboardType='decimal-pad'
                     onChangeText={setAmount}
@@ -184,6 +187,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingTop: 10,
         paddingBottom: 30,
+        paddingHorizontal: 10
     },
     amount: {
         height: screenHeight*0.16,

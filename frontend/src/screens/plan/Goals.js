@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { Facebook } from 'react-native-feather';
 import { useDispatch } from 'react-redux';
-import Colors from '../../../src/components/Colors';
+import Toolbar from '../../components/Toolbar';
+import Colors from '../../components/Colors';
 
 
 

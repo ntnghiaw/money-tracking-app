@@ -7,9 +7,9 @@ import AntDesgin from 'react-native-vector-icons/AntDesign';
 
 import formatDate from '../../utils/formatDate';
 
-import Colors from '../../../src/components/Colors';
-import PrimaryButton from '../../../src/components/PrimaryButton';
-import { addAmount } from '../../../src/redux/plan/planAction';
+import Colors from '../../components/Colors';
+import PrimaryButton from '../../components/PrimaryButton';
+import { addAmount } from '../../redux/plan/planAction';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

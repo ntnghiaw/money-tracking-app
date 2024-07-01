@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image, TextInput, Dimensions, ScrollView, Touch
 import React, { useState,useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker';
 
-
+import search_icon from '../../../assets/images/icons/search_icon.png'
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -24,17 +24,17 @@ const styles = StyleSheet.create({
   },
   search:{
     width: screenWidth*0.5,
-    height: screenHeight*0.05,
+    height: screenHeight*0.06,
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 30,
     paddingLeft: 10,
     paddingRight: 10,
   },
   status:{
     width: screenWidth*0.35,
-    height: screenHeight*0.05,
+    height: screenHeight*0.06,
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 30,
     // paddingLeft: 10,
     // backgroundColor: 'pink',
     justifyContent: 'center',
@@ -341,6 +341,8 @@ const TransactionHistory = ({navigation}) => {
           </View>
         ))}
       </View>
+      {
+          totalPages() > 0 &&(
       <View style={styles.pagination}>
         <TouchableOpacity onPress={handlePrevPage} style={{ marginRight: 10 }}>
           <Text>{`<`} Previous</Text>
@@ -367,7 +369,17 @@ const TransactionHistory = ({navigation}) => {
         <TouchableOpacity onPress={handleNextPage} style={{ marginLeft: 10 }}>
           <Text>Next {`>`}</Text>
         </TouchableOpacity>
+
       </View>
+     )}
+     {
+      totalPages() < 1 && (
+        <View style={{height:'70%',display:'flex', flexDirection:'column', justifyContent:'center',alignItems:'center'}}>
+          <Image style={{width:250, height:250,margin:'auto'}} source={search_icon} />
+          <Text style={{color: '#E37979', fontSize:30, textAlign:'center'}}>Sorry! Your search does not match any results</Text>
+        </View>
+      )
+     }
     </View>
   );
 };
