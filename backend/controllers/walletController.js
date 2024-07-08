@@ -5,7 +5,7 @@ const createWallet = async(req,res) =>{
         const {userId, name, balance, type} = req.body;
         // const userExists = await User.findById(userId);
         // if(!userExists) return res.status(400).json({message: "User does not exist"})
-        const newWallet = new Wallet({user:userId, name: name, balance: balance, type: type })
+        const newWallet = new Wallet({userId: userId, name: name, balance: balance, type: type })
         const saveWallet = await newWallet.save();
         
         res.status(200).json(saveWallet)
@@ -23,7 +23,7 @@ const getAllWallets = async(req,res) =>{
         if(!userId){
             return res.status(400).json({error: 'Thiếu thông tin userId'});
         }
-        const wallets = await Wallet.find({user: userId});
+        const wallets = await Wallet.find({userId: userId});
         // Kiểm tra xem ví có tồn tại không
         if (!wallets) {
             return res.status(404).json({ error: 'Không tìm thấy ví' });
@@ -34,12 +34,31 @@ const getAllWallets = async(req,res) =>{
         res.status(500).json({error:'Lỗi hệ thống' + err})
     }
 }
-
+const getDetailedWallet = async(req,res) =>{
+    try{
+        const userId = req.params.userId;
+        const walletId = req.params.walletId;
+        if(!walletId || !userId){
+            return res.status(400).json({error: 'Thiếu thông tin walletId'});
+        }
+        const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
+        if (!wallet) {
+            return res.status(404).json({ error: 'Không tìm thấy ví' });
+        }
+        res.status(200).json(wallet)
+        }catch(err){
+            res.status(500).json({error:'Lỗi hệ thống' + err})
+        }
+}
 const modifyWallet = async(req, res) =>{
     try{
+        const userId = req.params.userId;
         const walletId = req.params.walletId;
         const {name, balance} = req.body;
-        const wallet = await Wallet.findById(walletId);
+        const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
+        if (!wallet) {
+            return res.status(404).json({ error: 'Không tìm thấy ví' });
+        }
         if(!wallet) return res.status(404).json({error: 'Không tìm thấy ví'});
         wallet.name = name;
         wallet.balance = balance;
@@ -53,7 +72,10 @@ const modifyWallet = async(req, res) =>{
 const deleteWallet = async(req,res) =>{
     try{
         const walletId = req.params.walletId;
-        const wallet = await Wallet.findById(walletId);
+        const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
+        if (!wallet) {
+            return res.status(404).json({ error: 'Không tìm thấy ví' });
+        }
         if(!wallet) return res.status(404).json({error: 'Không tìm thấy ví'});
         await wallet.deleteOne();
         res.status(200).json({message: 'Xóa ví thành công'});
@@ -68,4 +90,5 @@ module.exports = {
     getAllWallets,
     modifyWallet,
     deleteWallet,
+    getDetailedWallet,
 }

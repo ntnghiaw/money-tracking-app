@@ -7,8 +7,9 @@ const auth = require('../middlewares/auth');
 router.post('/user/wallets',auth, walletController.createWallet)
 
 router.get('/user/getAllWallets/:userId',auth, walletController.getAllWallets)
+router.get('/user/wallets/:userId/:walletId', auth, walletController.getDetailedWallet)
 
-router.put('/user/wallets/:walletId', auth, walletController.modifyWallet)
+router.put('/user/wallets/:userId/:walletId', auth, walletController.modifyWallet)
 
-router.delete('/user/wallets/:walletId', auth, walletController.deleteWallet)
+router.delete('/user/wallets/:userId/:walletId', auth, walletController.deleteWallet)
 module.exports = router;
