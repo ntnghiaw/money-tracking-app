@@ -3,10 +3,11 @@ const Wallet = require('../models/walletModel')
 const createWallet = async(req,res) =>{
     try{
         const {userId, name, balance, type} = req.body;
-        
+        // const userExists = await User.findById(userId);
+        // if(!userExists) return res.status(400).json({message: "User does not exist"})
         const newWallet = new Wallet({user:userId, name: name, balance: balance, type: type })
         const saveWallet = await newWallet.save();
-
+        
         res.status(200).json(saveWallet)
 
     }catch(err){
