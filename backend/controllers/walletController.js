@@ -35,7 +35,37 @@ const getAllWallets = async(req,res) =>{
     }
 }
 
+const modifyWallet = async(req, res) =>{
+    try{
+        const walletId = req.params.walletId;
+        const {name, balance} = req.body;
+        const wallet = await Wallet.findById(walletId);
+        if(!wallet) return res.status(404).json({error: 'Không tìm thấy ví'});
+        wallet.name = name;
+        wallet.balance = balance;
+        const updatedWallet = await wallet.save();
+        res.status(200).json(updatedWallet);
+        }catch(err){
+            res.status(500).json({error: 'Lỗi hệ thống' + err});
+        }
+}
+
+const deleteWallet = async(req,res) =>{
+    try{
+        const walletId = req.params.walletId;
+        const wallet = await Wallet.findById(walletId);
+        if(!wallet) return res.status(404).json({error: 'Không tìm thấy ví'});
+        await wallet.deleteOne();
+        res.status(200).json({message: 'Xóa ví thành công'});
+        }catch(err){
+            res.status(500).json({error: 'Lỗi hệ thống' + err});
+            }
+
+}
+
 module.exports = {
     createWallet,
-    getAllWallets
+    getAllWallets,
+    modifyWallet,
+    deleteWallet,
 }
