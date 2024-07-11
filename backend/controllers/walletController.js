@@ -3,6 +3,7 @@ const Wallet = require('../models/walletModel')
 const createWallet = async(req,res) =>{
     try{
         const {userId, name, balance, type} = req.body;
+        // const userId = req.params.userId;
         // const userExists = await User.findById(userId);
         // if(!userExists) return res.status(400).json({message: "User does not exist"})
         const newWallet = new Wallet({userId: userId, name: name, balance: balance, type: type })
@@ -71,6 +72,7 @@ const modifyWallet = async(req, res) =>{
 
 const deleteWallet = async(req,res) =>{
     try{
+        const userId = req.params.userId;
         const walletId = req.params.walletId;
         const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
         if (!wallet) {
