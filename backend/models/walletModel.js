@@ -10,6 +10,10 @@ const walletSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  transactions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Transaction'
+}],
   debts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Debt' }],
   members: [{
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

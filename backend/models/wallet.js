@@ -16,6 +16,10 @@ const WalletSchema = new mongoose.Schema({
         required: true,
         default: 'vnd'
     },
+    transactions: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Transaction'
+    }],
     debts: [{
         type: Schema.Types.ObjectId,
         ref: 'Debt'
