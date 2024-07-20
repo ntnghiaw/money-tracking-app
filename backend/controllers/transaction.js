@@ -85,9 +85,9 @@ exports.updateTransaction = async (req, res) => {
 
   }
 
-  const filter = {_id: transactionId}, options = {new: true};
+  const filter = {_id: transactionId}, options = {new: true, upsert: true};
 
-  const updatedTransaction = await Transaction.findByIdAndUpdate(filter, updateTransaction, options);
+  const updatedTransaction = await Transaction.findOneAndUpdate(filter, updateTransaction, options);
   // update wallet with updated transaction
   const isExpense = existingTransaction.type === 'Expense';
   const sameType = existingTransaction.type === updateTransaction.type;
@@ -127,11 +127,11 @@ exports.deleteTransaction = async (req, res) => {
   if (!existingTransaction) {
     throw new Error(`transaction ${transactionId} is not existent`);
   }
-  await Transaction.findByIdAndDelete(transactionId);
+  await Transaction.findOneAndDelete({ _id: transactionId});
   // update wallet 
   existingWallet.transactions.pop();
   existingWallet.balance = existingWallet.balance - existingTransaction.amount;
-  const updatedWallet = await existingWallet.save()
-  return res.status(200).json({message: 'Deleting transaction success'})
+  await existingWallet.save()
+  return new OK({message: 'Deleting transaction success'}).send(res);
     
 }
