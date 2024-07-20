@@ -26,72 +26,97 @@ const createWallet = async(req,res) =>{
 
 const getAllWallets = async(req,res) =>{
     try{
-        const userId = req.params.userId;
-        if(!userId){
-            return res.status(400).json({error: 'Thiếu thông tin userId'});
+        const { userId } = req.params;
+
+        try {
+          const user = await User.findById(userId);
+      
+          if (!user) {
+            return res.status(404).send('User not found');
+          }
+      
+          res.status(200).send(user.wallets);
+        } catch (error) {
+          res.status(500).send(error.message);
         }
-        const wallets = await Wallet.find({userId: userId});
-        // Kiểm tra xem ví có tồn tại không
-        if (!wallets) {
-            return res.status(404).json({ error: 'Không tìm thấy ví' });
-        }
-  
-        res.status(200).json(wallets)
     }catch(err){
         res.status(500).json({error:'Lỗi hệ thống' + err})
     }
 }
 const getDetailedWallet = async(req,res) =>{
-    try{
-        const userId = req.params.userId;
-        const walletId = req.params.walletId;
-        if(!walletId || !userId){
-            return res.status(400).json({error: 'Thiếu thông tin walletId'});
+    const { userId, walletId } = req.params;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+        return res.status(404).send('User not found');
         }
-        const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
+
+        const wallet = user.wallets.id(walletId);
+
         if (!wallet) {
-            return res.status(404).json({ error: 'Không tìm thấy ví' });
+        return res.status(404).send('Wallet not found');
         }
-        res.status(200).json(wallet)
-        }catch(err){
-            res.status(500).json({error:'Lỗi hệ thống' + err})
-        }
+
+        res.status(200).send(wallet);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 }
 const modifyWallet = async(req, res) =>{
-    try{
-        const userId = req.params.userId;
-        const walletId = req.params.walletId;
-        const {name, balance} = req.body;
-        const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
+    const { userId, walletId } = req.params;
+    const { name, balance, type } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+        return res.status(404).send('User not found');
+        }
+
+        const wallet = user.wallets.id(walletId);
+
         if (!wallet) {
-            return res.status(404).json({ error: 'Không tìm thấy ví' });
+        return res.status(404).send('Wallet not found');
         }
-        if(!wallet) return res.status(404).json({error: 'Không tìm thấy ví'});
-        wallet.name = name;
-        wallet.balance = balance;
-        const updatedWallet = await wallet.save();
-        res.status(200).json(updatedWallet);
-        }catch(err){
-            res.status(500).json({error: 'Lỗi hệ thống' + err});
-        }
+
+        if (name) wallet.name = name;
+        if (balance) wallet.balance = balance;
+        if (type) wallet.type = type;
+
+        await user.save();
+
+        res.status(200).send(wallet);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 }
 
 const deleteWallet = async(req,res) =>{
-    try{
-        const userId = req.params.userId;
-        const walletId = req.params.walletId;
-        const wallet = await Wallet.findOne({ _id: walletId, userId: userId });
-        if (!wallet) {
-            return res.status(404).json({ error: 'Không tìm thấy ví' });
-        }
-        if(!wallet) return res.status(404).json({error: 'Không tìm thấy ví'});
-        await wallet.deleteOne();
-        res.status(200).json({message: 'Xóa ví thành công'});
-        }catch(err){
-            res.status(500).json({error: 'Lỗi hệ thống' + err});
-            }
+    const { userId, walletId } = req.params;
 
-}
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+        return res.status(404).send('User not found');
+        }
+
+        const wallet = user.wallets.id(walletId);
+
+        if (!wallet) {
+        return res.status(404).send('Wallet not found');
+        }
+
+        wallet.remove();
+        await user.save();
+
+        res.status(200).send('Wallet deleted');
+    } catch (error) {
+        res.status(500).send(error.message);
+    }   
+}    
 
 module.exports = {
     createWallet,
