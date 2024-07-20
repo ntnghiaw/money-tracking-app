@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "FinancialManagement",
+    "name": "Financial Management",
     "slug": "FinancialManagement",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
 
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/ewallet.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/ewallet.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.app.financialManagement"
