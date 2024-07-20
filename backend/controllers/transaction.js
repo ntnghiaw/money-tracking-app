@@ -28,9 +28,10 @@ const Wallet = require('../models/walletModel');
     const {transactionId} = req.params;
     try {
       const transaction = await Transaction.findById(transactionId);
+      if (!transaction) return res.status(404).json({message: `Transaction with id ${transactionId} not found`})
       return res.status(200).json(transaction);
     } catch (error) {
-      return res.status(500).json({message: `Getting transaction with id ${transactionId} failed `})
+      return res.status(500).json({message: `Getting transaction with id ${transactionId} failed`})
     }
   }
 
@@ -49,7 +50,7 @@ exports.getAllTransactions = async (req, res) => {
 
   
 exports.createTransaction = async (req, res) => {
-    const {amount, category, description="", createdAt, imageUrl="", type} = req.body;
+    const {amount, category, description, createdAt, imageUrl, type} = req.body;
     const {walletId} = req.query; 
     // validate a transaction infor
 
