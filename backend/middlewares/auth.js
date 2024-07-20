@@ -9,8 +9,9 @@ const verifyTokenMiddleware = (req, res, next) => {
   // req (request) object has a property called headers
   // The headers property is an object that contains the HTTP request headers
   // The authorization header contains the token
-  // const token = req.headers.authorization?.split(' ')[1]; // Assuming token is sent in the Authorization header
-  const token = req.cookies.token;
+
+  const token = req.headers.authorization?.split(' ')[1]; // Assuming token is sent in the Authorization header
+  // const token = req.cookies.token;
   if (!token) {
     return res.status(401).json({ message: 'Access denied. Token is missing.' });
   }

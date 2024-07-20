@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 
-
 // Validator kiểm tra mật khẩu
 const passwordValidator = [
     // {
@@ -67,7 +66,7 @@ const userSchema = new mongoose.Schema({
     },
     avatarUrl: {
       type: String,
-      default: '',
+      default: 'https://i.imgur.com/B3Gg2Yj.png',
     },
     wallets: [],
     membership:{

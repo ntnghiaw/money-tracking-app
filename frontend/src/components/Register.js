@@ -70,17 +70,25 @@ const Register = ({ navigation }) => {
         console.log('Password:', password);
         console.log('RePassword:', repassword);
         try{
-            const response = await axios.post('http://localhost:5000/register', {
+            const response = await axios.post('https://financial-management-h89a.onrender.com/user/register', {
                 fullname:fullname,
                 email: email,
                 password: password,
             });
             const data = response.data;
+            setFullname("");
+            setEmail("");
+            setPassword("");
             console.log(data)
-        }catch(error){
-            console.error('Register error:', error)
+        }catch (error) {
+            if (error.response) {
+                // Request made and server responded with a status code
+                // that falls out of the range of 2xx
+                console.error(error.response.data);
+                return;
+            } 
+            console.error('Register error:', error);
         }
-
 
       };
 
