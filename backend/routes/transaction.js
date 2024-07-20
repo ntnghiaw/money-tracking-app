@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 const transactionsController = require('../controllers/transaction');
+const asyncHandler = require('../middlewares/asyncErrorHandler');
 
 
 
-router.get('/:transactionId', transactionsController.getTransaction);
-router.get('/', transactionsController.getAllTransactions);
-router.post('/', transactionsController.createTransaction);
-router.post('/:transactionId', transactionsController.updateTransaction);
-router.delete('/:transactionId', transactionsController.deleteTransaction);
-router.post('/ocr', transactionsController.ocr);
+router.get('/:transactionId', asyncHandler(transactionsController.getTransactionById));
+router.get('/', asyncHandler(transactionsController.getAllTransactions));
+router.post('/', asyncHandler(transactionsController.createTransaction));
+router.post('/:transactionId', asyncHandler(transactionsController.updateTransaction));
+router.delete('/:transactionId', asyncHandler(transactionsController.deleteTransaction));
+router.post('/ocr', asyncHandler(transactionsController.ocr));
 
 
 module.exports = router;

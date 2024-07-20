@@ -1,3 +1,5 @@
+const { NotFoundError } = require('../core/error.response');
+const { CREATED, OK } = require('../core/success.response');
 const Transaction = require('../models/transaction');
 const Wallet = require('../models/walletModel');
 
@@ -24,58 +26,47 @@ const Wallet = require('../models/walletModel');
         .then(result => res.json(result.totalAmount))
         .catch(err => console.error(err));
   }
-  exports.getTransaction = async (req, res) => {
+  exports.getTransactionById = async (req, res, next) => {
     const {transactionId} = req.params;
-    try {
-      const transaction = await Transaction.findById(transactionId);
-      if (!transaction) return res.status(404).json({message: `Transaction with id ${transactionId} not found`})
-      return res.status(200).json(transaction);
-    } catch (error) {
-      return res.status(500).json({message: `Getting transaction with id ${transactionId} failed`})
-    }
+    const transaction = await Transaction.findOne({ _id: transactionId}).lean();
+    if (!transaction) throw new NotFoundError(`Transaction is not found`);
+    return res.status(200).json(transaction);
+
   }
 
-exports.getAllTransactions = async (req, res) => {
-  try {
-    const allTransactions = await Transaction.find();
+exports.getAllTransactions = async (req, res, next) => {
+    const allTransactions = await Transaction.find().lean();
     return res.status(200).json({
       amount: allTransactions.length,
       transactions: allTransactions
     });
-  } catch (error) {
-    return res.status(500).json({message: `Getting all transactions failed ${error}`})
-  }
 }
 
 
   
-exports.createTransaction = async (req, res) => {
+exports.createTransaction = async (req, res, next) => {
     const {amount, category, description, createdAt, imageUrl, type} = req.body;
     const {walletId} = req.query; 
     // validate a transaction infor
 
     //create new transaction
-    try {
-      const existingWallet = await Wallet.findById(walletId);
-      if (!existingWallet) {
-        throw new Error(`wallet ${walletId} is not existent`)
-      }
-      const transaction = new Transaction({amount, category, description, createdAt, imageUrl, type});
-      await transaction.save();
-      // update wallet with new transaction
-      existingWallet.transactions = [...existingWallet.transactions, transaction._id];
-      if (transaction.type === 'Income' ) {
-        existingWallet.balance = existingWallet.balance + transaction.amount;
-      }
-      else {
-        existingWallet.balance = existingWallet.balance - transaction.amount;
-
-      }
-      const updatedWallet = await existingWallet.save()
-      return res.status(201).json({message: 'Creating transaction success', transaction})
-    } catch (error) {
-      return res.status(500).json({message: `Creating transaction failed ${error}`})
+    const existingWallet = await Wallet.findById(walletId);
+    if (!existingWallet) {
+      throw new NotFoundError(`wallet is not found`)
     }
+    const transaction = new Transaction({amount, category, description, createdAt, imageUrl, type});
+    await transaction.save();
+    // update wallet with new transaction
+    existingWallet.transactions = [...existingWallet.transactions, transaction._id];
+    if (transaction.type === 'Income' ) {
+      existingWallet.balance = existingWallet.balance + transaction.amount;
+    }
+    else {
+      existingWallet.balance = existingWallet.balance - transaction.amount;
+
+    }
+    await existingWallet.save()
+    return new CREATED({message: 'Creating transaction success', metadata: transaction}).send(res);
 }
 
 exports.updateTransaction = async (req, res) => {
@@ -83,45 +74,44 @@ exports.updateTransaction = async (req, res) => {
   const {walletId} = req.query; 
   const updateTransaction = req.body;
 
-  try {
-    const existingWallet = await Wallet.findById(walletId);
-    if (!existingWallet) {
-      throw new Error(`wallet ${walletId} is not existent`)
-    }
-    const existingTransaction  = await Transaction.findById(transactionId);
-    if (!existingTransaction) {
-      throw new Error(`transaction ${transactionId} is not existent`);
-    }
-    const updatedTransaction = await Transaction.findByIdAndUpdate(transactionId, updateTransaction, {
-      returnDocument: 'after'
-    });
-    // update wallet with updated transaction
-    const isExpense = existingTransaction.type === 'Expense';
-    const sameType = existingTransaction.type === updateTransaction.type;
-    if (isExpense) {
-      if (!updateTransaction.type ||  sameType) {
-        existingWallet.balance = existingWallet.balance + (existingTransaction.amount - updateTransaction.amount);
-      }
-      else {
-        existingWallet.balance = existingWallet.balance + (existingTransaction.amount + updateTransaction.amount);
+  const existingWallet = await Wallet.findById(walletId);
+  if (!existingWallet) {
+    throw new NotFoundError(`wallet is not found`)
 
-      }
-    }
-    else  {
-      if (!updateTransaction.type || sameType) {
-        existingWallet.balance = existingWallet.balance + (updateTransaction.amount - existingTransaction.amount);
-      }
-      else {
-        existingWallet.balance = existingWallet.balance - (existingTransaction.amount + updateTransaction.amount);
-
-      }
-    }
-    const updatedWallet = await existingWallet.save()
-    return res.status(200).json({message: 'Updating transaction success', updatedTransaction})
-  } catch (error) {
-    return res.status(500).json({message: `Updating transaction failed ${error}`})
-    
   }
+  const existingTransaction  = await Transaction.findById(transactionId);
+  if (!existingTransaction) {
+    throw new NotFoundError(`Transaction is not found`)
+
+  }
+
+  const filter = {_id: transactionId}, options = {new: true};
+
+  const updatedTransaction = await Transaction.findByIdAndUpdate(filter, updateTransaction, options);
+  // update wallet with updated transaction
+  const isExpense = existingTransaction.type === 'Expense';
+  const sameType = existingTransaction.type === updateTransaction.type;
+  if (isExpense) {
+    if (!updateTransaction.type ||  sameType) {
+      existingWallet.balance = existingWallet.balance + (existingTransaction.amount - updateTransaction.amount);
+    }
+    else {
+      existingWallet.balance = existingWallet.balance + (existingTransaction.amount + updateTransaction.amount);
+
+    }
+  }
+  else  {
+    if (!updateTransaction.type || sameType) {
+      existingWallet.balance = existingWallet.balance + (updateTransaction.amount - existingTransaction.amount);
+    }
+    else {
+      existingWallet.balance = existingWallet.balance - (existingTransaction.amount + updateTransaction.amount);
+
+    }
+  }
+  await existingWallet.save()
+  return new OK({message: 'Updating transaction success', metadata: updatedTransaction}).send(res);
+    
 }
 
 
@@ -129,23 +119,19 @@ exports.deleteTransaction = async (req, res) => {
   const {transactionId} = req.params;
   const {walletId} = req.query; 
 
-  try {
-    const existingWallet = await Wallet.findById(walletId);
-    if (!existingWallet) {
-      throw new Error(`wallet ${walletId} is not existent`)
-    }
-    const existingTransaction  = await Transaction.findById(transactionId);
-    if (!existingTransaction) {
-      throw new Error(`transaction ${transactionId} is not existent`);
-    }
-    await Transaction.findByIdAndDelete(transactionId);
-    // update wallet 
-    existingWallet.transactions.pop();
-    existingWallet.balance = existingWallet.balance - existingTransaction.amount;
-    const updatedWallet = await existingWallet.save()
-    return res.status(200).json({message: 'Deleting transaction success'})
-  } catch (error) {
-    return res.status(500).json({message: `Deleting transaction failed ${error}`})
-    
+  const existingWallet = await Wallet.findById(walletId);
+  if (!existingWallet) {
+    throw new Error(`wallet ${walletId} is not existent`)
   }
+  const existingTransaction  = await Transaction.findById(transactionId);
+  if (!existingTransaction) {
+    throw new Error(`transaction ${transactionId} is not existent`);
+  }
+  await Transaction.findByIdAndDelete(transactionId);
+  // update wallet 
+  existingWallet.transactions.pop();
+  existingWallet.balance = existingWallet.balance - existingTransaction.amount;
+  const updatedWallet = await existingWallet.save()
+  return res.status(200).json({message: 'Deleting transaction success'})
+    
 }
