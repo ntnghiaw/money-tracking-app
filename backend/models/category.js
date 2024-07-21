@@ -8,12 +8,21 @@ const SubCategory = new mongoose.Schema({
 })
 
 const CategorySchema = new mongoose.Schema({
-    description: 'string',
-    icon: 'string',
-    name: 'string',
+    description: {
+        type: String
+    },
+    icon: {
+        type: String, 
+    },
+    name: {
+        type: String,
+        required: true,
+        default: 'Default'
+    },
     subCategories: [SubCategory],
 });
 
+const Category = mongoose.model('Category', CategorySchema)
 
-module.exports = mongoose.model('Category', CategorySchema)
+module.exports = { Category, CategorySchema }
 
