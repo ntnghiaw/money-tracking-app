@@ -1,5 +1,5 @@
-import React,{useState} from 'react';
-import {View, Text, Dimensions, Button, StyleSheet, TextInput, TouchableOpacity, Image, Platform} from 'react-native'
+import React,{useState, useEffect} from 'react';
+import {View, Text, Dimensions, Button, StyleSheet,KeyboardAvoidingView, TextInput, TouchableOpacity, Image, Platform} from 'react-native'
 import MaskInput, { Masks } from 'react-native-mask-input'
 import MultiSelect from 'react-native-multiple-select';
 import SelectDropdown from 'react-native-select-dropdown'
@@ -7,19 +7,19 @@ import { useRoute } from '@react-navigation/native';
 import Colors from '../../components/Colors';
 import { useFonts, ABeeZee_400Regular, } from '@expo-google-fonts/abeezee';
 import {TitleText, BodyText, DangerousText} from '../../components/CustomizedText';
-import {Picker} from '@react-native-picker/picker';
 import {LogOut, ChevronRight} from 'react-native-feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Toolbar from '../../components/Toolbar';
-
+import { useDispatch } from 'react-redux';
+import { Picker } from '@react-native-picker/picker';
 
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
 import { useSelector } from 'react-redux'; // Import useSelector từ react-redux
-
+import { handleLogout } from '../../redux/actions/authAction';
 
 const style = StyleSheet.create({
     container:{
@@ -192,27 +192,52 @@ const style = StyleSheet.create({
     icon_items:{
         width:25,
         height:25,
-    }
+    },
+    picker:{
+        width:screenWidth*0.45,
+        height:screenHeight*0.08,
+    },
+    pickerItem: {
+        fontSize: 20, // Font size for items in the picker
+        textAlign: 'center', // Center text in picker items
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 })
 const user_infor = {
         name:'Phuc',
         email:'phanhoangphuc0311@gmail.com',
 }
 
-
 const Profile = ({navigation}) => {
+    const [selectedGender, setSelectedGender] = useState('Select Gender');
+    const [phoneNumber, setPhoneNumber] = useState('')
     const [selectedItems, setSelectedItems] = useState([]);
+    const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
+
     // const {user} = route.params
     const user = useSelector(state => state.auth.user);
     console.log(user)
     const gender = ["Nam", "Nữ"]
-    const [date, setDate] = useState(user.date);
-
-    console.log(date)
+    const [date, setDate] = useState(user.dateOfBirth);
+    const dispatch = useDispatch();
+    const handlePress = () => {
+        dispatch(handleLogout(navigation));
+      };
+    const handlePhoneNumberChange = (text) => {
+        setPhoneNumber(text);
+    };
+    console.log(phoneNumber)
     return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flex: 1}}
+        >
         <View style={style.container}>
             <View style={style.infor}>
-                <Image style={style.avatar} source={{uri:`${user.avatar}`}}/>
+                <Image style={style.avatar} source={{uri:`${user.avatarUrl}`}}/>
                 <Text style={{fontSize:25, marginTop:10}}>{user.fullname}</Text>
 
             </View>
@@ -233,41 +258,38 @@ const Profile = ({navigation}) => {
                     <View style={style.text_box_30}>
                         <Text>Gender</Text>
                     </View>
-                    <SelectDropdown 
-                        data={gender}
-                        onSelect={(selectedItem, index) => {
-                            console.log(selectedItem, index)
-                        }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            return selectedItem
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return item
-                        }}
-                        defaultButtonText={user.gender} 
-                        buttonStyle={{
-                            width:screenWidth*0.65,
-                            backgroundColor: 'white',
-                            margin:0,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            // borderWidth: 1,
-                            // borderColor: 'rgba(0, 0, 0, 0.1)',
-                            borderRadius: 10,
-                        }}
-
-                    />
+                    <View style={style.text_box_65}>
+                        <Picker
+                            selectedValue={selectedGender}
+                            onValueChange={(itemValue, itemIndex) => {
+                                setSelectedGender(itemValue);
+                            }}
+                            style={style.picker}
+                            itemStyle={style.pickerItem}
+                            themeVariant='light'
+                            selectionColor= 'blue'
+                        >
+                            <Picker.Item label="Select Gender" value="" />
+                            <Picker.Item label="Male" value="Male" />
+                            <Picker.Item label="Female" value="Female" />
+                        </Picker>
+                    </View>
+                    
                 </View>
                 <View style={style.phone}>
                     <View style={style.text_box_30}>
                         <Text style={{fontSize:15}}>Phone</Text>
                     </View>
                     <View style={style.text_box_65}>
-                        <Text style={{fontSize:15}}>{user.phone}</Text>
+                        {/* <Text style={{fontSize:15}}>{user.phone}</Text> */}
+                        <TextInput 
+                            style={{width:'60%', marginLeft:10}}
+                            placeholder="Enter your phone number"
+                            value={phoneNumber} // Hiển thị giá trị của phoneNumber
+                            onChangeText={handlePhoneNumberChange} // Cập nhật giá trị khi thay đổi
+                            keyboardType="phone-pad" // Hiển thị bàn phím số
+                        />
+
                     </View>
                 </View>
                 <View style={style.email}>
@@ -298,13 +320,15 @@ const Profile = ({navigation}) => {
                 <View style={{width:screenWidth*0.2,display:'flex',justifyContent:'center',alignItems:'center'}}>
                     <Image style={{width:20,height:20}} source={{uri:'https://cdn-icons-png.flaticon.com/128/152/152534.png'}}/>
                 </View>
-                <TouchableOpacity style={{width:screenWidth*0.75}} onPress={()=>navigation.navigate('Login')}>
+                <TouchableOpacity style={{width:screenWidth*0.75}} onPress={handlePress}>
                     <Text style={{color:'red', fontSize:20}}>Logout</Text>
                 </TouchableOpacity>
             </TouchableOpacity>
             
             <Toolbar navigation={navigation}/>
         </View>
+    </KeyboardAvoidingView>
+
     );
 };
 

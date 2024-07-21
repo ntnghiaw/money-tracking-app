@@ -1,9 +1,8 @@
-import authReducer from "./authReducer";
-import planReducer from "./planReducer";
-import transactionReducer from "./transactionReducer";
+import { combineReducers } from 'redux';
+import authReducer from './authReducer';
 
-export default  {
-    authReducer,
-    transactionReducer,
-    planReducer
-}
+const rootReducer = combineReducers({
+  auth: authReducer,
+});
+
+export default rootReducer;

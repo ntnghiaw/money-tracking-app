@@ -10,7 +10,6 @@ router.post('/user/register', userController.register);
 
 router.post('/user/login', userController.login)
 
-router.post('/user/wallet',auth, walletController.createWallet)
 
 router.get('/user/getAllWallets/:userId',auth, walletController.getAllWallets)
 module.exports = router;

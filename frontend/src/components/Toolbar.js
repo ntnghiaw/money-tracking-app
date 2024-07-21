@@ -10,6 +10,12 @@ import { useSelector, useDispatch } from 'react-redux';
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
+import homeIcon from '../../assets/images/toolbarIcons/home.png'
+import moreIcon from '../../assets/images/toolbarIcons/more.png'
+import plusIcon from '../../assets/images/toolbarIcons/plus.png'
+import profileIcon  from '../../assets/images/toolbarIcons/profile.png'
+import statIcon from '../../assets/images/toolbarIcons/stat.png'
+
 const style = StyleSheet.create({
     toolbar:{
         width:screenWidth,
@@ -43,27 +49,27 @@ const Toolbar = ({navigation}) => {
         <View style={style.toolbar}>
             <View style={style.items}>
                 <TouchableOpacity onPress={() => navigation.navigate('Home')}> 
-                    <Image style={style.icon_items} source={{uri:'https://cdn-icons-png.flaticon.com/512/25/25694.png'}}/>
+                    <Image style={style.icon_items} source={homeIcon}/>
                 </TouchableOpacity>
             </View>
             <View style={style.items}>
                 <TouchableOpacity onPress={() => navigation.navigate('Statistics')}>
-                    <Image style={style.icon_items} source={{uri:'https://png.pngtree.com/png-vector/20190116/ourmid/pngtree-vector-statistics-icon-png-image_322171.jpg'}}/>
+                    <Image style={style.icon_items} source={statIcon}/>
                 </TouchableOpacity>
             </View>
             <View style={style.items}>
                 <TouchableOpacity onPress={() => navigation.navigate('Records')}>
-                    <Image style={{width:50,height:50}} source={{uri:'https://cdn.icon-icons.com/icons2/2518/PNG/512/circle_plus_icon_151455.png'}}/>
+                    <Image style={{width:50,height:50}} source={plusIcon}/>
                 </TouchableOpacity>
             </View>
             <View style={style.items}>
                 <TouchableOpacity onPress={() => navigation.navigate('More')}>
-                    <Image style={style.icon_items} source={{uri:'https://i.pinimg.com/originals/8b/5c/49/8b5c498ed69a64d629249d9abe4f44a6.png'}}/>
+                    <Image style={style.icon_items} source={moreIcon}/>
                 </TouchableOpacity>
             </View>
             <View style={style.items}>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Image style={style.icon_items} source={{uri:'https://cdn-icons-png.flaticon.com/512/3106/3106773.png'}}/>
+                    <Image style={style.icon_items} source={profileIcon}/>
                 </TouchableOpacity>
             </View>
         </View>

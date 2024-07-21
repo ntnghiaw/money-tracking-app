@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 
-
 // Validator kiểm tra mật khẩu
 const passwordValidator = [
     // {
@@ -67,9 +66,32 @@ const userSchema = new mongoose.Schema({
     },
     avatarUrl: {
       type: String,
-      default: '',
+      default: 'https://i.imgur.com/B3Gg2Yj.png',
     },
-    wallets: [],
+    wallets: [
+      {
+        // userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        name: {
+          type: String,
+          required: true,
+        },
+        balance: {
+          type: Number,
+          required: true,
+        },
+        debts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Debt' }],
+        members: [{
+          user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+          role: String,
+        }],
+        plan: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Plan' }],
+        type: {
+          type: String,
+          default: 'private',
+          required: true,
+        }
+      }
+    ],
     membership:{
       type: Boolean,
       default: false,

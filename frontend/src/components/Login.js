@@ -10,7 +10,7 @@ import axios from 'axios';
 const screenWidth = Dimensions.get('window').width;
 
 import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../redux/auth/authActions';
+import { login } from '../redux/actions/authAction';
 
 const styles = StyleSheet.create({
     container: {
@@ -73,28 +73,30 @@ const Login = ({navigation, route}) => {
           keyboardDidHideListener.remove();
         };
       }, []);
+      const handleLogin = () => {
+        dispatch(login(email, password, navigation));
+      };
+    //   const handleLogin = async () => {
+    //     try {
+    //         const user = await loginApi(email, password);
+    //         // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
+    //         // Sau đó, điều hướng đến màn hình Home
+    //         // console.log(user)
+    //         if(user)
+    //         {
+    //             dispatch(login(user));
+    //         }
+    //         setMessage(false);
+    //         navigation.navigate('Home', { user });
+    //     } catch (error) {
+    //         // Hiển thị thông báo lỗi nếu xác thực không thành công
+    //         setMessage(true);
+    //         Alert.alert('Error', error.message);
+    //     }
+    //     // dispatch(login(user))
 
-      const handleLogin = async () => {
-        try {
-            const user = await loginApi(email, password);
-            // Đăng nhập thành công, thực hiện các hành động cần thiết (ví dụ: lưu thông tin người dùng vào trạng thái ứng dụng)
-            // Sau đó, điều hướng đến màn hình Home
-            // console.log(user)
-            if(user)
-            {
-                dispatch(login(user));
-            }
-            setMessage(false);
-            navigation.navigate('Home', { user });
-        } catch (error) {
-            // Hiển thị thông báo lỗi nếu xác thực không thành công
-            setMessage(true);
-            Alert.alert('Error', error.message);
-        }
-        // dispatch(login(user))
 
-
-    };
+    // };
 
     // const handleLogin = async () => {
     //     try {
