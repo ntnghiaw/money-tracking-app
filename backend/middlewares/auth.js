@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
 dotenv.config();
-const JWT_KEY = process.env.JWT_KEY;
+const JWT_KEY = '7805d8c20fc53a6e60b96f2614a0f73d';
 
 const verifyTokenMiddleware = (req, res, next) => {
   // Get the token from the request headers

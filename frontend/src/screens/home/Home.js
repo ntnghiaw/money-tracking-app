@@ -9,7 +9,7 @@ import {
   Dimensions, 
   
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { PieChart } from 'react-native-svg-charts';
 import Toolbar from './Toolbar';
@@ -192,7 +192,12 @@ const styles = StyleSheet.create({
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
-
+  const user = useSelector((state) => state.auth.user);
+  useEffect(()=>{
+    if (!user || user.wallets.length === 0) {
+      navigation.navigate('NewWallet');
+    }
+  },[user,navigation])
   const data = [
     {
       key: 1,

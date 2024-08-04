@@ -1,32 +1,32 @@
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
 
 // Define action types directly in this file
-const LOGIN_START = 'LOGIN_START';
-const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const LOGIN_FAILURE = 'LOGIN_FAILURE';
-const LOGOUT = 'LOGOUT';
+const LOGIN_START = "LOGIN_START";
+const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+const LOGIN_FAILURE = "LOGIN_FAILURE";
+const LOGOUT = "LOGOUT";
 
 // Action to start login process
 export const loginStart = () => {
-  console.log('Login started');
+  console.log("Login started");
   return { type: LOGIN_START };
 };
 
 // Action when login is successful
 export const loginSuccess = (token, user) => {
-  console.log('Login successful:', token);
+  console.log("Login successful:", token);
   return { type: LOGIN_SUCCESS, payload: { token, user } };
 };
 
 // Action when login fails
 export const loginFailure = (error) => {
-  console.log('Login failed:', error);
+  console.log("Login failed:", error);
   return { type: LOGIN_FAILURE, payload: error };
 };
 
 // Action to log out
 export const logout = () => {
-  console.log('User logged out');
+  console.log("User logged out");
   return { type: LOGOUT };
 };
 
@@ -35,23 +35,31 @@ export const login = (email, password, navigation) => async (dispatch) => {
   dispatch(loginStart());
   try {
     // Replace with your actual API call
-    console.log('Sending login request');
-    const response = await fetch('https://financial-management-h89a.onrender.com/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    console.log("Sending login request");
+    const response = await fetch(
+      "https://financial-management-h89a.onrender.com/user/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }
+    );
     const data = await response.json();
+    console.log(data.user.wallets);
     if (response.ok) {
       dispatch(loginSuccess(data.token, data.user));
-      navigation.navigate('Home', { user: data.user });
+      if (data.user.wallets.length > 0) {
+        navigation.navigate("Home", { user: data.user });
+      } else {
+        navigation.navigate("NewWallet");
+      }
     } else {
       dispatch(loginFailure(data.message));
     }
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     dispatch(loginFailure(error.message));
   }
 };
@@ -62,8 +70,7 @@ export const handleLogout = (navigation) => async (dispatch) => {
     // await AsyncStorage.removeItem('token');
     // Dispatch logout action
     dispatch(logout());
-
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error("Logout error:", error);
   }
 };
