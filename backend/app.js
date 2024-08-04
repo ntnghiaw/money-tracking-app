@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
+const morgan = require("morgan");
 
 const userRoutes = require("./routes/userRoutes");
 const walletRoutes = require("./routes/walletRoutes")
@@ -11,6 +12,7 @@ const categoryRoutes = require('./routes/category');
 const app = express();
 const { swaggerUi, swaggerDocs } = require('./swaggers/swagger');
 
+app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
