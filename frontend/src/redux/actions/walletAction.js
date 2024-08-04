@@ -63,7 +63,7 @@ export const createWallet = (userId, name, balance, type) => async (dispatch, ge
     dispatch(createWalletRequest());
     // const token = getAuthToken(getState());
     const token = getAuthToken(getState());
-
+    console.log("1");
     try {
         const response = await axios.post(`https://financial-management-h89a.onrender.com/user/wallets`, { userId, name, balance, type }, {
             headers: {
@@ -72,7 +72,7 @@ export const createWallet = (userId, name, balance, type) => async (dispatch, ge
             },
         });
 
-        console.log(response);
+        console.log(response.data);
         dispatch(createWalletSuccess(response.data));
     } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message); // Log detailed error information

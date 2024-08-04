@@ -219,7 +219,7 @@ const Profile = ({navigation}) => {
 
     // const {user} = route.params
     const user = useSelector(state => state.auth.user);
-    console.log(user)
+    // console.log(user)
     const gender = ["Nam", "Nữ"]
     const [date, setDate] = useState(user.dateOfBirth);
     const dispatch = useDispatch();

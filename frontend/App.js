@@ -104,248 +104,242 @@ const AppStack = ({ isWalletAvailable }) => (
       headerBackTitleVisible: false,
     }}
   >
-    {isWalletAvailable ? (
-      <>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={({ navigation }) => ({
-            title: "Home",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Notification")}
-              >
-                <Image
-                  source={require("./assets/images/icons/notification_icon.png")}
-                  style={{ width: 30, height: 30, marginRight: 10 }}
-                />
-              </TouchableOpacity>
-            ),
-            headerTitleAlign: "center",
-          })}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{ title: "Profile" }}
-        />
-        <Stack.Screen
-          name="NewWallet"
-          component={NewWallet}
-          options={{ title: "New Wallet" }}
-        />
-        <Stack.Screen
-          name="MyWallet"
-          component={MyWallet}
-          options={{ title: "My Wallet" }}
-        />
-        <Stack.Screen
-          name="Welcome"
-          component={Welcome}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Notification"
-          component={Notification}
-          options={({ navigation }) => ({
-            title: "Notification",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("SettingsNotification")}
-              >
-                <Image
-                  source={require("./assets/images/icons/sets_icon.png")}
-                  style={{ width: 30, height: 30, marginRight: 10 }}
-                />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="SettingsNotification"
-          component={SettingsNotification}
-          options={{ title: "Settings Notification" }}
-        />
-        <Stack.Screen
-          name="Report"
-          component={Report}
-          options={{ title: "Report" }}
-        />
-        <Stack.Screen
-          name="More"
-          component={More}
-          options={{ title: "More" }}
-        />
-        <Stack.Screen
-          name="Investment"
-          component={Investment}
-          options={{ title: "Investment" }}
-        />
-        <Stack.Screen
-          name="FinancialPlan"
-          component={FinancialPlans}
-          options={({ navigation }) => ({
-            title: "Financial Plans",
-            headerBackTitleVisible: false,
-            headerRight: () => (
-              <TouchableOpacity onPress={() => navigation.navigate("NewPlan")}>
-                <Plus width={24} height={24} stroke={Colors.text.title} />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="NewPlan"
-          component={FinancialPlan}
-          options={({ navigation }) => ({
-            title: "New Financial Plan",
-            headerBackTitleVisible: false,
-            headerTitle: () => (
-              <CustomizedHeader
-                dispatchFunction={type}
-                types={planTypes}
-                reducer={"plan"}
-              />
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="GoalDetails"
-          component={GoalDetails}
-          options={{
-            title: "Goal Details",
-            headerRight: () => (
-              <TouchableOpacity>
-                <Edit3 width={20} height={20} stroke={Colors.text.title} />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="Debt"
-          component={Debt}
-          options={{ title: "Debt" }}
-        />
-        <Stack.Screen
-          name="Records"
-          component={Records}
-          options={({ navigation }) => ({
-            title: "Records",
-            headerRight: () => (
-              <TouchableOpacity onPress={() => navigation.navigate("Camera")}>
-                <MaterialCommunityIcons
-                  name="qrcode"
-                  size={28}
-                  color={Colors.text.title}
-                />
-              </TouchableOpacity>
-            ),
-            headerTitle: (props) => (
-              <CustomizedHeader
-                dispatchFunction={changeType}
-                types={types}
-                reducer="transaction"
-              />
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="Categories"
-          component={Categories}
-          options={{
-            title: "Categories",
-            headerRight: () => (
-              <TouchableOpacity>
-                <Check width={24} height={24} stroke={Colors.text.title} />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="Camera"
-          component={ReceiptOCR}
-          options={{
-            title: "Capture Receipt",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "black" },
-          }}
-        />
-        <Stack.Screen
-          name="History"
-          component={History}
-          options={{ title: "Transactions" }}
-        />
-        <Stack.Screen
-          name="Export_Data"
-          component={ExportData}
-          options={{ title: "Export Data" }}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          options={{ title: "Settings" }}
-        />
-        <Stack.Screen
-          name="Group"
-          component={Group}
-          options={{ title: "Group" }}
-        />
-        <Stack.Screen
-          name="FamilyGroup"
-          component={FamilyGroup}
-          options={({ navigation }) => ({
-            title: "Group Settings",
-            headerTitleAlign: "center",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("TransactionHistory")}
-              >
-                <Image
-                  source={require("./assets/images/icons/history_icon.png")}
-                  style={{ width: 30, height: 30, marginRight: 10 }}
-                />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="TransactionHistory"
-          component={TransactionHistory}
-          options={{ title: "Transaction History" }}
-        />
-        <Stack.Screen
-          name="Statistics"
-          component={Statistics}
-          options={{ title: "Statistics" }}
-        />
-        <Stack.Screen
-          name="Periods"
-          component={Periods}
-          options={{ title: "Repeat" }}
-        />
-        <Stack.Screen
-          name="Amount"
-          component={Amount}
-          options={{ title: "New Amount" }}
-        />
-      </>
-    ) : (
+    {isWalletAvailable === false && (
       <Stack.Screen
         name="NewWallet"
         component={NewWallet}
         options={{ title: "New Wallet" }}
       />
     )}
+
+    <Stack.Screen
+      name="Home"
+      component={Home}
+      options={({ navigation }) => ({
+        title: "Home",
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+            <Image
+              source={require("./assets/images/icons/notification_icon.png")}
+              style={{ width: 30, height: 30, marginRight: 10 }}
+            />
+          </TouchableOpacity>
+        ),
+        headerTitleAlign: "center",
+      })}
+    />
+    <Stack.Screen
+      name="Profile"
+      component={Profile}
+      options={{ title: "Profile" }}
+    />
+    {/* <Stack.Screen
+      name="NewWallet"
+      component={NewWallet}
+      options={{ title: "New Wallet" }}
+    /> */}
+    <Stack.Screen
+      name="MyWallet"
+      component={MyWallet}
+      options={{ title: "My Wallet" }}
+    />
+    <Stack.Screen
+      name="Welcome"
+      component={Welcome}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Notification"
+      component={Notification}
+      options={({ navigation }) => ({
+        title: "Notification",
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SettingsNotification")}
+          >
+            <Image
+              source={require("./assets/images/icons/sets_icon.png")}
+              style={{ width: 30, height: 30, marginRight: 10 }}
+            />
+          </TouchableOpacity>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="SettingsNotification"
+      component={SettingsNotification}
+      options={{ title: "Settings Notification" }}
+    />
+    <Stack.Screen
+      name="Report"
+      component={Report}
+      options={{ title: "Report" }}
+    />
+    <Stack.Screen name="More" component={More} options={{ title: "More" }} />
+    <Stack.Screen
+      name="Investment"
+      component={Investment}
+      options={{ title: "Investment" }}
+    />
+    <Stack.Screen
+      name="FinancialPlan"
+      component={FinancialPlans}
+      options={({ navigation }) => ({
+        title: "Financial Plans",
+        headerBackTitleVisible: false,
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate("NewPlan")}>
+            <Plus width={24} height={24} stroke={Colors.text.title} />
+          </TouchableOpacity>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="NewPlan"
+      component={FinancialPlan}
+      options={({ navigation }) => ({
+        title: "New Financial Plan",
+        headerBackTitleVisible: false,
+        headerTitle: () => (
+          <CustomizedHeader
+            dispatchFunction={type}
+            types={planTypes}
+            reducer={"plan"}
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="GoalDetails"
+      component={GoalDetails}
+      options={{
+        title: "Goal Details",
+        headerRight: () => (
+          <TouchableOpacity>
+            <Edit3 width={20} height={20} stroke={Colors.text.title} />
+          </TouchableOpacity>
+        ),
+      }}
+    />
+    <Stack.Screen name="Debt" component={Debt} options={{ title: "Debt" }} />
+    <Stack.Screen
+      name="Records"
+      component={Records}
+      options={({ navigation }) => ({
+        title: "Records",
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate("Camera")}>
+            <MaterialCommunityIcons
+              name="qrcode"
+              size={28}
+              color={Colors.text.title}
+            />
+          </TouchableOpacity>
+        ),
+        headerTitle: (props) => (
+          <CustomizedHeader
+            dispatchFunction={changeType}
+            types={types}
+            reducer="transaction"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="Categories"
+      component={Categories}
+      options={{
+        title: "Categories",
+        headerRight: () => (
+          <TouchableOpacity>
+            <Check width={24} height={24} stroke={Colors.text.title} />
+          </TouchableOpacity>
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="Camera"
+      component={ReceiptOCR}
+      options={{
+        title: "Capture Receipt",
+        headerTintColor: "white",
+        headerStyle: { backgroundColor: "black" },
+      }}
+    />
+    <Stack.Screen
+      name="History"
+      component={History}
+      options={{ title: "Transactions" }}
+    />
+    <Stack.Screen
+      name="Export_Data"
+      component={ExportData}
+      options={{ title: "Export Data" }}
+    />
+    <Stack.Screen
+      name="Settings"
+      component={Settings}
+      options={{ title: "Settings" }}
+    />
+    <Stack.Screen name="Group" component={Group} options={{ title: "Group" }} />
+    <Stack.Screen
+      name="FamilyGroup"
+      component={FamilyGroup}
+      options={({ navigation }) => ({
+        title: "Group Settings",
+        headerTitleAlign: "center",
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("TransactionHistory")}
+          >
+            <Image
+              source={require("./assets/images/icons/history_icon.png")}
+              style={{ width: 30, height: 30, marginRight: 10 }}
+            />
+          </TouchableOpacity>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="TransactionHistory"
+      component={TransactionHistory}
+      options={{ title: "Transaction History" }}
+    />
+    <Stack.Screen
+      name="Statistics"
+      component={Statistics}
+      options={{ title: "Statistics" }}
+    />
+    <Stack.Screen
+      name="Periods"
+      component={Periods}
+      options={{ title: "Repeat" }}
+    />
+    <Stack.Screen
+      name="Amount"
+      component={Amount}
+      options={{ title: "New Amount" }}
+    />
   </Stack.Navigator>
 );
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const wallets = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
+  const wallets = useSelector((state) => state.wallet.wallets);
+  const [isWalletAvailable, setIsWalletAvailable] = useState(
+    wallets.length > 0
+  );
 
-
+  useEffect(() => {
+    setIsWalletAvailable(wallets.length > 0);
+  }, [wallets]);
   return (
     <NavigationContainer>
-      {isLoggedIn ? <AppStack isWalletAvailable={wallets.length > 0} /> : <AuthStack />}
+      {isLoggedIn ? (
+        <AppStack isWalletAvailable={isWalletAvailable} />
+      ) : (
+        <AuthStack />
+      )}
     </NavigationContainer>
   );
 };

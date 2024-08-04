@@ -40,21 +40,21 @@ const NewWallet = ({ navigation }) => {
     const auth = useSelector((state) => state.auth); // Đảm bảo có state.auth trong store
     const [name, setName] = useState('');
     const [balance, setBalance] = useState('');
-    
     const handleCreateWallet = () => {
         if (!name || !balance) {
             Alert.alert('Validation Error', 'Please enter both name and balance');
             return;
         }
-        
-        dispatch(createWallet(auth.userId, name, parseFloat(balance), 'private')) // 'default' là loại ví, có thể thay đổi nếu cần
-            // .then(() => {
-            //     navigation.navigate('Home',{user: auth.user});
-            // })
-            // .catch((error) => {
-            //     Alert.alert('Error', 'Failed to create wallet. Please try again.');
-            //     console.error(error);
-            // });
+        console.log(auth.user._id);
+
+        dispatch(createWallet(auth.user._id, name, parseFloat(balance), 'private')) // 'default' là loại ví, có thể thay đổi nếu cần
+            .then(() => {
+                navigation.navigate('Profile');
+            })
+            .catch((error) => {
+                Alert.alert('Error', 'Failed to create wallet. Please try again.');
+                console.error(error);
+            });
     };
 
     return (
