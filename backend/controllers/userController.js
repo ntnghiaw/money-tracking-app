@@ -6,7 +6,7 @@ const User = require('../models/userModel')
 
 dotenv.config();
 
-const JWT_KEY = process.env.JWT_KEY;
+const JWT_KEY = '7805d8c20fc53a6e60b96f2614a0f73d';
 
 // crete a function to get token
 const generateToken = (user) =>{

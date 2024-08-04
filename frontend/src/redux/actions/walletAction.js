@@ -49,19 +49,33 @@ const deleteWalletFailure = (error) => ({ type: DELETE_WALLET_FAILURE, payload: 
 const getAuthToken = (state) => state.auth.token;
 // const userId = (state) => state.auth.token.userId;
 // Thunks
+export const getTokenConfig = async (getState) => {
+    const token = getAuthToken(getState());
+    return {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}` // Thêm token vào header Authorization
+        },
+    };
+};
+
 export const createWallet = (userId, name, balance, type) => async (dispatch, getState) => {
     dispatch(createWalletRequest());
+    // const token = getAuthToken(getState());
     const token = getAuthToken(getState());
-    console.log(token);
 
     try {
-        const response = await axios.post(`${API_URL}/user/wallets`, { userId, name, balance, type }, {
-            headers: { Authorization: `Bearer ${token}` }
+        const response = await axios.post(`https://financial-management-h89a.onrender.com/user/wallets`, { userId, name, balance, type }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}` // Thêm token vào header Authorization
+            },
         });
+
         console.log(response);
         dispatch(createWalletSuccess(response.data));
     } catch (error) {
-        console.log(error);
+        console.error('Error:', error.response ? error.response.data : error.message); // Log detailed error information
         dispatch(createWalletFailure(error.message));
     }
 };
