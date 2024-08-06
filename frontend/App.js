@@ -325,7 +325,7 @@ const AppStack = ({ isWalletAvailable }) => (
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const user = useSelector((state) => state.auth.user);
-  const wallets = useSelector((state) => state.wallet.wallets);
+  const wallets = useSelector((state) => state.wallet.wallets) || [];
   const [isWalletAvailable, setIsWalletAvailable] = useState(
     wallets.length > 0
   );
