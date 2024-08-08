@@ -16,6 +16,8 @@ import Toolbar from "../../components/Toolbar";
 import Colors from "../../components/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllWallets } from "../../redux/actions/walletAction";
+import moment from "moment"; // Import moment
+
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -108,6 +110,16 @@ const MyWallet = ({ navigation }) => {
   const user = useSelector((state) => state.auth.user);
   const [balance, setBalance] = useState(0);
   const dispatch = useDispatch();
+  // Chuyển đổi thời gian từ UTC sang giờ Việt Nam
+  const formatDate = (dateString) => {
+    return moment(dateString).utcOffset("+07:00").format("DD/MM/YYYY");
+  };
+  const handlePress = (walletId) => {
+    navigation.navigate("Home", { walletId });
+  };
+  const formatBalance = (amount) => {
+    return amount.toLocaleString("vi-VN");
+  };
   useEffect(() => {
     dispatch(getAllWallets(user._id));
   }, [dispatch]);
@@ -124,13 +136,21 @@ const MyWallet = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.balance_form}>
-          <Text style={{ fontSize: 32, marginTop: 5 }}>Tổng số dư</Text>
-          <Text style={{ color: "#50C474", fontSize: 22 }}>{balance} Đ</Text>
+          <Text style={{ fontSize: 30, marginTop: 5 }}>
+            Tổng số dư:{" "}
+            <Text style={{ color: "#50C474", fontSize: 30 }}>
+              {formatBalance(balance)} ₫
+            </Text>
+          </Text>
         </View>
         <View style={styles.individual_form}>
           <Text style={{ fontSize: 20, color: "#7D8895" }}>INDIVIDUAL</Text>
           {wallets.map((wallet) => (
-            <View key={wallet._id} style={styles.item}>
+            <TouchableOpacity
+              key={wallet._id}
+              style={styles.item}
+              onPress={() => handlePress(wallet._id)}
+            >
               <View style={styles.icon}>
                 <Icon.DollarSign
                   width={24}
@@ -145,7 +165,7 @@ const MyWallet = ({ navigation }) => {
                     Balance: {wallet.balance} đ
                   </Text>
                   <Text style={styles.createAt}>
-                    CreatedAt: {wallet.createdAt}
+                    CreatedAt: {formatDate(wallet.createAt)}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -158,7 +178,7 @@ const MyWallet = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
         <View style={styles.group_form}>

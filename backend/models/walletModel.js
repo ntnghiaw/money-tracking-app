@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const walletSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   name: {
     type: String,
     required: true,
@@ -10,22 +10,27 @@ const walletSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  transactions: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Transaction'
-}],
-  debts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Debt' }],
-  members: [{
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    role: String,
-  }],
-  plan: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Plan' }],
+  transactions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Transaction",
+    },
+  ],
+  debts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Debt" }],
+  members: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      role: String,
+    },
+  ],
+  plan: [{ type: mongoose.Schema.Types.ObjectId, ref: "Plan" }],
   type: {
     type: String,
-    default: 'private',
+    default: "private",
     required: true,
-  }
+  },
+  created: { type: Date, default: Date.now },
 });
 
-const Wallet = mongoose.model('Wallet', walletSchema);
+const Wallet = mongoose.model("Wallet", walletSchema);
 module.exports = Wallet;

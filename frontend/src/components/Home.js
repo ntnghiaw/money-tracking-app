@@ -8,7 +8,7 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { PieChart } from "react-native-svg-charts";
 import Toolbar from "./Toolbar";
@@ -18,6 +18,7 @@ import group_icon from "../../assets/images/icons/group_icon.png";
 import more_icon from "../../assets/images/icons/more_icon.png";
 import home_icon from "../../assets/images/icons/home_icon.png";
 import grocery_cart_icon from "../../assets/images/icons/grocery_cart_icon.png";
+import { useRoute } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -186,8 +187,21 @@ const styles = StyleSheet.create({
 });
 
 const Home = ({ navigation }) => {
-  const dispatch = useDispatch();
+  const route = useRoute();
+  const wallets = useSelector((state) => state.wallet.wallets);
+  const walletId = route.params?.walletId || wallets[0]?._id;
 
+  // const dispatch = useDispatch();
+  // const user = useSelector((state) => state.auth.user);
+  // useEffect(() => {
+  //   dispatch(getDetailedWallet(user._id, walletId));
+  // }, [dispatch]);
+  console.log(walletId);
+  const wallet = wallets.find((wallet) => wallet._id === walletId);
+
+  // if (!wallet) {
+  //   return <Text>Wallet not found</Text>;
+  // }
   const data = [
     {
       key: 1,
@@ -214,11 +228,15 @@ const Home = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.welcome}>
         <View style={styles.form_welcome}>
-          <Text style={{ fontSize: 20 }}>Welcome</Text>
+          <Text style={{ fontSize: 20, color: "green" }}>
+            {wallet ? wallet.name || "Welcome" : "Welcome"}
+          </Text>
           <Text style={{ color: "#7D8895" }}>Cash</Text>
         </View>
         <View style={styles.form_balance}>
-          <Text style={{ fontSize: 20 }}>12.400.000 ₫</Text>
+          <Text style={{ fontSize: 20 }}>
+            {wallet ? wallet.balance : "N/A"} ₫
+          </Text>
           <Text style={{ color: "#7D8895" }}>Your Balance</Text>
         </View>
       </View>

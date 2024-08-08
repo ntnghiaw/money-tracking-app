@@ -129,6 +129,11 @@ const AppStack = ({ isWalletAvailable }) => (
       })}
     />
     <Stack.Screen
+      name="CreateWallet"
+      component={NewWallet}
+      options={{ title: "Create Wallet" }}
+    />
+    <Stack.Screen
       name="Profile"
       component={Profile}
       options={{ title: "Profile" }}
@@ -141,7 +146,17 @@ const AppStack = ({ isWalletAvailable }) => (
     <Stack.Screen
       name="MyWallet"
       component={MyWallet}
-      options={{ title: "My Wallet" }}
+      options={({ navigation }) => ({
+        title: "My Wallet",
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate("CreateWallet")}>
+            <Image
+              source={require("./assets/images/icons/plus_icon.png")}
+              style={{ width: 30, height: 30, marginRight: 10 }}
+            />
+          </TouchableOpacity>
+        ),
+      })}
     />
     <Stack.Screen
       name="Welcome"
