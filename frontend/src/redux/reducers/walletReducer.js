@@ -15,7 +15,7 @@ import {
   DELETE_WALLET_SUCCESS,
   DELETE_WALLET_FAILURE,
 } from "../actions/walletAction";
-import { LOGIN_SUCCESS } from "../actions/authAction";
+import { LOGIN_SUCCESS, LOGOUT } from "../actions/authAction";
 
 const initialState = {
   wallets: [],
@@ -62,6 +62,11 @@ const walletReducer = (state = initialState, action) => {
       return {
         ...state,
         wallets: action.payload.user.wallets,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        wallets: [],
       };
     default:
       return state;

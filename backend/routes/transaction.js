@@ -1,17 +1,23 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const transactionsController = require('../controllers/transaction');
-const asyncHandler = require('../middlewares/asyncErrorHandler');
+const transactionController = require("../controllers/transaction");
+const asyncHandler = require("../middlewares/asyncErrorHandler");
 
+// Route để lấy tất cả giao dịch của một ví
+router.get("/", transactionController.getAllTransactions);
 
+// Route để tạo một giao dịch mới
+router.post("/", transactionController.createTransaction);
 
-router.get('/:transactionId', asyncHandler(transactionsController.getTransactionById));
-router.get('/', asyncHandler(transactionsController.getAllTransactions));
-router.post('/', asyncHandler(transactionsController.createTransaction));
-router.post('/:transactionId', asyncHandler(transactionsController.updateTransaction));
-router.delete('/:transactionId', asyncHandler(transactionsController.deleteTransaction));
-router.post('/ocr', asyncHandler(transactionsController.ocr));
+// Route để cập nhật giao dịch
+router.put("/:transactionId", transactionController.updateTransaction);
 
+// Route để xóa giao dịch
+router.delete("/:transactionId", transactionController.deleteTransaction);
+
+// Route để lấy thông tin giao dịch theo ID
+router.get("/:transactionId/details", transactionController.getTransactionById);
+router.post("/ocr", asyncHandler(transactionController.ocr));
 
 module.exports = router;

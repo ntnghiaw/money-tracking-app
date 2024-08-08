@@ -22,7 +22,7 @@ export const DELETE_WALLET_SUCCESS = "DELETE_WALLET_SUCCESS";
 export const DELETE_WALLET_FAILURE = "DELETE_WALLET_FAILURE";
 
 // API URL (adjust as needed)
-const API_URL = "http://192.168.43.186:5000";
+const API_URL = "https://financial-management-h89a.onrender.com";
 
 // Action creators
 const createWalletRequest = () => ({ type: CREATE_WALLET_REQUEST });

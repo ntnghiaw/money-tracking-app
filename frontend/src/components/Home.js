@@ -224,20 +224,23 @@ const Home = ({ navigation }) => {
       svg: { fill: "#94EDF7" },
     },
   ];
+  const formatBalance = (amount) => {
+    return amount.toLocaleString("vi-VN");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.welcome}>
         <View style={styles.form_welcome}>
+          <Text style={{ color: "#7D8895" }}>Your wallet name</Text>
           <Text style={{ fontSize: 20, color: "green" }}>
             {wallet ? wallet.name || "Welcome" : "Welcome"}
           </Text>
-          <Text style={{ color: "#7D8895" }}>Cash</Text>
         </View>
         <View style={styles.form_balance}>
-          <Text style={{ fontSize: 20 }}>
-            {wallet ? wallet.balance : "N/A"} ₫
-          </Text>
           <Text style={{ color: "#7D8895" }}>Your Balance</Text>
+          <Text style={{ fontSize: 20 }}>
+            {formatBalance(wallet ? wallet.balance : "N/A")} ₫
+          </Text>
         </View>
       </View>
       <View style={styles.expense_structure}>

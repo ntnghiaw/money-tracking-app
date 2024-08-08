@@ -228,7 +228,7 @@ const Home = ({ navigation }) => {
       <View style={styles.welcome}>
         <View style={styles.form_welcome}>
           <Text style={{ fontSize: 20 }}>Welcome</Text>
-          <Text style={{ color: "#7D8895" }}>Cash</Text>
+          <Text style={{ color: "#7D8895" }}>Your wallewt name</Text>
         </View>
         <View style={styles.form_balance}>
           <Text style={{ fontSize: 20 }}>12.400.000 ₫</Text>
