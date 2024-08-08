@@ -1,91 +1,134 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Dimensions, Alert } from 'react-native'
-import React,{useState} from 'react'
-import celebrate from '../../../assets//images/celebrate_icon.png';
-import PrimaryButton from '../../components/PrimaryButton';
-import { useDispatch, useSelector } from 'react-redux';
-import { createWallet } from '../../redux/actions/walletAction';
-const screenWidth = Dimensions.get('window').width
-const screenHeight = Dimensions.get('window').height
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import React, { useState } from "react";
+import celebrate from "../../../assets/images/celebrate_icon.png";
+import PrimaryButton from "../../components/PrimaryButton";
+import { useDispatch, useSelector } from "react-redux";
+import { createWallet } from "../../redux/actions/walletAction";
+
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        alignItems:'center',
-    },
-    image:{
-        width:150,
-        height:150,
-        margin:50,
-    },
-    button:{
-
-        marginTop:75,
-    },
-    text:{
-        fontSize:40,
-        color:'#559BE6',
-        textAlign:'center',
-    },
-    box_input:{
-        width:screenWidth*0.8,
-        height:50,
-        marginTop:40,
-
-    },
-
-})
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 30,
+  },
+  button: {
+    marginTop: 30,
+  },
+  text: {
+    fontSize: 24,
+    color: "#559BE6",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  box_input: {
+    width: screenWidth * 0.8,
+    height: 60,
+    marginVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    marginLeft: 10,
+  },
+});
 
 const NewWallet = ({ navigation }) => {
-    const dispatch = useDispatch();
-    const auth = useSelector((state) => state.auth); // Đảm bảo có state.auth trong store
-    const [name, setName] = useState('');
-    const [balance, setBalance] = useState('');
-    const handleCreateWallet = () => {
-        if (!name || !balance) {
-            Alert.alert('Validation Error', 'Please enter both name and balance');
-            return;
-        }
-        console.log(auth.user._id);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user); // Ensure state.auth is present in store
+  const [name, setName] = useState("");
+  const [balance, setBalance] = useState("");
+  console.log(user._id);
 
-        dispatch(createWallet(auth.user._id, name, parseFloat(balance), 'private')) // 'default' là loại ví, có thể thay đổi nếu cần
-            .then(() => {
-                navigation.navigate('Profile');
-            })
-            .catch((error) => {
-                Alert.alert('Error', 'Failed to create wallet. Please try again.');
-                console.error(error);
-            });
-    };
+  const handleCreateWallet = () => {
+    if (!name || !balance) {
+      Alert.alert("Validation Error", "Please enter both name and balance");
+      return;
+    }
 
-    return (
-        <View style={styles.container}>
-            <Image style={styles.image} source={celebrate} />
-            <Text style={styles.text}>Create your first financial wallet</Text>
-            <View style={styles.box_input}>
-                <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2506/2506858.png' }} />
-                <TextInput
-                    style={styles.input}
-                    placeholder='Name'
-                    value={name}
-                    onChangeText={setName}
-                />
-            </View>
-            <View style={styles.box_input}>
-                <Image style={{ width: 50, height: 50 }} source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2474/2474450.png' }} />
-                <TextInput
-                    style={styles.input}
-                    placeholder='Balance'
-                    value={balance}
-                    onChangeText={setBalance}
-                    keyboardType='numeric'
-                />
-            </View>
-            <View style={styles.button}>
-                <PrimaryButton title="Create" onPress={handleCreateWallet} />
-            </View>
+    dispatch(createWallet(user._id, name, parseFloat(balance), "private")) // 'default' is the wallet type, can be changed if needed
+      .then(() => {
+        navigation.navigate("MyWallet");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Failed to create wallet. Please try again.");
+        console.error(error);
+      });
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={{ alignItems: "center" }}>
+          <Image style={styles.image} source={celebrate} />
         </View>
-    );
+        <Text style={styles.text}>Create your financial wallet</Text>
+        <View style={styles.box_input}>
+          <Image
+            style={{ width: 24, height: 24 }}
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/2506/2506858.png",
+            }}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+        <View style={styles.box_input}>
+          <Image
+            style={{ width: 24, height: 24 }}
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/2474/2474450.png",
+            }}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Balance"
+            value={balance}
+            onChangeText={setBalance}
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.button}>
+          <PrimaryButton title="Create" onPress={handleCreateWallet} />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 };
 
 export default NewWallet;
-

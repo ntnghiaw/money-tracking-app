@@ -1,6 +1,6 @@
 import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
-import Toast from 'react-native-toast-message'; // Đảm bảo đã cài đặt react-native-toast-message
+import Toast from "react-native-toast-message"; // Đảm bảo đã cài đặt react-native-toast-message
 
 // Define action types directly in this file
 const LOGIN_START = "LOGIN_START";
@@ -52,17 +52,13 @@ export const login = (email, password, navigation) => async (dispatch) => {
     // console.log(data.user.wallets);
     if (response.ok) {
       dispatch(loginSuccess(data.token, data.user));
-      if (data.user.wallets.length > 0) {
-        navigation.navigate("Home", { user: data.user });
-      } else {
-        navigation.navigate("NewWallet");
-      }
     } else {
+      alert(data.message);
       dispatch(loginFailure(data.message));
     }
   } catch (error) {
     console.error("Login error:", error);
-    
+    alert(error.message);
     dispatch(loginFailure(error.message));
   }
 };

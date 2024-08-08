@@ -1,137 +1,253 @@
-const { NotFoundError } = require('../core/error.response');
-const { CREATED, OK } = require('../core/success.response');
-const Transaction = require('../models/transaction');
-const Wallet = require('../models/walletModel');
+const { NotFoundError } = require("../core/error.response");
+const { CREATED, OK } = require("../core/success.response");
+const Transaction = require("../models/transaction");
+const Wallet = require("../models/walletModel");
+const User = require("../models/userModel");
+exports.ocr = async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+  const options = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      apikey: "8f7d0240f8a911ee9433edbb2578dfab",
+    },
+    body: JSON.stringify({
+      headers: { "x-custom-key": "string" },
+      refresh: false,
+      incognito: false,
+      extractTime: false,
+      url: imageUrl,
+    }),
+  };
 
- exports.ocr =  async (req, res) => {
-    const imageUrl = req.query.imageUrl;
-    const options = {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          apikey: '8f7d0240f8a911ee9433edbb2578dfab'
-        },
-        body: JSON.stringify({
-          headers: {'x-custom-key': 'string'},
-          refresh: false,
-          incognito: false,
-          extractTime: false,
-          url: imageUrl
-        })
-      };
-    
-    fetch('https://api.taggun.io/api/receipt/v1/verbose/url', options)
-        .then(response => response.json())
-        .then(result => res.json(result.totalAmount))
-        .catch(err => console.error(err));
-  }
-  exports.getTransactionById = async (req, res, next) => {
-    const {transactionId} = req.params;
-    const transaction = await Transaction.findOne({ _id: transactionId}).lean();
-    if (!transaction) throw new NotFoundError(`Transaction is not found`);
-    return res.status(200).json(transaction);
-
-  }
-
+  fetch("https://api.taggun.io/api/receipt/v1/verbose/url", options)
+    .then((response) => response.json())
+    .then((result) => res.json(result.totalAmount))
+    .catch((err) => console.error(err));
+};
 exports.getAllTransactions = async (req, res, next) => {
-    const allTransactions = await Transaction.find().lean();
+  const { walletId, userId } = req.body;
+
+  try {
+    // Xác thực người dùng
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new NotFoundError(`User with ID ${userId} not found`));
+    }
+
+    // Xác thực ví
+    const wallet = user.wallets.id(walletId);
+    if (!wallet) {
+      return next(
+        new NotFoundError(
+          `Wallet with ID ${walletId} not found for user ${userId}`
+        )
+      );
+    }
+
+    // Trả về tất cả giao dịch
     return res.status(200).json({
-      amount: allTransactions.length,
-      transactions: allTransactions
+      transactions: wallet.transactions,
     });
-}
+  } catch (err) {
+    return next(err);
+  }
+};
 
-
-  
 exports.createTransaction = async (req, res, next) => {
-    const {amount, category, description, createdAt, imageUrl, type} = req.body;
-    const {walletId} = req.query; 
-    // validate a transaction infor
+  const {
+    amount,
+    category,
+    description,
+    createdAt,
+    imageUrl,
+    type,
+    walletId,
+    userId,
+  } = req.body;
 
-    //create new transaction
-    const existingWallet = await Wallet.findById(walletId);
-    if (!existingWallet) {
-      throw new NotFoundError(`wallet is not found`)
+  try {
+    // Xác thực người dùng
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new NotFoundError(`User with ID ${userId} not found`));
     }
-    const transaction = new Transaction({amount, category, description, createdAt, imageUrl, type});
-    await transaction.save();
-    // update wallet with new transaction
-    existingWallet.transactions = [...existingWallet.transactions, transaction._id];
-    if (transaction.type === 'Income' ) {
-      existingWallet.balance = existingWallet.balance + transaction.amount;
+
+    // Xác thực ví
+    const wallet = user.wallets.id(walletId);
+    if (!wallet) {
+      return next(
+        new NotFoundError(
+          `Wallet with ID ${walletId} not found for user ${userId}`
+        )
+      );
     }
-    else {
-      existingWallet.balance = existingWallet.balance - transaction.amount;
 
-    }
-    await existingWallet.save()
-    return new CREATED({message: 'Creating transaction success', metadata: transaction}).send(res);
-}
+    // Tạo giao dịch mới và cập nhật ví
+    const transaction = {
+      amount,
+      category,
+      description,
+      createdAt,
+      imageUrl,
+      type,
+    };
+    wallet.transactions.push(transaction);
+    wallet.balance += type === "Income" ? amount : -amount;
 
-exports.updateTransaction = async (req, res) => {
-  const {transactionId} = req.params;
-  const {walletId} = req.query; 
-  const updateTransaction = req.body;
+    await user.save();
 
-  const existingWallet = await Wallet.findById(walletId);
-  if (!existingWallet) {
-    throw new NotFoundError(`wallet is not found`)
-
+    return res.status(201).json({
+      message: "Transaction created successfully",
+      transaction,
+    });
+  } catch (err) {
+    return next(err);
   }
-  const existingTransaction  = await Transaction.findById(transactionId);
-  if (!existingTransaction) {
-    throw new NotFoundError(`Transaction is not found`)
+};
 
-  }
+exports.updateTransaction = async (req, res, next) => {
+  const { transactionId } = req.params;
+  const { walletId, userId } = req.query;
+  const updateData = req.body;
 
-  const filter = {_id: transactionId}, options = {new: true, upsert: true};
-
-  const updatedTransaction = await Transaction.findOneAndUpdate(filter, updateTransaction, options);
-  // update wallet with updated transaction
-  const isExpense = existingTransaction.type === 'Expense';
-  const sameType = existingTransaction.type === updateTransaction.type;
-  if (isExpense) {
-    if (!updateTransaction.type ||  sameType) {
-      existingWallet.balance = existingWallet.balance + (existingTransaction.amount - updateTransaction.amount);
+  try {
+    // Xác thực người dùng
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new NotFoundError(`User with ID ${userId} not found`));
     }
-    else {
-      existingWallet.balance = existingWallet.balance + (existingTransaction.amount + updateTransaction.amount);
 
+    // Xác thực ví
+    const wallet = user.wallets.id(walletId);
+    if (!wallet) {
+      return next(
+        new NotFoundError(
+          `Wallet with ID ${walletId} not found for user ${userId}`
+        )
+      );
     }
-  }
-  else  {
-    if (!updateTransaction.type || sameType) {
-      existingWallet.balance = existingWallet.balance + (updateTransaction.amount - existingTransaction.amount);
+
+    // Xác thực giao dịch
+    const transactionIndex = wallet.transactions.findIndex(
+      (t) => t._id.toString() === transactionId
+    );
+    if (transactionIndex === -1) {
+      return next(
+        new NotFoundError(`Transaction with ID ${transactionId} not found`)
+      );
     }
-    else {
-      existingWallet.balance = existingWallet.balance - (existingTransaction.amount + updateTransaction.amount);
 
+    const oldTransaction = wallet.transactions[transactionIndex];
+    wallet.transactions[transactionIndex] = {
+      ...oldTransaction,
+      ...updateData,
+    };
+
+    // Cập nhật số dư ví
+    if (oldTransaction.type === "Income") {
+      wallet.balance -= oldTransaction.amount;
+    } else {
+      wallet.balance += oldTransaction.amount;
     }
-  }
-  await existingWallet.save()
-  return new OK({message: 'Updating transaction success', metadata: updatedTransaction}).send(res);
-    
-}
 
+    if (updateData.type === "Income") {
+      wallet.balance += updateData.amount;
+    } else {
+      wallet.balance -= updateData.amount;
+    }
 
-exports.deleteTransaction = async (req, res) => {
-  const {transactionId} = req.params;
-  const {walletId} = req.query; 
+    await user.save();
 
-  const existingWallet = await Wallet.findById(walletId);
-  if (!existingWallet) {
-    throw new Error(`wallet ${walletId} is not existent`)
+    return res.status(200).json({
+      message: "Transaction updated successfully",
+      transaction: wallet.transactions[transactionIndex],
+    });
+  } catch (err) {
+    return next(err);
   }
-  const existingTransaction  = await Transaction.findById(transactionId);
-  if (!existingTransaction) {
-    throw new Error(`transaction ${transactionId} is not existent`);
+};
+
+exports.deleteTransaction = async (req, res, next) => {
+  const { transactionId } = req.params;
+  const { walletId, userId } = req.query;
+
+  try {
+    // Xác thực người dùng
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new NotFoundError(`User with ID ${userId} not found`));
+    }
+
+    // Xác thực ví
+    const wallet = user.wallets.id(walletId);
+    if (!wallet) {
+      return next(
+        new NotFoundError(
+          `Wallet with ID ${walletId} not found for user ${userId}`
+        )
+      );
+    }
+
+    // Xác thực giao dịch
+    const transactionIndex = wallet.transactions.findIndex(
+      (t) => t._id.toString() === transactionId
+    );
+    if (transactionIndex === -1) {
+      return next(
+        new NotFoundError(`Transaction with ID ${transactionId} not found`)
+      );
+    }
+
+    const transaction = wallet.transactions[transactionIndex];
+    wallet.transactions.splice(transactionIndex, 1);
+
+    // Cập nhật số dư ví
+    wallet.balance +=
+      transaction.type === "Income" ? -transaction.amount : transaction.amount;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Transaction deleted successfully",
+    });
+  } catch (err) {
+    return next(err);
   }
-  await Transaction.findOneAndDelete({ _id: transactionId});
-  // update wallet 
-  existingWallet.transactions.pop();
-  existingWallet.balance = existingWallet.balance - existingTransaction.amount;
-  await existingWallet.save()
-  return new OK({message: 'Deleting transaction success'}).send(res);
-    
-}
+};
+
+exports.getTransactionById = async (req, res, next) => {
+  const { transactionId } = req.params;
+  const { walletId, userId } = req.query;
+
+  try {
+    // Xác thực người dùng
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new NotFoundError(`User with ID ${userId} not found`));
+    }
+
+    // Xác thực ví
+    const wallet = user.wallets.id(walletId);
+    if (!wallet) {
+      return next(
+        new NotFoundError(
+          `Wallet with ID ${walletId} not found for user ${userId}`
+        )
+      );
+    }
+
+    // Xác thực giao dịch
+    const transaction = wallet.transactions.id(transactionId);
+    if (!transaction) {
+      return next(
+        new NotFoundError(`Transaction with ID ${transactionId} not found`)
+      );
+    }
+
+    return res.status(200).json(transaction);
+  } catch (err) {
+    return next(err);
+  }
+};

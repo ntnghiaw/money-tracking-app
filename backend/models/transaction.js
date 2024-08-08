@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const {CategorySchema} = require('./category')
+const mongoose = require("mongoose");
+const { CategorySchema } = require("./category");
 const TransactionSchema = new mongoose.Schema({
   amount: {
     type: Number,
@@ -7,25 +7,23 @@ const TransactionSchema = new mongoose.Schema({
     default: 0,
   },
   category: {
-    type: CategorySchema
+    type: String,
   },
   description: {
-    type: String
+    type: String,
   },
   createdAt: {
     type: Date,
     default: Date.now,
   },
   imageUrl: {
-    type: String
+    type: String,
   },
   type: {
     type: String,
     required: true,
-    default: 'Income',
-  }
+    default: "Income",
+  },
 });
 
-
-
-module.exports = mongoose.model('Transaction', TransactionSchema);
+module.exports = mongoose.model("Transaction", TransactionSchema);
