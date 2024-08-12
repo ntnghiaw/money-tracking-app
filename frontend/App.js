@@ -251,13 +251,13 @@ const AppStack = ({ isWalletAvailable }) => (
             />
           </TouchableOpacity>
         ),
-        headerTitle: (props) => (
-          <CustomizedHeader
-            dispatchFunction={changeType}
-            types={types}
-            reducer="transaction"
-          />
-        ),
+        // headerTitle: (props) => (
+        //   <CustomizedHeader
+        //     dispatchFunction={changeType}
+        //     types={types}
+        //     reducer="transaction"
+        //   />
+        // ),
       })}
     />
     <Stack.Screen
