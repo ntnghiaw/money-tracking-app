@@ -3,6 +3,28 @@ const { model, Schema, Types } = require('mongoose')
 const DOCUMENT_NAME = 'Category'
 const COLLECTION_NAME = 'categories'
 
+
+const subcategorySchema = new Schema(
+  {
+    icon: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    belongTo: {
+      type: Types.ObjectId,
+      ref: 'Category',
+    },
+  },
+  {
+    timestamps: true,
+    collection: 'subcategories',
+  }
+)
+
 const categorySchema = new Schema(
   {
     icon: {
@@ -18,26 +40,14 @@ const categorySchema = new Schema(
       type: String,
       required: true,
       enum: {
-        values: ['income', 'expense', 'debt', 'other', 'transfer'],
+        values: ['income', 'expense'],
       },
       required: true,
     },
-    secondaryCategories: [
-      new Schema({
-        icon: {
-          type: String,
-          required: true,
-        },
-        name: {
-          type: String,
-          required: true,
-        },
-        category: {
-          type: Types.ObjectId,
-          ref: 'Category',
-        },
-      }),
-    ],
+    subCategories: [{
+      type: Types.ObjectId,
+      ref: 'SubCategory',
+    }],
   },
   {
     timestamps: true,
@@ -47,5 +57,5 @@ const categorySchema = new Schema(
 
 module.exports = {
   categoryModel: model(DOCUMENT_NAME, categorySchema),
-  categorySchema,
+  subCategoryModel: model('SubCategory', subcategorySchema),
 }

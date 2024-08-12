@@ -20,6 +20,9 @@ class CategoryService  {
     }
   }
 
+  static async createSubCategory({userId, categoryId, subCategory}) {
+    
+  }
 }
 
 module.exports = CategoryService

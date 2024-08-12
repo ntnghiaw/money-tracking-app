@@ -1,32 +1,41 @@
 const { model, Schema } = require('mongoose')
 const { CategorySchema } = require('./category.model')
+const { min } = require('lodash')
 
 
 
 const DOCUMENT_NAME = 'FinancialPlan'
-const COLLECTION_NAME = 'financial_plans'
+const COLLECTION_NAME = 'financialPlans'
 
 const budgetSchema = new Schema(
   {
+    targetAmount: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
     spentAmount: {
       type: Number,
+      min: 0,
       default: 0,
     },
     categories: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Category',
+        required: true
       },
     ],
     startDate: {
       type: Date,
+      default: Date.now,
       required: true,
     },
     dueDate: {
       type: Date,
+      default: Date.now,
       required: true,
     },
-
     records: [
       {
         type: Schema.Types.ObjectId,
@@ -54,6 +63,22 @@ const goalSchema = new Schema(
       type: Number,
       default: 0,
     },
+    records: [
+      {
+        amount: {
+          type: Number,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        description: {
+          type: String,
+          maxLength: 255,
+        }
+      },
+    ],
   },
   {
     timeseries: true,
@@ -83,10 +108,7 @@ const financialPlanSchema = new Schema(
         ref: 'Transaction',
       },
     ],
-    targetAmount: {
-      type: Number,
-      required: true,
-    },
+
     attributes: {
       type: Schema.Types.Mixed,
       required: true,
@@ -99,7 +121,7 @@ const financialPlanSchema = new Schema(
 )
 
 module.exports = {
-  plan: model(DOCUMENT_NAME, financialPlanSchema),
-  budget: model('Budget', budgetSchema),
-  goal: model('Goal', goalSchema),
+  planModel: model(DOCUMENT_NAME, financialPlanSchema),
+  budgetModel: model('Budget', budgetSchema),
+  goalModel: model('Goal', goalSchema),
 }

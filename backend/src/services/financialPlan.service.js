@@ -1,5 +1,5 @@
-const { plan, budget, goal } = require('../models/financialPlan.model')
-const { BadRequestError } = require('../core/error.response')
+const { planModel, budgetModel, goalModel } = require('../models/financialPlan.model')
+const { BadRequestError, InternalServerError } = require('../core/error.response')
 const { startSession } = require('mongoose')
 
 class FinancialPlanFactory {
@@ -29,8 +29,8 @@ class FinancialPlan {
     this.attributes = attributes
   }
 
-  async createFinancialPlan() {
-    return await FinancialPlan.create(this)
+  async createFinancialPlan(planId) {
+    return await FinancialPlan.create({ ...this, _id: planId })
   }
 }
 
@@ -40,36 +40,41 @@ class Budget extends FinancialPlan {
     const session = await startSession()
     try {
       session.startTransaction()
-      const newBudget = await budget.create(this.attributes)
+      const newBudget = await budgetModel.create(this.attributes)
       if (!newBudget) {
         throw new BadRequestError('Create new Budget error')
       }
-      /// do something with newBudget
-    } catch (error) {}
-
-    const newPlan = await super.createFinancialPlan()
-    // when create new plan failed, we should delete the created budget?
-    if (!newPlan) {
-      throw new BadRequestError('Create new Plan error')
+      const newPlan = await super.createFinancialPlan(newBudget._id)
+      // when create new plan failed, we should delete the created budget?
+      if (!newPlan) {
+        throw new BadRequestError('Create new Plan error')
+      }
+      return newPlan
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerError('Create new Budget error')
     }
-    return newPlan
+    
   }
 }
 
 // define sub-class for goal
 class Goal extends FinancialPlan {
   async createFinancialPlan() {
-    const newGoal = await goal.create(this.attributes)
-    if (!newGoal) {
-      throw new BadRequestError('Create new Goal error')
-    }
+    try {
+      const newGoal = await goalModel.create(this.attributes)
+      if (!newGoal) {
+        throw new BadRequestError('Create new Goal error')
+      }
 
-    const newPlan = await super.createFinancialPlan()
-    if (!newPlan) {
-      throw new BadRequestError('Create new Plan error')
+      const newPlan = await super.createFinancialPlan(newGoal._id)
+      if (!newPlan) {
+        throw new BadRequestError('Create new Plan error')
+      }
+      return newPlan
+    } catch (error) {
+      throw new InternalServerError('Create new Goal error')
     }
-
-    return newPlan
   }
 }
 

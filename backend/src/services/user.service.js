@@ -1,5 +1,6 @@
 'use strict'
 
+const { BadRequestError } = require('../core/error.response')
 const userModel = require('../models/user.model')
 
 class UserService {
@@ -28,7 +29,19 @@ class UserService {
       email: 1,
     },
   }) => {
-    return await userModel.findOne({ email }).select(select).lean()
+    try {
+      const foundUser = await userModel
+        .findOne({ email })
+        .populate({
+          path: 'wallets',
+        })
+        .select(select)
+        .lean()
+      return foundUser
+    } catch (error) {
+      throw new BadRequestError('User not found')
+    }
+    
   }
 
   static findById = async (userId) => {

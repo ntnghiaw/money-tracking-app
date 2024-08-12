@@ -16,5 +16,5 @@ router.use('/v1/api/users', require('./user'))
 router.use('/v1/api/wallets', require('./wallet'))
 router.use('/v1/api/categories', require('./category'))
 router.use('/v1/api/transactions', require('./transaction'))
-
+router.use('/v1/api/financialPlans', require('./financialPlan'))
 module.exports = router
