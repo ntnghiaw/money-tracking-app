@@ -28,7 +28,10 @@ class UserService {
       email: 1,
     },
   }) => {
-    return await userModel.findOne({ email }).select(select).lean()
+    const foundUser = await userModel.findOne({ email }).populate({
+      path: 'wallets',
+    }).select(select).lean()
+    return foundUser
   }
 
   static findById = async (userId) => {
