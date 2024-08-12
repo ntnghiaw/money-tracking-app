@@ -1,0 +1,15 @@
+'use strict'
+
+const express = require('express')
+const userController = require('../../controllers/user.controller')
+const { asyncHandler } = require('../../helpers/asyncHandler')
+const { authentication } = require('../../auth/authUtils')
+const router = express.Router()
+
+// authentication
+router.use(authentication)
+
+// update info
+router.post('/:userId', asyncHandler(userController.updateInfo))
+
+module.exports = router

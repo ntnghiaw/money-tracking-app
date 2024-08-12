@@ -1,15 +1,11 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const app = require("./app");
-const connectDatabase = require('./config/database');
+const app = require('./src/app')
 
-dotenv.config();
+const PORT = process.env.PORT || 3055
 
-const PORT = 5000;
-const MONGO_URL = process.env.MONGO_URL;
+const server = app.listen(PORT, () => {
+  console.log(`Server start with port ${PORT}`)
+})
 
-connectDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-});
+process.on('SIGINT', () => {
+  server.close(() => console.log(`Exit server express`))
+})
