@@ -9,12 +9,12 @@ const COLLECTION_NAME = 'financialPlans'
 
 const budgetSchema = new Schema(
   {
-    targetAmount: {
+    target_amount: { //input
       type: Number,
       min: 0,
       required: true,
     },
-    spentAmount: {
+    spent_amount: {
       type: Number,
       min: 0,
       default: 0,
@@ -22,16 +22,16 @@ const budgetSchema = new Schema(
     categories: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: 'SubCategory',
         required: true
       },
     ],
-    startDate: {
+    start_date: {
       type: Date,
       default: Date.now,
       required: true,
     },
-    dueDate: {
+    due_date: {
       type: Date,
       default: Date.now,
       required: true,
@@ -51,15 +51,15 @@ const budgetSchema = new Schema(
 
 const goalSchema = new Schema(
   {
-    targetAmount: {
+    target_amount: {
       type: Number,
       required: true,
     },
-    desiredDate: {
+    desired_date: {
       type: Date,
       required: true,
     },
-    currentAmount: {
+    current_amount: {
       type: Number,
       default: 0,
     },
@@ -102,13 +102,6 @@ const financialPlanSchema = new Schema(
       enum: ['budget', 'goal'],
       required: true,
     },
-    records: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Transaction',
-      },
-    ],
-
     attributes: {
       type: Schema.Types.Mixed,
       required: true,

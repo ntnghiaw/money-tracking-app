@@ -1,12 +1,18 @@
 'use strict'
 
 const { BadRequestError } = require('../core/error.response')
+const { categoryModel } = require('../models/category.model')
 const userModel = require('../models/user.model')
+const { getInfoData } = require('../utils')
 
 class UserService {
   static create = async (user) => {
+    const categories = await categoryModel.find().select('_id').lean()
     try {
-      return await userModel.create(user)
+      return await userModel.create({
+        ...user,
+        categories,
+      })
     } catch (error) {
       throw new Error('Create new user error')
     }
@@ -32,9 +38,9 @@ class UserService {
     try {
       const foundUser = await userModel
         .findOne({ email })
-        .populate({
-          path: 'wallets',
-        })
+        // .populate({
+        //   path: 'wallets',
+        // })
         .select(select)
         .lean()
       return foundUser
@@ -54,6 +60,11 @@ class UserService {
       { $push: { wallets: walletId } },
       { new: true }
     )
+  }
+
+  static getInfo = async (userId) => {
+    const user = await userModel.findById(userId)
+    return getInfoData({object: user, fields: ['_id', 'name', 'email', 'avatarUrl', 'gender', 'dateOfBirth']})
   }
 
   static removeWalletById = async (userId, walletId) => {

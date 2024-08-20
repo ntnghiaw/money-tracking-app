@@ -14,7 +14,7 @@ const subcategorySchema = new Schema(
       type: String,
       required: true,
     },
-    belongTo: {
+    belong_to: {
       type: Types.ObjectId,
       ref: 'Category',
     },
@@ -44,10 +44,12 @@ const categorySchema = new Schema(
       },
       required: true,
     },
-    subCategories: [{
-      type: Types.ObjectId,
-      ref: 'SubCategory',
-    }],
+    sub_categories: [
+      {
+        type: Types.ObjectId,
+        ref: 'SubCategory',
+      },
+    ],
   },
   {
     timestamps: true,

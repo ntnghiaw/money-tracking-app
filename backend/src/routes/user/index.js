@@ -11,5 +11,6 @@ router.use(authentication)
 
 // update info
 router.post('/:userId', asyncHandler(userController.updateInfo))
+router.get('/', asyncHandler(userController.getInfo))
 
 module.exports = router

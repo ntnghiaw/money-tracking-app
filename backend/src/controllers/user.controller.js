@@ -11,6 +11,12 @@ class UserController {
       metadata: await UserService.updateInfo({userId, user: req.body}),
     }).send(res)
   }
+  getInfo = async (req, res, next) => {
+    new SuccessResponse({
+      message: 'Get info success!',
+      metadata: await UserService.getInfo(req.headers['x-client-id']),
+    }).send(res)
+  }
 }
 
 module.exports = new UserController()

@@ -41,7 +41,6 @@ const authentication = asyncHandler(async (req, res, next) => {
     */
   const userId = req.headers[HEADER.CLIENT_ID]
   if (!userId) throw new AuthFailureError('Invalid request')
-    
   const keyStore = await KeyTokenService.findByUserId(userId)
   if (!keyStore) throw new AuthFailureError('Auth failure')
 
@@ -50,6 +49,7 @@ const authentication = asyncHandler(async (req, res, next) => {
     req.headers[HEADER.REFRESHTOKEN]
   ) {
     try {
+      
       const refreshToken = req.headers[HEADER.REFRESHTOKEN]
       const decode = verifyJWT(refreshToken, keyStore.privateKey)
       if (decode.userId !== userId) throw new AuthFailureError('Invalid token')
@@ -63,13 +63,13 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
   const accessToken = req.headers[HEADER.AUTHORIZATION]
   if (!accessToken) throw new AuthFailureError('Invalid request')
-
     try {
       const decode = verifyJWT(accessToken, keyStore.publicKey)
       if (decode.userId !== userId) throw new AuthFailureError('Invalid token')
       req.keyStore = keyStore
       return next()
     } catch (error) {
+      console.log(error)
       throw error
     }
 

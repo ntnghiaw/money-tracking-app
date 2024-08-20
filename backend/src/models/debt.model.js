@@ -17,13 +17,21 @@ const debtSchema = new Schema(
       min: [0, 'Amount must be greater than 0'],
       default: 0,
     },
+    borrower: {
+      type: String,
+      required: true,
+    },
+    lender: {
+      type: String,
+      required: true,
+    },
     records: [
       {
         type: Types.ObjectId,
         ref: 'Transaction',
       },
     ],
-    dueDate: {
+    due_date: {
       type: Date,
       required: true,
     },
@@ -31,7 +39,7 @@ const debtSchema = new Schema(
       type: String,
       maxLength: 255,
     },
-    interestRate: {
+    interest_rate: {
       rate: {
         type: Double,
         required: true,
@@ -51,11 +59,6 @@ const debtSchema = new Schema(
       },
       required: true,
     },
-    lender: {
-      type: String,
-      required:true,
-    },
-
   },
   {
     timestamps: true,

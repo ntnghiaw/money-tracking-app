@@ -13,21 +13,8 @@ const transactionSchema = new Schema(
       default: 0,
     },
     category: {
-      _id: {
-        type: Types.ObjectId,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      type: {
-        type: String,
-        required: true,
-      },
-      icon: {
-        type: String,
-        required: true,
-      },
+      type: Types.ObjectId,
+      ref: 'SubCategory',
     },
     description: {
       type: String,
@@ -40,14 +27,11 @@ const transactionSchema = new Schema(
     type: {
       type: String,
       enum: {
-        values: ['income', 'expense', 'debt', 'other', 'transfer'],
+        values: ['income', 'expense'],
       },
       required: true,
     },
-    createdAt: {
-      type: Date,
-      default: new Date(),
-    },
+  
     // createdBy: {
     //   type: Types.ObjectId,
     //   ref: 'User',

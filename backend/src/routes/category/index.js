@@ -11,5 +11,7 @@ router.use(authentication)
 
 router.get('', asyncHandler(categoryController.getAllCategories))
 router.post('', asyncHandler(categoryController.createCategory))
+router.post('/:categoryId', asyncHandler(categoryController.createNewSubCategory))
+
 
 module.exports = router

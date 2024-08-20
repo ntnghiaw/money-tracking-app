@@ -1,5 +1,4 @@
 const { model, Schema, Types } = require('mongoose') // Erase if already required
-
 const DOCUMENT_NAME = 'User'
 const COLLECTION_NAME = 'users'
 
@@ -28,18 +27,24 @@ var userSchema = new Schema(
         ref: 'Wallet',
       },
     ],
-    sex: {
+    categories: [
+      {
+        type: Types.ObjectId,
+        ref: 'Category',
+      },
+    ],
+    gender: {
       type: String,
       enum: ['male', 'female', 'other'],
     },
-    dateOfBirth: {
-      type: Date,
+    dob: {
+      type: Date, // Date of birth
     },
     phone: {
       type: String,
       maxLength: 15,
     },
-    avatarUrl: {
+    avatar_url: {
       type: String,
       maxLength: 200,
       default: function () {

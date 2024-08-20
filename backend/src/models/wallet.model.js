@@ -13,15 +13,14 @@ const COLLECTION_NAME = 'wallets'
 // Declare the Schema of the Mongo model
 const walletSchema = new Schema(
   {
-    walletName: {
+    name: {
       type: String,
       required: true,
       unique: true,
       trim: true,
     },
-    walletBalance: {
+    balance: {
       type: Number,
-      required: true,
       default: 0,
     },
     currency: {
@@ -29,12 +28,12 @@ const walletSchema = new Schema(
       enum: ['USD', 'EUR', 'VND'],
       required: true,
     },
-    walletType: {
+    type: {
       type: String,
-      enum: ['individual', 'group'],
+      enum: ['private', 'shared'],
       required: true,
     },
-    walletAvatarUrl: {
+    image_url: {
       type: String,
       // default: 'https://res.cloudinary.com/dybygufkr/image/upload/v1623925926/avatars/default-avatar.png',
     },
@@ -44,7 +43,7 @@ const walletSchema = new Schema(
         ref: 'Transaction',
       }
     ],
-    financialPlans: [
+    financial_plans: [
       {
         type: Schema.Types.ObjectId,
         ref: 'FinancialPlan',

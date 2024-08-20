@@ -1,11 +1,13 @@
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const { default: helmet } = require('helmet')
 const compression = require('compression')
 const app = express()
 
 // init middlewares
+app.use(cors())
 app.use(morgan('dev'))
 app.use(helmet())
 app.use(compression())
@@ -31,7 +33,7 @@ app.use((error, req, res, next) => {
   return res.status(statusCode).json({
     status: 'error',
     code: statusCode,
-    // stack: error.stack,
+    stack: error.stack,
     message: error.message || 'Internal Server Error',
   })
 })

@@ -12,6 +12,7 @@ const {
 const userModel = require('../models/user.model')
 const transactionModel = require('../models/transaction.model')
 const TransactionService = require('./transaction.service')
+const { getInfoData } = require('../utils')
 
 
    const getAllWallets = async (userId) => {
@@ -34,7 +35,10 @@ const TransactionService = require('./transaction.service')
     }
     try {
       await UserServices.addWalletById(userId, newWallet._id)
-      return newWallet
+      return getInfoData({
+        object: newWallet,
+        fields: ['_id', 'name', 'currency', 'balance', 'type'],
+      })
     } catch (error) { 
       // Rollback
       console.log(error)
@@ -78,7 +82,7 @@ const TransactionService = require('./transaction.service')
     if (!foundUser) {
       throw new BadRequestError('Invalid user')
     }
-    return await walletModel.findOne({ _id: walletId }).lean()
+    return await walletModel.findOne({ _id: walletId }).populate('transactions').lean()
   }
 
 
