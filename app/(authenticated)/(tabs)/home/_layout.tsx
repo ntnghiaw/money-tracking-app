@@ -18,10 +18,10 @@ const Layout = () => {
               <FolderPlus width={24} height={24} color={Colors.black} />
             </Pressable>
           ),
-       
         }}
       />
       <Stack.Screen name='wallet' options={{ title: 'Wallet', presentation: 'modal' }} />
+      <Stack.Screen name='history' options={{ title: 'History', }} />
     </Stack>
   )
 }

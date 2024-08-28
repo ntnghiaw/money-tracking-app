@@ -23,6 +23,9 @@ const authSlice = createSlice({
       state.isAuthenticated = true
       state.walletId = walletId
     },
+    setDefaultWallet (state, action: PayloadAction<string>) {
+      state.walletId = action.payload
+    },
     clearAuth(state) {
       state.tokens = {
         accessToken: '',
@@ -37,7 +40,7 @@ const authSlice = createSlice({
 
 
 
-export const { setAuth, clearAuth } = authSlice.actions
+export const { setAuth, clearAuth, setDefaultWallet } = authSlice.actions
 
 const authReducer = authSlice.reducer
 export default authReducer

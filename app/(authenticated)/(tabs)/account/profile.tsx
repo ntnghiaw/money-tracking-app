@@ -7,14 +7,15 @@ import {
   Text,
   Dimensions,
   SafeAreaView,
+  Alert,
 } from 'react-native'
 import { Colors } from '@/constants/Colors'
 import { Camera, ChevronDown } from 'react-native-feather'
 import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 import { SelectCountry } from 'react-native-element-dropdown'
-import { useGetProfileQuery } from '@/features/user/user.service'
+import { useGetProfileQuery, useUpdateProfileMutation } from '@/features/user/user.service'
 import Loading from '@/components/Loading'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import BottomSheet from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheet'
 import {
   BottomSheetBackdrop,
@@ -23,13 +24,20 @@ import {
 } from '@gorhom/bottom-sheet'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
+import { UserProfile } from '@/types/enum'
 
-const profileState = {
+interface Profiles {
+  name: string
+  dob?: string
+  avatar_url: string
+  phone?: string
+  gender?: string
+}
+
+
+const profileState: Profiles = {
   name: 'Name',
-  dob: '',
   avatar_url: '',
-  gender: '',
-  phone: '',
 }
 const screenHeight = Dimensions.get('window').height
 
@@ -65,7 +73,21 @@ const Profile = () => {
 
   const { data, isError, isLoading } = useGetProfileQuery({
     auth: { userId, accessToken: tokens?.accessToken },
-  })
+  }, {skip: !userId})
+
+  const [updateProfile, { isSuccess, isError: isUpdateError }] = useUpdateProfileMutation()
+
+
+  useEffect(() => {
+    if (data) {
+      setProfile({
+        name: data.metadata.name,
+        dob: data.metadata.dob ,
+        gender: data.metadata.gender,
+        avatar_url: data.metadata.avatar_url,
+      })
+    }
+  }, [data] )
 
   const showMode = (currentMode: AndroidMode) => {
     setShow(true)
@@ -85,8 +107,24 @@ const Profile = () => {
   }
 
   const handleChangeGender = (e: any) => {
-    console.log(e.value)
-    setGender(e.value)
+    setProfile(prev => ({...prev, gender: e.value}))
+  }
+  
+  const handleUpdateProfile = async () => {
+    if (!profile.name) {
+      return Alert.alert('Name is required')
+    }
+    const body = {
+      name: profile.name,
+      dob: profile.dob,
+      gender: profile.gender,
+      phone: profile.phone,
+    }
+    await updateProfile({ userId, body, auth: {
+      accessToken: tokens?.accessToken,
+      userId: userId
+    } }).unwrap()
+    Alert.alert('Update profile successfully')
   }
 
   const renderBackdrop = useCallback(
@@ -102,7 +140,20 @@ const Profile = () => {
     ),
     []
   )
-  console.log(data)
+    const openActionSheet = async () => {
+      const options = ['Camera', 'Choose from gallery', 'Cancel']
+      const cancelButtonIndex = 2
+      showActionSheetWithOptions(
+        {
+          options,
+          cancelButtonIndex,
+        },
+        (selectedIndex: any) => {
+          console.log(selectedIndex)
+        }
+      )
+    }
+
 
   return (
     <BottomSheetModalProvider>
@@ -115,9 +166,9 @@ const Profile = () => {
               style={styles.avatar}
               resizeMode='contain'
             />
-            <View style={styles.innerCamera}>
+            <TouchableOpacity style={styles.innerCamera} onPress={openActionSheet}>
               <Camera width={15} height={15} color={Colors.black} />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.info}>
             <View style={styles.item}>
@@ -126,7 +177,8 @@ const Profile = () => {
                 <TextInput
                   style={styles.itemText}
                   placeholder='Name'
-                  value={data?.metadata.name}
+                  value={profile.name}
+                  onChangeText={(text) => setProfile((prev) => ({ ...prev, name: text }))}
                 ></TextInput>
               </View>
             </View>
@@ -153,11 +205,11 @@ const Profile = () => {
                   renderRightIcon={() => (
                     <ChevronDown width={24} height={24} stroke={Colors.gray} />
                   )}
-                  placeholder='None'
+                  placeholder={'None'}
                   placeholderStyle={{color: Colors.gray}}
                   imageStyle={{ display: 'none' }}
                   maxHeight={200}
-                  value={gender}
+                  value={profile.gender}
                   data={genders}
                   valueField='value'
                   labelField='lable'
@@ -168,7 +220,7 @@ const Profile = () => {
             <View style={styles.item}>
               <Text style={styles.itemLabel}>Phone</Text>
               <View style={styles.itemContent}>
-                <TextInput style={styles.itemText} placeholder='None'></TextInput>
+                <TextInput style={styles.itemText} placeholder='None' value={profile.phone}></TextInput>
               </View>
             </View>
             <View style={styles.item}>
@@ -184,7 +236,7 @@ const Profile = () => {
             </View>
           </View>
           <View style={{ paddingHorizontal: 16 }}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
               <Text
                 style={{
                   color: 'white',

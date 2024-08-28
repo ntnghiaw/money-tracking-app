@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 interface WalletRequest {
   name: string
   currency: string
-  type: WalletType.Private
+  type: WalletType
 }
 
 interface HeaderRequest {
@@ -35,7 +35,88 @@ export const walletApi = createApi({
         },
         body: body.wallet,
       }),
+      invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
+    createNewWallet: builder.mutation<
+      Response<WalletResponse>,
+      {
+        wallet: WalletRequest
+        auth: HeaderRequest
+      }
+    >({
+      query: (body) => ({
+        url: '/wallets',
+        method: 'POST',
+        headers: {
+          Authorization: `${body.auth.accessToken}`,
+          'x-client-id': `${body.auth.userId}`,
+        },
+        body: body.wallet,
+      }),
+      invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
+    }),
+
+    updateWallet: builder.mutation<
+      Response<WalletResponse>,
+      {
+        walletId: string
+        wallet: Pick<Wallet, 'name' | 'currency'>
+        auth: HeaderRequest
+      }
+    >({
+      query: (body) => ({
+        url: `/wallets/${body.walletId}`,
+        method: 'POST',
+        headers: {
+          Authorization: `${body.auth.accessToken}`,
+          'x-client-id': `${body.auth.userId}`,
+        },
+        body: body.wallet,
+      }),
+      invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
+    }),
+
+    deleteWallet: builder.mutation<
+      Response<WalletResponse>,
+      {
+        walletId: string
+        auth: HeaderRequest
+      }
+    >({
+      query: (body) => ({
+        url: `/wallets/${body.walletId}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `${body.auth.accessToken}`,
+          'x-client-id': `${body.auth.userId}`,
+        },
+      }),
+      invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
+    }),
+
+    getAllWallets: builder.query<
+      Response<Wallet[]>,
+      {
+        auth: HeaderRequest
+      }
+    >({
+      query: (body) => ({
+        url: `/wallets`,
+        method: 'GET',
+        headers: {
+          Authorization: `${body.auth.accessToken}`,
+          'x-client-id': `${body.auth.userId}`,
+        },
+      }),
+      providesTags: (result) =>
+        result?.metadata
+          ? [
+              { type: 'Wallet', id: 'LIST' },
+              { type: 'Wallet' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Wallet' as const, id: 'LIST' }],
+    }),
+
     getWalletById: builder.query<
       Response<WalletResponse>,
       { walletId: string; auth: HeaderRequest }
@@ -69,7 +150,7 @@ export const walletApi = createApi({
           'x-client-id': `${data.auth.userId}`,
         },
       }),
-      providesTags: (result) => [{ type: 'Transaction', id: result!.metadata._id }],
+      providesTags: (result, error, data) => [{ type: 'Transaction', id: data.id }],
     }),
 
     createTransaction: builder.mutation<
@@ -138,30 +219,17 @@ export const walletApi = createApi({
         { type: 'Wallet', id: 'LIST' },
       ],
     }),
-
-    getAllWallets: builder.query<
-      Response<Wallet[]>,
-      {
-        auth: HeaderRequest
-      }
-    >({
-      query: (body) => ({
-        url: `/wallets`,
-        method: 'GET',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
-      }),
-    }),
   }),
 })
 
 export const {
   useCreateFirstWalletMutation,
+  useCreateNewWalletMutation,
+  useUpdateWalletMutation,
+  useDeleteWalletMutation,
   useGetWalletByIdQuery,
-  useCreateTransactionMutation,
   useGetAllWalletsQuery,
+  useCreateTransactionMutation,
   useUpdateTransactionMutation,
   useGetTransactionByIdQuery,
   useDeleteTransactionMutation,

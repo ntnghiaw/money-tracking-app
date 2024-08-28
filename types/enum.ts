@@ -112,6 +112,7 @@ export interface Wallet {
 export interface WalletsState {
   wallets: string[]
   currentWallet: string
+  currentCurrency: string
 
 }
 
@@ -191,4 +192,4 @@ export interface User {
   wallets: string[]
 }
 
-export type UserProfile = Pick<User, 'name' | 'gender' | 'avatar_url' | 'dob' | '_id' | 'email'>
+export type UserProfile = Pick<User, 'name' | 'gender' | 'avatar_url' | 'dob' | '_id' | 'email' | 'phone'>

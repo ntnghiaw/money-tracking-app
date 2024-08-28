@@ -22,10 +22,10 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name='history/history'
+        name='financialPlan'
         options={{
-          title: 'History',
-          tabBarLabel: 'History',
+          title: 'Budget & Goal',
+          tabBarLabel: 'Budget',
           tabBarIcon: ({ size, focused, color }) => (
             <List width={size} height={size} stroke={color} />
           ),

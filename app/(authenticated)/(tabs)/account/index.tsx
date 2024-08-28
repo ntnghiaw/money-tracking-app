@@ -18,7 +18,6 @@ const Account = () => {
   const { data: userInfo, isError: isErrorGetInfo } = useGetProfileQuery({
     auth: { userId, accessToken: tokens?.accessToken },
   })
-  console.log(userInfo?.metadata.avatar_url)
 
   const handleLogout = async () => {
     await logout({ userId, tokens, isAuthenticated, walletId })
@@ -35,12 +34,21 @@ const Account = () => {
       )}
       <View style={styles.inner}>
         <View style={styles.avtFrame}>
-          <Image source={{uri: userInfo?.metadata.avatar_url}} width={80} height={80} style={styles.avt} resizeMode='contain'/>
+          <Image
+            source={{ uri: userInfo?.metadata.avatar_url }}
+            width={80}
+            height={80}
+            style={styles.avt}
+            resizeMode='contain'
+          />
           <Text style={styles.memberStatusText}>Member</Text>
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Settings</Text>
-          <TouchableOpacity style={styles.item} onPress={() => router.navigate('/(authenticated)/(tabs)/account/profile')}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/profile')}
+          >
             <View style={styles.icon}>
               <User width={24} height={24} color={'#545454'} />
             </View>

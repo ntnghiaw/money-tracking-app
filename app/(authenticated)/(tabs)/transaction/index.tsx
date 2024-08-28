@@ -56,6 +56,7 @@ import Categories from '@/components/Categories'
 import { DismissKeyboard } from '@/components/DismissKeyboard'
 import { AMOUNT_VND } from '@/constants/Masks'
 import { editTransaction } from '@/features/transaction/transactionSlice'
+import { currencySymbol } from '@/utils/formatAmount'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -92,6 +93,7 @@ const Page = () => {
   const [type, setType] = useState<TransactionType>(TransactionType.Expense)
   const { userId, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
   const { _id } = useAppSelector((state) => state.transaction)
+  const { currentCurrency: currency } = useAppSelector((state) => state.wallets)
   const {
     data: resData,
     isFetching: isFetchingData,
@@ -118,8 +120,8 @@ const Page = () => {
     },
   ] = useUpdateTransactionMutation()
 
-  const [deleteTransaction, {data: deleteRes, isSuccess: isDeleted}] = useDeleteTransactionMutation()
-
+  const [deleteTransaction, { data: deleteRes, isSuccess: isDeleted }] =
+    useDeleteTransactionMutation()
   useEffect(() => {
     if (resData && _id) {
       setTransaction({
@@ -127,20 +129,18 @@ const Page = () => {
         amount: resData.metadata.amount.toString(),
       })
     }
-  }, [resData])
+  }, [resData, _id])
 
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener('blur', () => {
   //     // Do something when the screen blurs
-     
+
   //   })
 
   //   return unsubscribe
   // }, [navigation])
   useFocusEffect(() => {
-    if(params.new === 'true')
-      setTransaction(initialTransaction)
-
+    if (params.new === 'true') setTransaction(initialTransaction)
   })
 
   useEffect(() => {
@@ -316,7 +316,7 @@ const Page = () => {
                       }}
                       mask={AMOUNT_VND}
                     />
-                    <Text style={{ fontSize: 20 }}>₫</Text>
+                    <Text style={{ fontSize: 20 }}>{currencySymbol(currency)}</Text>
                   </View>
                 </View>
                 <View style={styles.detailsContainer}>
@@ -414,7 +414,11 @@ const Page = () => {
                   {
                     text: 'OK',
                     onPress: () => {
-                      deleteTransaction({ id: _id, walletId, auth: { accessToken: tokens.accessToken, userId } })
+                      deleteTransaction({
+                        id: _id,
+                        walletId,
+                        auth: { accessToken: tokens.accessToken, userId },
+                      })
                       distpatch(editTransaction({ _id: '' }))
                       router.back()
                     },

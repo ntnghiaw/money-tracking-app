@@ -1,5 +1,5 @@
 import { CategorieColors, Colors, IconColor } from '@/constants/Colors'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   View,
   SafeAreaView,
@@ -31,12 +31,12 @@ import { useGetWalletByIdQuery } from '@/features/wallet/wallet.service'
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Loading from '@/components/Loading'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { formatter } from '@/utils/formatNumber'
+import { formatter } from '@/utils/formatAmount'
 import { Transaction } from '@/types/enum'
 import { handleStatistic } from '@/utils/handleStatistic'
 import { useRouter } from 'expo-router'
-import {editTransaction} from '@/features/transaction/transactionSlice'
-
+import { editTransaction } from '@/features/transaction/transactionSlice'
+import { setCurrentCurrency } from '@/features/wallet/walletSlice'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -52,6 +52,7 @@ const HomePage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const { userId, tokens, walletId } = useAppSelector((state) => state.auth)
+  const { currentCurrency: currency } = useAppSelector((state) => state.wallets)
   const { isLoading, isSuccess, data } = useGetWalletByIdQuery({
     walletId: walletId,
     auth: {
@@ -59,6 +60,12 @@ const HomePage = () => {
       accessToken: tokens.accessToken,
     },
   })
+  useEffect(() => {
+    if (data) {
+      dispatch(setCurrentCurrency(data.metadata.currency))
+    }
+  }, [data])
+
   const wallet = data?.metadata
   const transactions = wallet?.transactions
   const recentTransactions = transactions?.slice(0, 3) // get 3 recent transactions
@@ -91,7 +98,7 @@ const HomePage = () => {
           <View style={styles.form_balance}>
             <Text style={{ color: '#7D8895' }}>Your Balance</Text>
             {/* ₫ */}
-            <Text style={{ fontSize: 20 }}>{formatter(wallet?.balance ?? 0)}</Text>
+            <Text style={{ fontSize: 20 }}>{formatter(wallet?.balance ?? 0, currency)}</Text>
           </View>
         </View>
         <View style={styles.expense_structure}>
@@ -115,7 +122,9 @@ const HomePage = () => {
                       <Text style={{ fontSize: 18, color: Colors.gray, fontWeight: '500' }}>
                         ALL
                       </Text>
-                      <Text style={{ fontSize: 14, color: Colors.gray }}>{formatter(total)}</Text>
+                      <Text style={{ fontSize: 14, color: Colors.gray }}>
+                        {formatter(total, currency)}
+                      </Text>
                     </View>
                   )
                 }}
@@ -134,7 +143,7 @@ const HomePage = () => {
                   </View>
                 ))
               ) : (
-                <Text style={{ textAlign: 'center'}}>No transactions</Text>
+                <Text style={{ textAlign: 'center' }}>No transactions</Text>
               )}
               {/* <View style={styles.expense_notation}>
                 <View style={[styles.small_circle, { backgroundColor: Colors.firstCategory }]} />
@@ -163,13 +172,19 @@ const HomePage = () => {
           </View>
           <View style={styles.operationList}>
             <View style={styles.operation}>
-              <TouchableOpacity style={styles.opbutton}>
+              <TouchableOpacity
+                style={styles.opbutton}
+                onPress={() => router.navigate('/(authenticated)/(tabs)/home/wallets')}
+              >
                 <RefreshCcw width={24} height={24} stroke={Colors.gray} />
               </TouchableOpacity>
               <Text style={styles.opText}>Transfer</Text>
             </View>
             <View style={styles.operation}>
-              <TouchableOpacity style={styles.opbutton}>
+              <TouchableOpacity
+                style={styles.opbutton}
+                onPress={() => router.navigate('/(authenticated)/(tabs)/transaction')}
+              >
                 <PlusCircle width={32} height={32} stroke={Colors.gray} />
               </TouchableOpacity>
               <Text style={styles.opText}>Add</Text>
@@ -189,15 +204,31 @@ const HomePage = () => {
           </View>
         </View>
         <View style={styles.recent_transactions}>
-          <Text style={styles.titleText}>Recent Transations</Text>
+          <TouchableOpacity onPress={() => router.navigate('/(authenticated)/(tabs)/home/history')}>
+            <Text style={styles.titleText}>Recent Transations</Text>
+            <ChevronRight
+              width={24}
+              height={24}
+              color={Colors.gray}
+              style={{ position: 'absolute', right: 12, top: 8 }}
+            />
+          </TouchableOpacity>
 
           {recentTransactions?.map((transaction, index) => (
-            <TouchableOpacity style={styles.list_transations} key={index} onPress={() => {
-              dispatch(editTransaction({ _id: transaction._id }))
-              router.navigate('/(authenticated)/(tabs)/transaction')
-            }}>
+            <TouchableOpacity
+              style={styles.list_transations}
+              key={index}
+              onPress={() => {
+                dispatch(editTransaction({ _id: transaction._id }))
+                router.navigate('/(authenticated)/(tabs)/transaction')
+              }}
+            >
               <View style={styles.transation_icon_container}>
-                <Icons name={transaction?.category?.icon} size={32} color={IconColor[transaction.category.icon]} />
+                <Icons
+                  name={transaction?.category?.icon}
+                  size={32}
+                  color={IconColor[transaction.category.icon]}
+                />
               </View>
               <View style={styles.transation_title_container}>
                 <Text style={styles.transactionCategoryText}>{transaction?.category?.name}</Text>
@@ -208,11 +239,11 @@ const HomePage = () => {
               <View style={styles.transation_money}>
                 {transaction.type === 'income' ? (
                   <Text style={[styles.transactionAmountText, { color: '#50C474' }]}>
-                    {formatter(transaction.amount)}
+                    {formatter(transaction.amount, currency)}
                   </Text>
                 ) : (
                   <Text style={[{ color: '#FF5B5B' }, styles.transactionAmountText]}>
-                    - {formatter(transaction.amount)}
+                    - {formatter(transaction.amount, currency)}
                   </Text>
                 )}
               </View>

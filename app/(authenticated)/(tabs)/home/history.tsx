@@ -22,7 +22,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { editTransaction } from '@/features/transaction/transactionSlice'
 import { useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { formatter } from '@/utils/formatNumber'
+import { formatter } from '@/utils/formatAmount'
 import { IconProps } from 'react-native-vector-icons/Icon'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import {
@@ -32,6 +32,10 @@ import {
 } from '@gorhom/bottom-sheet'
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
+
+type MaterialCommunityIconProps = {
+  MaterialCommunityIconNames: keyof typeof MaterialCommunityIcons.glyphMap
+}
 
 const filters = [
   {
@@ -48,10 +52,54 @@ const filters = [
   },
 ]
 
+const Item = ({ _id, category, amount, createdAt, type, description }: Transaction) => {
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+  const { currentCurrency: currency } = useAppSelector((state) => state.wallets)
+  return (
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() => {
+        console.log(_id)
+        dispatch(editTransaction({ _id }))
+        // dispatch(editTransaction(_id))
+        router.navigate('/(authenticated)/(tabs)/transaction')
+      }}
+    >
+      <View style={styles.icon}>
+        <MaterialCommunityIcons
+          name={category.icon as MaterialCommunityIconProps['MaterialCommunityIconNames']}
+          size={24}
+          color={IconColor[category.icon]}
+        />
+      </View>
+      <View style={styles.details}>
+        <View style={styles.description}>
+          <Text style={styles.category}>{category.name} </Text>
+          <Text style={styles.createAt}>{new Date(createdAt).toDateString()} </Text>
+        </View>
+
+        <Text
+          style={[
+            styles.amount,
+            type === TransactionType.Income ? { color: Colors.primary } : { color: 'red' },
+          ]}
+        >
+          {type === 'expense'
+            ? `- ${formatter(amount, currency)}`
+            : `+ ${formatter(amount, currency)}`}{' '}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+const renderItem = ({ item }: { item: Transaction }) => <Item {...item} />
+
 const Page = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const { walletId, tokens, userId } = useAppSelector((state) => state.auth)
+  const { currentCurrency: currency } = useAppSelector((state) => state.wallets)
   const { isLoading, data, isError } = useGetWalletByIdQuery({
     walletId,
     auth: {
@@ -105,39 +153,13 @@ const Page = () => {
   // const filterHandler = (e) => {
   //   setFilter(e.value)
   // }
-  const Item = ({ _id, category, amount, createdAt, type, description }: Transaction) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => {
-        console.log(_id)
-        dispatch(editTransaction({ _id }))
-        // dispatch(editTransaction(_id))
-        router.navigate('/(authenticated)/(tabs)/transaction')
-      }}
-    >
-      <View style={styles.icon}>
-        <MaterialCommunityIcons name={category.icon} size={24} color={IconColor[category.icon]} />
-      </View>
-      <View style={styles.details}>
-        <View style={styles.description}>
-          <Text style={styles.category}>{category.name} </Text>
-          <Text style={styles.createAt}>{new Date(createdAt).toDateString()} </Text>
-        </View>
-
-        <Text
-          style={[
-            styles.amount,
-            type === TransactionType.Income ? { color: Colors.primary } : { color: 'red' },
-          ]}
-        >
-          {type === 'expense' ? `- ${amount} ₫` : `+ ${amount} ₫`}{' '}
-        </Text>
-   
-      </View>
-    </TouchableOpacity>
-  )
-
-  const renderItem = ({ item }: { item: Transaction }) => <Item {...item} />
+  if (data?.metadata.transactions.length === 0) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>No transaction</Text>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <BottomSheetModalProvider>
@@ -160,7 +182,7 @@ const Page = () => {
             ListHeaderComponent={() => (
               <>
                 <View style={styles.balanceContainer}>
-                  <Text style={styles.balance}>{formatter(data!.metadata.balance)} </Text>
+                  <Text style={styles.balance}>{formatter(data!.metadata.balance, currency)} </Text>
                   <Text style={styles.balanceLabel}>My Balance</Text>
                 </View>
                 <View style={styles.recordHeader}>

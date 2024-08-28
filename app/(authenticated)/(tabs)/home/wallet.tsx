@@ -20,7 +20,7 @@ import Button from '@/components/Button'
 import { Colors } from '@/constants/Colors'
 import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 import { SelectCountry } from 'react-native-element-dropdown'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { setAuth } from '@/features/auth/authSlice'
 import {
   BottomSheetBackdrop,
@@ -32,6 +32,9 @@ import { ChevronDown } from 'react-native-feather'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import { DefaultTheme } from '@react-navigation/native'
 import { Currency } from '@/constants/Currency'
+import { useCreateNewWalletMutation, useGetWalletByIdQuery, useUpdateWalletMutation } from '@/features/wallet/wallet.service'
+import { currencySymbol } from '@/utils/formatAmount'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -40,33 +43,51 @@ const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL
 
 const walletTypes = [
   {
-    value: 'private',
+    value: WalletType.Private,
     lable: 'Private',
   },
   {
-    value: 'shared',
+    value: WalletType.Shared,
     lable: 'Shared',
   },
 ]
 
 const Page = () => {
+  const {bottom} = useSafeAreaInsets()
   const router = useRouter()
+  const {walletId: _id} = useLocalSearchParams()
+  const dispatch = useAppDispatch()
+  
   const [name, setName] = useState('')
   const [walletType, setWalletType] = useState<WalletType>(WalletType.Private)
   const [currency, setCurrency] = useState({
-    symbol: '',
-    name: '',
-    code: '',
+    symbol: '₫',
+    name: 'Vietnamese Dong',
+    code: 'VND',
   })
-  const [keyboardOpen, setKeyboardOpen] = useState(false)
+
+
   const { userId, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
-  const { currentWallet } = useAppSelector((state) => state.wallets)
-  const dispatch = useAppDispatch()
 
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 90 : 0
   const { showActionSheetWithOptions } = useActionSheet()
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => ['38%'], [])
+  const [createWallet, {data, isSuccess, isLoading}] = useCreateNewWalletMutation()
+  const [updateWallet, {data: updatedData, isSuccess: isUpdatedSuccess, isLoading: isUpdatedLoading}] = useUpdateWalletMutation()
+  const {data: fetchedData } = useGetWalletByIdQuery({auth: {userId, accessToken: tokens?.accessToken}, walletId: _id?.toString()})
+
+  useEffect(() => {
+    if (fetchedData) {
+      setName(fetchedData.metadata.name)
+      setWalletType(fetchedData.metadata.type)
+      setCurrency({
+        symbol: currencySymbol(fetchedData.metadata.currency),
+        name: fetchedData.metadata.currency,
+        code: fetchedData.metadata.currency,
+      })
+    }
+  }, [fetchedData])
   const showModal = async () => {
     bottomSheetModalRef.current?.present()
   }
@@ -89,7 +110,42 @@ const Page = () => {
     setWalletType(e.value)
   }
 
-  const handleCreateWallet = async () => {}
+  const handleSubmit = async () => {
+    if (!name) {
+      Alert.alert('Create Wallet Failed', 'Name is required', [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK Pressed'),
+        },
+      ])
+      return
+    }
+    const wallet = {
+      name,
+      currency: currency.code,
+      type: walletType,
+    }
+    try {
+      console.log(wallet)
+      if(_id) {
+        await updateWallet({
+          walletId: _id?.toString(),
+          wallet,
+          auth: { userId, accessToken: tokens?.accessToken },
+        })
+      }
+      else {
+
+        await createWallet({
+          wallet,
+          auth: { userId, accessToken: tokens?.accessToken },
+        })
+      }
+      router.back()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <BottomSheetModalProvider>
@@ -210,8 +266,8 @@ const Page = () => {
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>
-          <View style={[styles.button, { marginTop: 80 }]}>
-            <Button title='Create' type='success' handleFn={handleCreateWallet} />
+          <View style={[styles.button, {marginBottom: bottom}]}>
+            <Button title={_id ? 'Save' : 'Create'} type='success' handleFn={handleSubmit} />
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>
@@ -228,14 +284,8 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     justifyContent: 'space-between',
-    marginTop: screenHeight * 0.02,
   },
 
-  image: {
-    width: 200,
-    height: 200,
-    alignSelf: 'center',
-  },
 
   header: {
     fontSize: 32,
@@ -280,6 +330,7 @@ const styles = StyleSheet.create({
     height: 50,
     paddingHorizontal: 12,
     fontSize: 18,
+    color: Colors.gray,
   },
 
   button: {

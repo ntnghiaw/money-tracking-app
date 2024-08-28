@@ -934,3 +934,5 @@ export const Currency = [
     name_plural: 'Zambian kwachas',
   },
 ]
+
+export const codes = Currency.map((currency) => currency.code)

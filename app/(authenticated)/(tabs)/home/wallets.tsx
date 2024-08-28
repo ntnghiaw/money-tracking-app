@@ -1,4 +1,4 @@
-import { formatter } from '@/utils/formatNumber'
+import { formatter } from '@/utils/formatAmount'
 import {
   View,
   Text,
@@ -9,11 +9,12 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native'
-import { useGetAllWalletsQuery } from '@/features/wallet/wallet.service'
-import { useAppSelector } from '@/hooks/hooks'
-import { useCallback, useMemo, useRef } from 'react'
+import { useDeleteWalletMutation, useGetAllWalletsQuery } from '@/features/wallet/wallet.service'
+import { setDefaultWallet } from '@/features/auth/authSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { CreditCard, Edit, MoreHorizontal, X } from 'react-native-feather'
+import { Bookmark, Check, CreditCard, Edit, MoreHorizontal, X } from 'react-native-feather'
 import { DefaultTheme } from '@react-navigation/native'
 import { Wallet } from '@/types/enum'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -67,43 +68,24 @@ const groupWallet = (wallets: Wallet[]) => {
 }
 
 const Page = () => {
-  const { tokens, userId } = useAppSelector((state) => state.auth)
+  const dispatch = useAppDispatch()
+  const { tokens, userId, walletId } = useAppSelector((state) => state.auth)
+
+  const [selectedWalletId, setSelectedWalletId] = useState<string>('')
+  const { showActionSheetWithOptions } = useActionSheet()
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null)
+  const snapPoints = useMemo(() => ['40%'], [])
   const { data, isLoading, isError, isSuccess } = useGetAllWalletsQuery({
     auth: {
       userId: userId,
       accessToken: tokens?.accessToken,
     },
   })
-  const { showActionSheetWithOptions } = useActionSheet()
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null)
-  const snapPoints = useMemo(() => ['33%'], [])
+  const [deteleWallet, { data: deleteData }] = useDeleteWalletMutation()
   const wallets = data?.metadata ?? []
   const totalAmount =
     useMemo(() => data?.metadata?.reduce((acc, item) => acc + item.balance, 0), [data]) || 0
   const sectionListData = useMemo(() => groupWallet(wallets), [wallets])
-
-  const showModal = async () => {
-    bottomSheetModalRef.current?.present()
-  }
-
-  const hideModal = async () => {
-    bottomSheetModalRef.current?.dismiss()
-  }
-
-  const handleDeleteWallet = async () => {
-    Alert.alert('Delete Wallet', 'Are you sure you want to delete this wallet?', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'OK', onPress: () => {
-        hideModal()
-        console.log('OK Pressed')
-      } },
-    ])
-
-  }
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -118,6 +100,51 @@ const Page = () => {
     ),
     []
   )
+  const showModal = async () => {
+    bottomSheetModalRef.current?.present()
+  }
+
+  const hideModal = async () => {
+    bottomSheetModalRef.current?.dismiss()
+  }
+
+  const handleDeleteWallet = async () => {
+    if (wallets.length <= 1) {
+      Alert.alert('Delete Wallet', 'You cannot delete the last wallet', [
+        {
+          text: 'OK',
+          onPress: () => {
+            hideModal()
+            console.log('OK Pressed')
+          },
+        },
+      ])
+      return
+    }
+    Alert.alert('Delete Wallet', 'Are you sure you want to delete this wallet?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: async () => {
+          await deteleWallet({
+            walletId: selectedWalletId,
+            auth: { userId, accessToken: tokens?.accessToken },
+          })
+          hideModal()
+        },
+      },
+    ])
+  }
+
+  const handleSetDefaultWallet = async () => {
+    dispatch(setDefaultWallet(selectedWalletId))
+    hideModal()
+    router.back()
+  }
 
   return (
     <BottomSheetModalProvider>
@@ -125,20 +152,34 @@ const Page = () => {
         {isLoading ? (
           <View style={[StyleSheet.absoluteFill, styles.loading]}>
             <ActivityIndicator size='large' color={Colors.primary} />
-            <Text style={{ fontSize: 18, padding: 10 }}>Login...</Text>
+            <Text style={{ fontSize: 18, padding: 10 }}>Loading...</Text>
           </View>
         ) : (
           <View style={styles.inner}>
-            <View style={styles.balance}>
-              <Text style={[styles.balanceText, {color: totalAmount > 0 ? Colors.primary : 'red'}]}>{formatter(totalAmount)}</Text>
+            {/* <View style={styles.balance}>
+              <Text
+                style={[styles.balanceText, { color: totalAmount > 0 ? Colors.primary : 'red' }]}
+              >
+                {formatter(totalAmount, currency)}
+              </Text>
               <Text style={{ letterSpacing: 1, fontSize: 16 }}>Total Balance</Text>
-            </View>
+            </View> */}
             <SectionList
               style={{ marginTop: 20 }}
               sections={sectionListData}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
-                <View style={styles.item}>
+                <TouchableOpacity
+                  style={styles.item}
+                  onPress={() => {
+                    router.navigate({
+                      pathname: '/(authenticated)/(tabs)/home/wallet',
+                      params: {
+                        walletId: item._id,
+                      },
+                    })
+                  }}
+                >
                   <View style={styles.icon}>
                     <CreditCard width={36} height={36} color={'#7D8895'} />
                   </View>
@@ -146,7 +187,7 @@ const Page = () => {
                     <Text style={{ fontSize: 16, fontWeight: '500', letterSpacing: 1 }}>
                       {item.name}
                     </Text>
-                    <Text>{`Balance: ${formatter(item.balance)}`}</Text>
+                    <Text>{`Balance: ${formatter(item.balance, item.currency)}`}</Text>
                     <Text style={{ fontSize: 12 }}>{`Created: ${new Date(
                       item.createdAt
                     ).toDateString()}`}</Text>
@@ -154,12 +195,13 @@ const Page = () => {
                   <TouchableOpacity
                     style={[styles.more, { position: 'absolute', right: 12, top: 8 }]}
                     onPress={() => {
+                      setSelectedWalletId(item._id)
                       showModal()
                     }}
                   >
                     <MoreHorizontal width={18} height={18} color={Colors.gray} />
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               )}
               renderSectionHeader={({ section: { title } }) => (
                 <Text
@@ -205,17 +247,34 @@ const Page = () => {
               </TouchableOpacity>
             </View>
             <View style={styles.buttonControl}>
+              {selectedWalletId.toString() !== walletId.toString() && (
+                <TouchableOpacity style={styles.button} onPress={handleSetDefaultWallet}>
+                  <Check width={24} height={24} color={Colors.black} />
+                  <Text style={{ fontSize: 16, padding: 12 }}>Set as default</Text>
+                </TouchableOpacity>
+              )}
+
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.navigate('/(authenticated)/(tabs)/home/wallet')}
+                onPress={() => {
+                  hideModal()
+                  router.navigate({
+                    pathname: '/(authenticated)/(tabs)/home/wallet',
+                    params: {
+                      walletId: selectedWalletId,
+                    },
+                  })
+                }}
               >
                 <Edit width={24} height={24} color={Colors.black} />
                 <Text style={{ fontSize: 16, padding: 12 }}>Edit wallet</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={handleDeleteWallet}>
-                <MaterialCommunityIcons name='delete-outline' size={24} color={'red'} />
-                <Text style={{ fontSize: 16, padding: 12, color: 'red' }}>Delete wallet</Text>
-              </TouchableOpacity>
+              {selectedWalletId.toString() !== walletId.toString() && (
+                <TouchableOpacity style={styles.button} onPress={handleDeleteWallet}>
+                  <MaterialCommunityIcons name='delete-outline' size={24} color={'red'} />
+                  <Text style={{ fontSize: 16, padding: 12, color: 'red' }}>Delete wallet</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </BottomSheetModal>
@@ -246,6 +305,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 8,
+    marginVertical: 8,
   },
   icon: {
     width: 48,
