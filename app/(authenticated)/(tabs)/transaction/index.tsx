@@ -31,7 +31,7 @@ import {
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import { useMemo, useRef } from 'react'
 import MaskInput, { Masks } from 'react-native-mask-input'
-import { ChevronRight, Key } from 'react-native-feather'
+import { ChevronRight, Key, X } from 'react-native-feather'
 import formatDate from '@/utils/formatDate'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -86,6 +86,8 @@ const Page = () => {
   const { bottom } = useSafeAreaInsets()
   const { showActionSheetWithOptions } = useActionSheet()
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
+  const incomeCategoryModalRef = useRef<BottomSheetModal>(null)
+
   const snapPoints = useMemo(() => ['33%'], [])
   const [mode, setMode] = useState<AndroidMode>('date')
   const [show, setShow] = useState(false)
@@ -106,6 +108,7 @@ const Page = () => {
     },
     { skip: !_id }
   )
+
   const [createTransaction, { data, isLoading, isError, isSuccess, error }] =
     useCreateTransactionMutation()
 
@@ -119,6 +122,10 @@ const Page = () => {
       error: updateError,
     },
   ] = useUpdateTransactionMutation()
+  const { data: categories } = useGetAllCategoriesQuery({
+    accessToken: tokens.accessToken,
+    userId,
+  })
 
   const [deleteTransaction, { data: deleteRes, isSuccess: isDeleted }] =
     useDeleteTransactionMutation()
@@ -157,6 +164,15 @@ const Page = () => {
     }
   }, [params._id])
 
+
+  const incomeCategories = useMemo(() => {
+    return categories?.metadata.filter((category) => category.type === 'income')
+  }, [categories])
+
+  const incomeSubCategories = useMemo(() => {
+    return incomeCategories?.map((category) => category.sub_categories[0])
+  }, [incomeCategories])
+
   const renderBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -170,6 +186,28 @@ const Page = () => {
     ),
     []
   )
+
+  const renderBackdropModal = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        opacity={0.3}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior='collapse'
+        onPress={() => incomeCategoryModalRef.current?.dismiss()}
+      />
+    ),
+    []
+  )
+
+
+  const showIncomeCategoryModalRef = async () => {
+  incomeCategoryModalRef.current?.present()
+  }
+  const hideIncomeCategoryModal = async () => {
+    incomeCategoryModalRef.current?.dismiss()
+  }
 
   const showModal = async () => {
     bottomSheetModalRef.current?.present()
@@ -251,6 +289,7 @@ const Page = () => {
     router.back()
   }
 
+  console.log(incomeSubCategories)
   return (
     <BottomSheetModalProvider>
       <KeyboardAvoidingView
@@ -334,12 +373,15 @@ const Page = () => {
                     </View>
                     <View style={styles.input}>
                       <TouchableOpacity
-                        onPress={() =>
-                          router.navigate({
-                            pathname: '/(authenticated)/(tabs)/transaction/categories',
-                            params: { type },
-                          })
-                        }
+                        onPress={() => {
+                          if (type === TransactionType.Expense) {
+                            router.navigate({
+                              pathname: '/(authenticated)/(tabs)/transaction/categories',
+                            })
+                          } else {
+                            showIncomeCategoryModalRef()
+                          }
+                        }}
                       >
                         <Text style={styles.textInput}>
                           {transaction.category.name
@@ -462,6 +504,61 @@ const Page = () => {
                 onChange={onChange}
               />
             )}
+          </View>
+        </BottomSheetModal>
+        <BottomSheetModal
+          ref={incomeCategoryModalRef}
+          index={0}
+          backdropComponent={renderBackdropModal}
+          snapPoints={snapPoints}
+          handleComponent={null}
+          enableOverDrag={false}
+          enablePanDownToClose
+        >
+          <View style={styles.incomeCategoriesModal}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+              <Text style={{ textAlign: 'center', flex: 4 }}>Choose Category</Text>
+              <TouchableOpacity
+                onPress={hideIncomeCategoryModal}
+                style={{ position: 'absolute', right: 0 }}
+              >
+                <X width={24} height={24} color={Colors.black} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.incomeCategories}>
+              {incomeSubCategories?.map((category) => (
+                <TouchableOpacity
+                  key={category._id}
+                  style={{
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    flexBasis: '33%',
+                    marginBottom: 24,
+                  }}
+                  onPress={() => {
+                    setTransaction((pre) => ({
+                      ...pre,
+                      category: {
+                        _id: category._id,
+                        name: category.name,
+                        icon: category.icon,
+                        belong_to: category._id,
+                      },
+                    }))
+                    hideIncomeCategoryModal()
+                  }}
+                >
+                  <Icon
+                    name={category.icon}
+                    size={40}
+                    color={IconColor[category.icon]}
+                  />
+                  <Text style={{ textAlign: 'center', fontSize: 16, letterSpacing: 1 }}>
+                    {category.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </BottomSheetModal>
       </KeyboardAvoidingView>
@@ -612,6 +709,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     // borderBottomWidth: 0.5,
+  },
+  incomeCategoriesModal: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    justifyContent: 'center',
+     alignItems: 'center',
+     gap: 24
+  },
+  incomeCategories: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 })
 export default Page

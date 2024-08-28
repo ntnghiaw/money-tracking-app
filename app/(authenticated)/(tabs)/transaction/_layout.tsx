@@ -1,8 +1,9 @@
 import { Colors } from '@/constants/Colors'
 import { Ionicons } from '@expo/vector-icons'
+import { DefaultTheme } from '@react-navigation/native'
 import { Stack, useRouter } from 'expo-router'
 import { View, Text, Pressable } from 'react-native'
-import { ChevronLeft } from 'react-native-feather'
+import { ChevronLeft, X } from 'react-native-feather'
 const Layout = () => {
   const router = useRouter()
   return (
@@ -11,13 +12,15 @@ const Layout = () => {
       <Stack.Screen
         name='categories'
         options={{
-          title: 'Categories',
+          title: 'Choose Category',
           presentation: 'modal',
-          headerLeft: () => (
+          headerRight: () => (
             <Pressable onPress={() => router.back()}>
-              <ChevronLeft />
+              <X width={24} height={24} color={Colors.black} />
             </Pressable>
           ),
+          headerStyle: { backgroundColor: DefaultTheme.colors.background },
+          headerShadowVisible: false,
         }}
       />
       <Stack.Screen

@@ -61,7 +61,7 @@ const Item = ({ item }: ItemProps<Category>) => {
   return (
     <View style={styles.itemContainer}>
       <View style={[styles.categoryHeader, { backgroundColor: CategoryBGColors[item.name] }]}>
-        <Image source={{ uri: item.icon }} style={{ height: 30, width: 30 }} />
+        <Image source={{ uri: item.icon }} style={{ height: 24, width: 24 }} />
         <Text style={[styles.categoryText, { color: CategoryTitleColors[item.name] }]}>
           {item.name}
         </Text>
@@ -93,17 +93,20 @@ const Categories = () => {
     accessToken: tokens?.accessToken,
     userId,
   })
-
+  const categories = data?.metadata ?? []
+  const expenseCategories = useMemo(() => {
+    return categories.filter((category) => category.type === 'expense')
+  }, [categories])
+  console.log(expenseCategories)
   function renderItem({ item }: { item: Category }) {
     return <Item item={item} />
   }
-  console.log(params)
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ marginTop: 40 }}></View>
       {data?.metadata.length !== 0 && (
         <FlatList
-          data={data?.metadata ?? []}
+          data={expenseCategories ?? []}
           keyExtractor={(item) => item.icon}
           renderItem={renderItem}
         ></FlatList>
@@ -119,19 +122,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    marginBottom: 32,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    marginBottom: 24,
+    borderRadius: 8,
     backgroundColor: 'white',
+    marginHorizontal: 16,
+    padding: 2,
+    paddingBottom: 20,
   },
   categoryHeader: {
-    height: 48,
+    height: 32,
     alignItems: 'center',
     flexDirection: 'row',
     gap: 10,
     paddingHorizontal: 16,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   categoryText: {
     fontSize: 18,

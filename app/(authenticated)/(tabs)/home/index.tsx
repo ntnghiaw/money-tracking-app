@@ -32,7 +32,7 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Loading from '@/components/Loading'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { formatter } from '@/utils/formatAmount'
-import { Transaction } from '@/types/enum'
+import { Transaction, TransactionType } from '@/types/enum'
 import { handleStatistic } from '@/utils/handleStatistic'
 import { useRouter } from 'expo-router'
 import { editTransaction } from '@/features/transaction/transactionSlice'
@@ -68,8 +68,14 @@ const HomePage = () => {
 
   const wallet = data?.metadata
   const transactions = wallet?.transactions
+  console.log(wallet)
   const recentTransactions = transactions?.slice(0, 3) // get 3 recent transactions
-  const { data: categories, total } = useMemo(() => handleStatistic(transactions!), [transactions])
+  const expenseTransactions = transactions?.filter(
+    (transaction) => transaction.type === TransactionType.Expense)
+  const { data: categories, total } = useMemo(
+    () => handleStatistic(expenseTransactions!),
+    [transactions]
+  )
   const pieData = useMemo(
     () =>
       categories.map((category, index) => ({
@@ -79,6 +85,7 @@ const HomePage = () => {
     [categories]
   )
 
+ 
   return (
     <SafeAreaView style={[styles.container]}>
       <Loading isLoading={isLoading} text='Loading...' />

@@ -24,6 +24,10 @@ export enum IconName {
   Home = 'home',
   Family = 'account-group-outline',
   Invest = 'chart-line',
+  Allowance = 'hand-heart-outline',
+  Interest = 'chart-multiple',
+  Bonus = 'flower-pollen',
+  Salary = 'account-cash-outline'
 }
 
 export const CategorieColors = ['#94C3F6', '#559BE6', '#50C474', '#94EDF7']
@@ -45,6 +49,10 @@ export const IconColor: Map = {
   [IconName.Home]: '#800080',
   [IconName.Family]: '#FFC0CB',
   [IconName.Invest]: '#F3C07B',
+  [IconName.Allowance]: '#800080',
+  [IconName.Interest]: '#FFA500',
+  [IconName.Bonus]: '#FF0000',
+  [IconName.Salary]: '#50C474',
 }
 
 
