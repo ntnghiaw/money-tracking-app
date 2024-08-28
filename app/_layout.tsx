@@ -1,37 +1,105 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useState, useEffect } from 'react'
+import { Stack, useRouter } from 'expo-router'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { StatusBar } from 'expo-status-bar'
+import { TouchableOpacity } from 'react-native'
+import { ChevronLeft } from 'react-native-feather'
+import { Provider } from 'react-redux'
+import { persistor } from '@/store/store'
+const { store } = require('@/store/store')
+import { PersistGate } from 'redux-persist/integration/react'
+import { useSegments } from 'expo-router'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
+const InitialLayout = () => {
+  const router = useRouter()
+  const segment = useSegments()
+  const { isAuthenticated, walletId, tokens, userId } = useAppSelector((state) => state.auth)
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    
+    const inAuth = segment[0] === '(authenticated)'
+    if (isAuthenticated && !Boolean(walletId)) {
+      router.replace('/first-wallet')
+    } else if (isAuthenticated && Boolean(walletId)) {
+      router.replace('/(authenticated)/(tabs)/home')
+    } else if (!isAuthenticated) {
+      console.log('not authenticated')
+      router.replace('/')
     }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+  }, [isAuthenticated, walletId])
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
-  );
+    <Stack>
+      <Stack.Screen name='index' options={{ headerShown: false }} />
+      <Stack.Screen
+        name='register'
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <ChevronLeft width={24} height={24}  />
+            </TouchableOpacity>
+          ),
+          title: '',
+          headerShadowVisible: false,
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name='login'
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <ChevronLeft width={24} height={24} />
+            </TouchableOpacity>
+          ),
+          title: '',
+          headerShadowVisible: false,
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name='reset-password'
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <ChevronLeft width={24} height={24}  />
+            </TouchableOpacity>
+          ),
+          title: '',
+          headerShadowVisible: false,
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name='first-wallet'
+        options={{
+          title: 'Create new wallet',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+          // presentation: 'modal',
+        }}
+        />
+      <Stack.Screen name='(authenticated)' options={{ headerShown: false }} />
+    </Stack>
+  )
 }
+
+const RootLayoutNav = () => {
+  return (
+    <ActionSheetProvider>
+      <Provider store={store}>
+        {/* <> */}
+        <StatusBar style='light' />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <PersistGate persistor={persistor}>
+            <InitialLayout />
+          </PersistGate>
+        </GestureHandlerRootView>
+        {/* </> */}
+      </Provider>
+    </ActionSheetProvider>
+  )
+}
+
+export default RootLayoutNav

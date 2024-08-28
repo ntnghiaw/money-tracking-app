@@ -1,26 +1,63 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
 
 export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
+  primary: '#50C474',
+  gray: '#898989',
+  black: '#303841',
+  danger: '#E52222',
+  lightBlue: '#94C3F6',
+  disabledBtn: '#C1C9D1',
+  firstCategory: '#94C3F6',
+  secondCategory: '#559BE6',
+  thirdCategory: '#50C474',
+  fourthCategory: '#94EDF7',
+}
+
+export enum IconName {
+  Food = 'food',
+  Grocery = 'cart-variant',
+  Transport = 'bus-multiple',
+  Health = 'heart-pulse',
+  Shopping = 'cart-outline',
+  Entertainment = 'video-4k-box',
+  Beauty = 'lipstick',
+  Bill = 'file-document-outline',
+  Home = 'home',
+  Family = 'account-group-outline',
+  Invest = 'chart-line',
+}
+
+export const CategorieColors = ['#94C3F6', '#559BE6', '#50C474', '#94EDF7']
+
+interface Map {
+  [key: string]: string | undefined
+}
+
+
+export const IconColor: Map = {
+  [IconName.Food]: '#FF5900',
+  [IconName.Grocery]: '#20A50A',
+  [IconName.Transport]: '#559BE6',
+  [IconName.Health]: '#FF0000',
+  [IconName.Shopping]: '#FF5900',
+  [IconName.Entertainment]: '#FF0000',
+  [IconName.Beauty]: '#FFC0CB',
+  [IconName.Bill]: '#20A50A',
+  [IconName.Home]: '#800080',
+  [IconName.Family]: '#FFC0CB',
+  [IconName.Invest]: '#F3C07B',
+}
+
+
+export const CategoryTitleColors: Map = {
+  'Living expenses': '#FFA500',
+  'Incidental expenses': '#878306',
+  'Fixed expenses': '#94C3F6',
+  'Investment - Saving': '#50C474',
+}
+
+export const CategoryBGColors: Map = {
+  'Living expenses': '#fff2db',
+  'Incidental expenses': '#eeeedc',
+  'Fixed expenses': '#e3effd',
+  'Investment - Saving': '#e5f6ea',
+}
