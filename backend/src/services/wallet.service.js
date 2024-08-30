@@ -82,7 +82,14 @@ const { getInfoData } = require('../utils')
     if (!foundUser) {
       throw new BadRequestError('Invalid user')
     }
-    return await walletModel.findOne({ _id: walletId }).populate('transactions').lean()
+    return await walletModel.findOne({ _id: walletId }).populate({
+      path: 'transactions',
+      populate: {
+        path: 'category',
+        select: ['_id', 'name', 'icon'],
+      },
+      options: { sort: { createdAt: -1 } },
+    }).lean()
   }
 
 
@@ -120,7 +127,7 @@ const { getInfoData } = require('../utils')
       throw new BadRequestError('Invalid user')
     }
     const updateWallet = {
-      walletName: wallet?.walletName,
+      name: wallet?.name,
       currency: wallet?.currency,
     }
     return await walletModel.findOneAndUpdate({ _id: walletId }, updateWallet, {

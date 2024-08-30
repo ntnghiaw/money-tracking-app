@@ -18,12 +18,12 @@ class UserService {
     }
   }
 
-  static updateInfo = async ({
+  static updateInfo =   async ({
     userId,
-    user: { name, dateOfBirth, sex, avatarUrl },
+    user: { name, dob, gender, avatar_url },
   }) => {
     const filter = { _id: userId },
-      update = { name, dateOfBirth, sex, avatarUrl },
+      update = { name, dob, gender, avatar_url },
       options = { new: true, update: true }
     return await userModel.findOneAndUpdate(filter, update, options).lean()
   }
@@ -64,7 +64,7 @@ class UserService {
 
   static getInfo = async (userId) => {
     const user = await userModel.findById(userId)
-    return getInfoData({object: user, fields: ['_id', 'name', 'email', 'avatarUrl', 'gender', 'dateOfBirth']})
+    return getInfoData({object: user, fields: ['_id', 'name', 'email', 'avatar_url', 'gender', 'dob']})
   }
 
   static removeWalletById = async (userId, walletId) => {

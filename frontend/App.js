@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-
+import 'react-native-devsettings'
 import Login from "./src/components/Login";
 import Register from "./src/components/Register";
 import Initial from "./src/components/Initial";

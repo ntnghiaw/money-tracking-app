@@ -1,11 +1,16 @@
 const { categoryModel, subCategoryModel } = require('../models/category.model')
 const { InternalServerError, NotFoundError } = require('../core/error.response')
 const UserService = require('./user.service')
+const { getInfoData } = require('../utils')
 
 class CategoryService {
   static async getAllCategories() {
     try {
-      return await categoryModel.find().populate('sub_categories').lean()
+      const categories =  await categoryModel.find().populate('sub_categories').lean()
+      console.log(categories)
+      return categories.map(category => {
+      return getInfoData({object: category, fields:['_id', 'icon', 'name', 'type', 'sub_categories']})
+      })
     } catch (error) {
       throw new InternalServerError('Get all categories error')
     }

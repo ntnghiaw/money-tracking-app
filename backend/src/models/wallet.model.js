@@ -9,6 +9,8 @@ const COLLECTION_NAME = 'wallets'
 
 */
 
+const currency = require('../utils/currencyCode')
+const currencyCode = currency.map((item) => item.code)
 
 // Declare the Schema of the Mongo model
 const walletSchema = new Schema(
@@ -25,7 +27,7 @@ const walletSchema = new Schema(
     },
     currency: {
       type: String,
-      enum: ['USD', 'EUR', 'VND'],
+      enum: currencyCode,
       required: true,
     },
     type: {
@@ -41,19 +43,19 @@ const walletSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: 'Transaction',
-      }
+      },
     ],
     financial_plans: [
       {
         type: Schema.Types.ObjectId,
         ref: 'FinancialPlan',
-      }
+      },
     ],
     debts: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Debt',
-      }
+      },
     ],
 
     // walletOptions: {

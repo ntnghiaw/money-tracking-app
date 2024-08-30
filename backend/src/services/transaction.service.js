@@ -5,6 +5,7 @@ const UserServices = require('./user.service')
 const { walletModel } = require('../models/wallet.model')
 const { BadRequestError, InternalServerError, NotFoundError } = require('../core/error.response')
 const { Types } = require('mongoose')
+const { updateFinancialPlan } = require('./financialPlan.service')
 
 class TransactionService {
   static getAllTransactions = async ({
@@ -51,7 +52,9 @@ class TransactionService {
       throw new BadRequestError('Invalid request')
     }
     try {
-      const transaction = await transactionModel.findOne({ _id: transactionId })
+      const transaction = await transactionModel.findOne({ _id: transactionId }).populate({
+        path: 'category',
+      })
       return transaction
     } catch (error) {
       console.log(error)
@@ -66,9 +69,10 @@ class TransactionService {
       throw new BadRequestError('Invalid user or wallet')
     }
 
+    console.log(transaction.category)
     // check valid category
     const foundCategory = await categoryModel
-      .findOne({ 'sub_categories._id': transaction.category._id })
+      .findOne({ 'sub_categories': transaction.category._id })
       .lean()
 
     if (!foundCategory) {
@@ -90,6 +94,11 @@ class TransactionService {
         },
         { new: true }
       )
+
+      // update budget if transaction is expense
+      // if (newTransaction.type === 'expense') {
+      //   await updateFinancialPlan({ type: 'budget', payload: {}})
+      // }
       return newTransaction
     } catch (error) {
       // Rollback
@@ -99,14 +108,14 @@ class TransactionService {
     }
   }
 
-  static updateTransaction = async ({ walletId, transactionId, update }) => {
+  static updateTransaction = async ({ walletId, transactionId, update, userId }) => {
     const foundUser = await UserServices.findById(userId)
     if (!foundUser || !foundUser.wallets.includes(walletId)) {
       throw new BadRequestError('Not found wallet or user')
     }
     if (update.category) {
       const foundCategory = await categoryModel
-        .findOne({ 'sub_categories._id': update.category._id })
+        .findOne({ 'sub_categories': update.category._id })
         .lean()
       if (!foundCategory) {
         throw new BadRequestError('Category not found')
@@ -140,7 +149,7 @@ class TransactionService {
     }
   }
 
-  static deleteTransactionById = async ({ walletId, transactionId }) => {
+  static deleteTransactionById = async ({ userId, walletId, transactionId }) => {
     const foundUser = await UserServices.findById(userId)
     if (!foundUser || !foundUser.wallets.includes(walletId)) {
       throw new BadRequestError('Not found wallet or user')

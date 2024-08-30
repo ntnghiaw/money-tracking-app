@@ -42,7 +42,8 @@ class TransactionController {
       metadata: await TransactionService.updateTransaction({
         walletId: req.params.walletId,
         transactionId: req.params.transactionId,
-        transaction: req.body,
+        update: req.body,
+        userId: req.headers[HEADER.CLIENT_ID],
       }),
     }).send(res)
   }

@@ -4,6 +4,7 @@ const FinancialPlanService = require('../services/financialPlan.service');
 
 class FinancialPlanController {
   createFinancialPlan = async (req, res, next) => {
+    console.log(req.body)
     new CREATED({
       message: 'Create financial plan success!',
       metadata: await FinancialPlanService.createFinancialPlan({

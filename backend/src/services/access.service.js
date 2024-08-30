@@ -16,7 +16,7 @@ const {
 class AccessService {
   // check this token used?
 
-  static handlerRefreshToken = async ({keyStore, refreshToken, user}) => {
+  static handlerRefreshToken = async ({ keyStore, refreshToken, user }) => {
     const { userId, email } = user
     // check token used
     if (keyStore.refreshTokensUsed.includes(refreshToken)) {
@@ -25,8 +25,7 @@ class AccessService {
     }
 
     // find token in db
-    if (keyStore.refreshToken !== refreshToken)
-      throw new AuthFailureError('Invalid token')
+    if (keyStore.refreshToken !== refreshToken) throw new AuthFailureError('Invalid token')
     // verify token
     // check user in db
     const foundUser = await UserService.findByEmail({ email })
@@ -37,11 +36,7 @@ class AccessService {
     const publicKey = crypto.randomBytes(64).toString('hex')
 
     // generate new token pair
-    const tokens = await createTokenPair(
-      { userId, email },
-      publicKey,
-      privateKey
-    )
+    const tokens = await createTokenPair({ userId, email }, publicKey, privateKey)
 
     // save keyToken to db
     await keyStore.updateOne({
@@ -66,7 +61,10 @@ class AccessService {
   }
 
   static login = async ({ email, password, refreshToken = null }) => {
-    const foundUser = await UserService.findByEmail({ email, select: { _id: 1, name: 1, email: 1, password: 1, wallets: 1} })
+    const foundUser = await UserService.findByEmail({
+      email,
+      select: { _id: 1, name: 1, email: 1, password: 1, wallets: 1, categories: 1, avatar_url: 1 },
+    })
     if (!foundUser) {
       throw new BadRequestError('User not found')
     }
@@ -78,7 +76,6 @@ class AccessService {
     } catch (error) {
       throw new AuthFailureError('Authentication error')
     }
-    
 
     // generate  private key
     const privateKey = crypto.randomBytes(64).toString('hex')
@@ -87,11 +84,7 @@ class AccessService {
     const { _id: userId } = foundUser
 
     // generate token pair
-    const tokens = await createTokenPair(
-      { userId, email },
-      publicKey,
-      privateKey
-    )
+    const tokens = await createTokenPair({ userId, email }, publicKey, privateKey)
 
     // save keyToken to db
     await KeyTokenService.createKeyToken({
@@ -104,7 +97,7 @@ class AccessService {
     return {
       user: getInfoData({
         object: foundUser,
-        fields: ['_id', 'name', 'email', 'wallets'],
+        fields: ['_id', 'name', 'email', 'wallets', 'avatar_url', 'categories'],
       }),
       tokens,
     }
@@ -118,7 +111,7 @@ class AccessService {
     }
 
     const passwordHashed = await bycrypt.hash(password, 10)
-    
+
     const newUser = await UserService.create({
       name,
       email,
@@ -142,16 +135,12 @@ class AccessService {
       }
 
       // create access token and refresh token
-      const tokens = await createTokenPair(
-        { userId: newUser._id, email },
-        publicKey,
-        privateKey
-      )
+      const tokens = await createTokenPair({ userId: newUser._id, email }, publicKey, privateKey)
 
       return {
         user: getInfoData({
           object: newUser,
-          fields: ['_id', 'name', 'email'],
+          fields: ['_id', 'name', 'email', 'wallets', 'avatar_url', 'categories'],
         }),
         tokens,
       }

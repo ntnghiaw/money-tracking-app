@@ -1,7 +1,7 @@
 const { planModel, budgetModel, goalModel } = require('../models/financialPlan.model')
 const { BadRequestError, InternalServerError } = require('../core/error.response')
 const { startSession } = require('mongoose')
-const { subCategoryModel } = require('../models/category.model')
+const { subCategoryModel, categoryModel } = require('../models/category.model')
 const { walletModel } = require('../models/wallet.model')
 const { getInfoData } = require('../utils')
 
@@ -50,7 +50,18 @@ class FinancialPlanFactory {
     if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
       throw new BadRequestError('Invalid Wallet')
     }
-    return await planModel.findOne({ _id: planId }).populate('attributes')
+    const result = await planModel
+      .findOne({ _id: planId })
+      .populate({
+        path: 'attributes.categories', // Path to the nested categories
+        model: 'Category', // The model to use for population
+      })
+      .populate({
+        path: 'attributes.records', // Path to the nested categories
+        model: 'Transaction', // The model to use for population
+      })
+    
+    return result
   }
 
   static async getAllFinancialPlans({ walletId }) {
@@ -58,7 +69,20 @@ class FinancialPlanFactory {
     if (!foundWallet) {
       throw new BadRequestError('Invalid Wallet')
     }
-    return await planModel.find({ _id: { $in: foundWallet.financial_plans } }).populate('attributes')
+    return await planModel
+      .find({ _id: { $in: foundWallet.financial_plans } })
+      .populate({
+        path: 'attributes.categories', // Path to the nested categories
+        model: 'Category', // The model to use for population
+      })
+      .populate({
+        path: 'attributes.records',
+        populate: {
+          path: 'category',
+          model: 'Category',
+        },
+      })
+    
   }
 }
 
@@ -90,8 +114,9 @@ class FinancialPlan {
   }
 
   static async deleteFinancialPlan(walletId, planId) {
+    console.log(walletId, planId)
     try {
-      await planModel.findOneAndDelete({ _id: planId })
+      await planModel.deleteOne({ _id: planId })
       await walletModel.findOneAndUpdate({ _id: walletId }, { $pull: { financial_plans: planId } })
     } catch (error) {
       console.log(error)
@@ -108,20 +133,22 @@ class FinancialPlan {
 */
 class Budget extends FinancialPlan {
   async createFinancialPlan() {
+    console.log(this.attributes)
     try {
       const { categories, start_date, due_date } = this.attributes
       let records = []
       let spentAmount = 0
       // filter records by categories
-      for (const category of categories) {
-        const foundSubCategory = await subCategoryModel.findOne({ _id: category })
-        if (!foundSubCategory) {
-          throw new BadRequestError('Invalid category')
-        }
+      const foundCategory = await categoryModel.findOne({ _id: categories._id })
+      if (!foundCategory) {
+        throw new BadRequestError('Invalid category')
+      }
+      const subCategories = foundCategory.sub_categories
+      for (const subCategory of subCategories) {
         const { transactions } = await walletModel.findOne({ _id: this.walletId }).populate({
           path: 'transactions',
           match: {
-            category: category, // id of subcategory
+            category: subCategory, // id of subcategory
             createdAt: {
               $gte: start_date,
               $lt: due_date,
@@ -247,16 +274,19 @@ class Budget extends FinancialPlan {
     }
   }
 
-  static async deleteFinancialPlan(planId) {
+  static async deleteFinancialPlan( walletId, planId) {
+    console.log(planId);
+    
     try {
-      const deletedBudget = await budgetModel.findOneAndDelete({ _id: planId })
+      const deletedBudget = await budgetModel.deleteOne({_id: planId})
       if (!deletedBudget) {
         throw new InternalServerError('Delete Budget error')
       }
-      const deletedPlan = await super.deleteFinancialPlan(planId)
+      const deletedPlan = await super.deleteFinancialPlan(walletId, planId)
+      return deletedPlan
     } catch (error) {
       console.log(error)
-      throw new InternalServerError('Delete Budget error')
+      throw new InternalServerError('Delete Budget error 2')
     }
   }
 }
