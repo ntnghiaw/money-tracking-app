@@ -193,7 +193,18 @@ const Page = () => {
                     ).toDateString()}`}</Text>
                   </View>
                   <TouchableOpacity
-                    style={[styles.more, { position: 'absolute', right: 12, top: 8 }]}
+                    style={[
+                      styles.more,
+                      {
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        width: 40,
+                        height: 40,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      },
+                    ]}
                     onPress={() => {
                       setSelectedWalletId(item._id)
                       showModal()

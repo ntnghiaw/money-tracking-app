@@ -118,13 +118,21 @@ export interface WalletsState {
 
 export type FinancialPlanAttribute = Goal | Budget
 
-export interface FinancialPlan {
+
+export type FinancialPlan = {
   _id: string
   name: string
   description?: string
-  type: FinancialPlanType
+  type: FinancialPlanType.Budget
   records?: Transaction[]
-  attribute: FinancialPlanAttribute
+  attributes: Budget
+} | {
+  _id: string
+  name: string
+  description?: string
+  type: FinancialPlanType.Goal
+  records?: Transaction[]
+  attributes: Goal
 }
 
 export interface Goal {
@@ -147,11 +155,11 @@ export interface Debt {
 }
 
 export interface Budget {
-  targetAmount: number
-  spentAmount: number
-  categories: SubCategory[]
-  startDate: string
-  dueDate: string
+  target_amount: number | string
+  spentAmount: number | string
+  categories: Category
+  start_date: string
+  due_date: string
   records: Transaction[]
 }
 

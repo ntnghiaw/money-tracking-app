@@ -21,7 +21,7 @@ const Layout = () => {
         }}
       />
       <Stack.Screen name='wallet' options={{ title: 'Wallet', presentation: 'modal' }} />
-      <Stack.Screen name='history' options={{ title: 'History', }} />
+      <Stack.Screen name='history' options={{ title: 'History', headerBackTitleVisible: false }} />
     </Stack>
   )
 }

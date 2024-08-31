@@ -68,7 +68,6 @@ const HomePage = () => {
 
   const wallet = data?.metadata
   const transactions = wallet?.transactions
-  console.log(wallet)
   const recentTransactions = transactions?.slice(0, 3) // get 3 recent transactions
   const expenseTransactions = transactions?.filter(
     (transaction) => transaction.type === TransactionType.Expense)

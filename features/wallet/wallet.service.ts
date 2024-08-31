@@ -1,4 +1,14 @@
-import { AuthState, Response, Transaction, Wallet, WalletResponse, WalletType } from '@/types/enum'
+import {
+  AuthState,
+  Budget,
+  FinancialPlan,
+  Goal,
+  Response,
+  Transaction,
+  Wallet,
+  WalletResponse,
+  WalletType,
+} from '@/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 interface WalletRequest {
@@ -14,7 +24,7 @@ interface HeaderRequest {
 
 export const walletApi = createApi({
   reducerPath: 'walletApi',
-  tagTypes: ['Wallet', 'Transaction'],
+  tagTypes: ['Wallet', 'Transaction', 'Plan'],
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.EXPO_PUBLIC_API_URL}/v1/api`,
   }),
@@ -171,7 +181,10 @@ export const walletApi = createApi({
         body: body.transaction,
       }),
 
-      invalidatesTags: (result, error, body) => [{ type: 'Wallet', id: 'LIST' }],
+      invalidatesTags: (result, error, body) => [
+        { type: 'Wallet', id: 'LIST' },
+        { type: 'Plan', id: 'LIST' },
+      ],
     }),
 
     updateTransaction: builder.mutation<
@@ -195,6 +208,7 @@ export const walletApi = createApi({
       invalidatesTags: (result, error, data) => [
         { type: 'Transaction', id: data.id },
         { type: 'Wallet', id: 'LIST' },
+        { type: 'Plan', id: 'LIST' },
       ],
     }),
 
@@ -217,7 +231,105 @@ export const walletApi = createApi({
       invalidatesTags: (result, error, data) => [
         { type: 'Transaction', id: data.id },
         { type: 'Wallet', id: 'LIST' },
+        { type: 'Plan', id: 'LIST' },
       ],
+    }),
+
+    /* Budget  & Goal */
+    getAllPlans: builder.query<
+      Response<FinancialPlan<Goal | Budget>[]>,
+      { walletId: string; auth: HeaderRequest }
+    >({
+      query: (data) => ({
+        url: `/financialPlans/${data.walletId}`,
+        method: 'GET',
+        headers: {
+          Authorization: `${data.auth.accessToken}`,
+          'x-client-id': `${data.auth.userId}`,
+        },
+      }),
+      providesTags: (result) =>
+        result?.metadata
+          ? [
+              { type: 'Plan', id: 'LIST' },
+              { type: 'Plan' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Plan' as const, id: 'LIST' }],
+    }),
+    getPlanById: builder.query<
+      Response<FinancialPlan<Goal | Budget>>,
+      { walletId: string; planId: string; auth: HeaderRequest }
+    >({
+      query: (data) => ({
+        url: `/financialPlans/${data.walletId}/${data.planId}`,
+        method: 'GET',
+        headers: {
+          Authorization: `${data.auth.accessToken}`,
+          'x-client-id': `${data.auth.userId}`,
+        },
+      }),
+      providesTags: (result) =>
+        result?.metadata
+          ? [
+              { type: 'Plan', id: result.metadata._id },
+              { type: 'Plan' as const, id: result.metadata._id },
+            ]
+          : [{ type: 'Plan' as const, id: 'id' }],
+    }),
+
+    createPlan: builder.mutation<
+      Response<FinancialPlan<Goal | Budget>>,
+      { walletId: string; auth: HeaderRequest; body: Omit<FinancialPlan<Goal | Budget>, '_id'> }
+    >({
+      query: (data) => ({
+        url: `/financialPlans/${data.walletId}`,
+        method: 'POST',
+        headers: {
+          Authorization: `${data.auth.accessToken}`,
+          'x-client-id': `${data.auth.userId}`,
+        },
+        body: data.body,
+      }),
+      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: 'LIST' }],
+    }),
+
+    updatePlan: builder.mutation<
+      Response<FinancialPlan<Goal | Budget>[]>,
+      {
+        walletId: string
+        planId: string
+        auth: HeaderRequest
+        body: Omit<FinancialPlan<Goal | Budget>, '_id'>
+      }
+    >({
+      query: (data) => ({
+        url: `/financialPlans/${data.walletId}/${data.planId}`,
+        method: 'POST',
+        headers: {
+          Authorization: `${data.auth.accessToken}`,
+          'x-client-id': `${data.auth.userId}`,
+        },
+        body: data.body,
+      }),
+      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: data.planId }],
+    }),
+    deletePlan: builder.mutation<
+      Response<FinancialPlan<Goal | Budget>[]>,
+      {
+        walletId: string
+        planId: string
+        auth: HeaderRequest
+      }
+    >({
+      query: (data) => ({
+        url: `/financialPlans/${data.walletId}/${data.planId}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `${data.auth.accessToken}`,
+          'x-client-id': `${data.auth.userId}`,
+        },
+      }),
+      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: 'LIST' }],
     }),
   }),
 })
@@ -233,4 +345,9 @@ export const {
   useUpdateTransactionMutation,
   useGetTransactionByIdQuery,
   useDeleteTransactionMutation,
+  useGetAllPlansQuery,
+  useGetPlanByIdQuery,
+  useCreatePlanMutation,
+  useUpdatePlanMutation,
+  useDeletePlanMutation,
 } = walletApi
