@@ -20,12 +20,12 @@ const budgetSchema = new Schema(
       default: 0,
     },
     categories: 
-      {
+      [{
         type: Schema.Types.ObjectId,
         ref: 'SubCategory',
         required: true
       },
-    
+    ],
     start_date: {
       type: Date,
       default: Date.now,

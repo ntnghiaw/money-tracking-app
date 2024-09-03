@@ -18,10 +18,7 @@ class UserService {
     }
   }
 
-  static updateInfo =   async ({
-    userId,
-    user: { name, dob, gender, avatar_url },
-  }) => {
+  static updateInfo = async ({ userId, user: { name, dob, gender, avatar_url } }) => {
     const filter = { _id: userId },
       update = { name, dob, gender, avatar_url },
       options = { new: true, update: true }
@@ -47,7 +44,6 @@ class UserService {
     } catch (error) {
       throw new BadRequestError('User not found')
     }
-    
   }
 
   static findById = async (userId) => {
@@ -64,14 +60,18 @@ class UserService {
 
   static getInfo = async (userId) => {
     const user = await userModel.findById(userId)
-    return getInfoData({object: user, fields: ['_id', 'name', 'email', 'avatar_url', 'gender', 'dob']})
+    return getInfoData({
+      object: user,
+      fields: ['_id', 'name', 'email', 'avatar_url', 'gender', 'dob'],
+    })
   }
 
   static removeWalletById = async (userId, walletId) => {
     return await userModel.findOneAndUpdate(
       { _id: userId },
       { $pull: { wallets: walletId } },
-      { new: true })
+      { new: true }
+    )
   }
 }
 

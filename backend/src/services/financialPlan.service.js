@@ -4,85 +4,60 @@ const { startSession } = require('mongoose')
 const { subCategoryModel, categoryModel } = require('../models/category.model')
 const { walletModel } = require('../models/wallet.model')
 const { getInfoData } = require('../utils')
+const {
+  updateFinancialPlanById,
+  getDetailsPlanById,
+} = require('../models/repositories/financialPlan.repo')
 
 class FinancialPlanFactory {
   /*
      type: 'budget' | 'goal'
      payload
    */
-  static async createFinancialPlan({ type, payload, walletId }) {
-    switch (type) {
-      case 'budget':
-        return await new Budget(walletId, payload).createFinancialPlan()
-      case 'goal':
-        return await new Goal(walletId, payload).createFinancialPlan()
-      default:
-        throw new BadRequestError(`Invalid Plan Type  ${type}`)
-    }
+  static financialPlanRegistry = {} // key-class
+
+  static registerFinancialPlanType(type, classRef) {
+    FinancialPlanFactory.financialPlanRegistry[type] = classRef
   }
-  static async updateFinancialPlan({ type, payload, walletId, planId }) {
-    switch (type) {
-      case 'budget':
-        return await new Budget(walletId, payload).updateFinancialPlan(planId)
-      case 'goal':
-        return await new Goal(walletId, payload).updateFinancialPlan(planId)
-      default:
-        throw new BadRequestError(`Invalid Plan Type  ${type}`)
+
+  static async createFinancialPlan({ type, payload, walletId }) {
+    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
+    if (!planClass) {
+      throw new BadRequestError(`Invalid Plan Type  ${type}`)
     }
+    return new planClass(walletId, payload).createFinancialPlan()
+  }
+
+  static async updateFinancialPlan({ type, bodyUpdate, walletId, planId }) {
+    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
+    if (!planClass) {
+      throw new BadRequestError(`Invalid Plan Type  ${type}`)
+    }
+    return new planClass(walletId, bodyUpdate).updateFinancialPlan(planId)
   }
 
   static async deleteFinancialPlan({ walletId, planId }) {
-    const foundPlan = await planModel.findOne({ _id: planId })
-    if (!foundPlan) {
-      throw new BadRequestError('Invalid Plan')
+    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
+    if (!planClass) {
+      throw new BadRequestError(`Invalid Plan Type  ${type}`)
     }
-    switch (foundPlan.type) {
-      case 'budget':
-        return await Budget.deleteFinancialPlan(walletId, planId)
-      case 'goal':
-        return await Goal.deleteFinancialPlan(walletId, planId)
-      default:
-        throw new BadRequestError(`Invalid Plan Type  ${type}`)
-    }
-  }
-  static async getFinancialPlan({ walletId, planId }) {
-    const foundWallet = await walletModel.findOne({ _id: walletId })
-    if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
-      throw new BadRequestError('Invalid Wallet')
-    }
-    const result = await planModel
-      .findOne({ _id: planId })
-      .populate({
-        path: 'attributes.categories', // Path to the nested categories
-        model: 'Category', // The model to use for population
-      })
-      .populate({
-        path: 'attributes.records', // Path to the nested categories
-        model: 'Transaction', // The model to use for population
-      })
-    
-    return result
+    return new planClass(walletId).deleteFinancialPlan(planId)
   }
 
-  static async getAllFinancialPlans({ walletId }) {
-    const foundWallet = await walletModel.findOne({ _id: walletId })
-    if (!foundWallet) {
-      throw new BadRequestError('Invalid Wallet')
+  static async getFinancialPlanById({ walletId, planId }) {
+    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
+    if (!planClass) {
+      throw new BadRequestError(`Invalid Plan Type  ${type}`)
     }
-    return await planModel
-      .find({ _id: { $in: foundWallet.financial_plans } })
-      .populate({
-        path: 'attributes.categories', // Path to the nested categories
-        model: 'Category', // The model to use for population
-      })
-      .populate({
-        path: 'attributes.records',
-        populate: {
-          path: 'category',
-          model: 'Category',
-        },
-      })
-    
+    return new planClass(walletId).getFinancialPlanById(planId)
+  }
+
+  static async getAllFinancialPlans({ type, walletId }) {
+    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
+    if (!planClass) {
+      throw new BadRequestError(`Invalid Plan Type  ${type}`)
+    }
+    return new planClass(walletId).getAllFinancialPlans(planId)
   }
 }
 
@@ -110,11 +85,10 @@ class FinancialPlan {
   }
 
   async updateFinancialPlan({ _id, attributes }) {
-    return await planModel.findOneAndUpdate({ _id }, { ...this, attributes }, { new: true })
+    return await updateFinancialPlanById(_id, { ...this, attributes }, { new: true })
   }
 
   static async deleteFinancialPlan(walletId, planId) {
-    console.log(walletId, planId)
     try {
       await planModel.deleteOne({ _id: planId })
       await walletModel.findOneAndUpdate({ _id: walletId }, { $pull: { financial_plans: planId } })
@@ -123,28 +97,41 @@ class FinancialPlan {
       throw new InternalServerError('Delete Plan error')
     }
   }
+
+  static async getFinancialPlanById(walletId, planId) {
+    try {
+      const foundWallet = await walletModel.findOne({ _id: walletId }).lean()
+      if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
+        throw new BadRequestError('Invalid Plan')
+      }
+      return await getDetailsPlanById(planId)
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerError('Get Plan error')
+    }
+  }
+
+  static async getAllFinancialPlans(walletId) {
+    try {
+      const foundWallet = await walletModel.findOne({ _id: walletId }).lean()
+      if (!foundWallet) {
+        throw new BadRequestError('Invalid Wallet')
+      }
+      return await getAllPlans(walletId)
+    } catch (error) {}
+  }
 }
 
 // define sub-class for budget
 
-/* 
-  1. category + start_date + due_date -> records -> spent amount
-  2. target amount
-*/
 class Budget extends FinancialPlan {
   async createFinancialPlan() {
-    console.log(this.attributes)
     try {
       const { categories, start_date, due_date } = this.attributes
       let records = []
       let spentAmount = 0
       // filter records by categories
-      const foundCategory = await categoryModel.findOne({ _id: categories._id })
-      if (!foundCategory) {
-        throw new BadRequestError('Invalid category')
-      }
-      const subCategories = foundCategory.sub_categories
-      for (const subCategory of subCategories) {
+      for (const subCategory of categories) {
         const { transactions } = await walletModel.findOne({ _id: this.walletId }).populate({
           path: 'transactions',
           match: {
@@ -187,7 +174,6 @@ class Budget extends FinancialPlan {
           ],
         }),
       })
-
       // when create new plan failed, we should delete the created budget?
       if (!newPlan) {
         throw new BadRequestError('Create new Plan error')
@@ -212,10 +198,6 @@ class Budget extends FinancialPlan {
       let spentAmount = 0
       // filter records by categories
       for (const category of categories) {
-        const foundSubCategory = await subCategoryModel.findOne({ _id: category })
-        if (!foundSubCategory) {
-          throw new BadRequestError('Invalid category')
-        }
         const { transactions } = await walletModel.findOne({ _id: this.walletId }).populate({
           path: 'transactions',
           match: {
@@ -274,11 +256,11 @@ class Budget extends FinancialPlan {
     }
   }
 
-  static async deleteFinancialPlan( walletId, planId) {
-    console.log(planId);
-    
+  static async deleteFinancialPlan(walletId, planId) {
+    console.log(planId)
+
     try {
-      const deletedBudget = await budgetModel.deleteOne({_id: planId})
+      const deletedBudget = await budgetModel.deleteOne({ _id: planId })
       if (!deletedBudget) {
         throw new InternalServerError('Delete Budget error')
       }
@@ -290,6 +272,10 @@ class Budget extends FinancialPlan {
     }
   }
 }
+/* 
+  1. category + start_date + due_date -> records -> spent amount
+  2. target amount
+*/
 
 // define sub-class for goal
 class Goal extends FinancialPlan {
@@ -310,5 +296,9 @@ class Goal extends FinancialPlan {
     }
   }
 }
+
+// register financial plan type
+FinancialPlanFactory.registerFinancialPlanType('budget', Budget)
+FinancialPlanFactory.registerFinancialPlanType('goal', Goal)
 
 module.exports = FinancialPlanFactory
