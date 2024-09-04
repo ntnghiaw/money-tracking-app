@@ -1,0 +1,99 @@
+{
+  "welcome": {
+    "slogan": "Quản lý & Theo dõi Tiền của Bạn trong Một Ứng Dụng",
+    "description": "Kiểm soát tài chính tương lai của bạn với ứng dụng quản lý tài chính one-in-app. Được thiết kế để đơn giản hóa và tối ưu hóa các vấn đề tài chính của bạn",
+    "signin": "Đăng nhập",
+    "signup": "Đăng ký"
+  },
+  "login": {
+    "title": "Chào mừng trở lại!",
+    "description": "Nhập Email & Mật khẩu để Đăng nhập",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "remember": "Nhớ mật khẩu",
+    "forgot": "Quên mật khẩu?",
+    "signin": "Đăng nhập",
+    "signup": "Đăng ký",
+    "or": "hoặc",
+    "google": "Tiếp tục với Google",
+    "facebook": "Tiếp tục với Facebook",
+    "apple": "Tiếp tục với Apple",
+    "noaccount": "Chưa có tài khoản?"
+  },
+  "forgotpw": {
+    "title": "Quên mật khẩu của bạn?",
+    "description": "Nhập Email của bạn để đặt lại mật khẩu",
+    "email": "Email",
+    "continue": "Tiếp tục",
+    "back": "Quay lại Đăng nhập",
+    "signup": "Đăng ký"
+  },
+  "resetpw": {
+    "title": "Đặt lại mật khẩu của bạn",
+    "description": "Đặt lại mật khẩu và xác nhận ngay bây giờ",
+    "password": "Mật khẩu",
+    "confirm": "Xác nhận mật khẩu",
+    "reset": "Đặt lại mật khẩu"
+  },
+  "otp": {
+    "title": "Xác minh Email",
+    "description": "Nhập mã xác minh đã được gửi đến Email của bạn",
+    "confirm": "Xác nhận mã OTP",
+    "notreceive": "Không nhận được mã?",
+    "resend": "Gửi lại liên kết"
+  },
+  "signup": {
+    "title": "Chào mừng đến với FundFlex",
+    "description": "Nhập Email & Mật khẩu của bạn để Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirm": "Xác nhận mật khẩu",
+    "signup": "Đăng ký",
+    "signin": "Đăng nhập",
+    "or": "hoặc",
+    "google": "Tiếp tục với Google",
+    "facebook": "Tiếp tục với Facebook",
+    "apple": "Tiếp tục với Apple",
+    "haveaccount": "Đã có tài khoản?"
+  },
+  "onboarding": {
+    "firstscreen": "Theo dõi Ngân sách Toàn diện",
+    "secondscreen": "Phân loại Chi tiêu Tự động",
+    "thirdscreen": "Thiết lập Mục tiêu và Theo dõi Tiến trình"
+  },
+  "transaction": {
+    "newtransaction": "Tạo mới giao dịch",
+    "continue": "Tiếp tục"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "editaccount": "Chỉnh sửa tài khoản",
+    "resetpassword": "Đặt lại mật khẩu",
+    "changetheme": "Thay đổi chủ đề",
+    "mysubscription": "Đăng ký của tôi",
+    "language": "Ngôn ngữ",
+    "currency": "Đơn vị tiền tệ",
+    "helpandsupport": "Trợ giúp & Hỗ trợ",
+    "termsandconditions": "Điều khoản & Điều kiện",
+    "logout": "Đăng xuất",
+    "name": "Tên",
+    "dob": "Ngày sinh",
+    "gender": "Giới tính",
+    "email": "Email",
+    "newpassword": "Mật khẩu mới",
+    "confirmpassword": "Nhập lại mật khẩu mới",
+    "changepassword": "Thay đổi mật khẩu",
+    "save": "Lưu",
+    "selectlanguage": "Chọn ngôn ngữ",
+    "seatch": "Tìm kiếm",
+    "english": "Tiếng Anh",
+    "vietnamese": "Tiếng Việt",
+    "changelanguage": "Thay đổi ngôn ngữ"
+  },
+  "tabLabel": {
+    "home": "Nhà",
+    "goals": "Mục tiêu",
+    "analytics": "Phân tích",
+    "settings": "Cài đặt"
+  }
+}

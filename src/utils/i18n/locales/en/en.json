@@ -1,0 +1,99 @@
+{
+  "welcome": {
+    "slogan": "Manage &  Track Your Money in One App",
+    "description": "Take control of your financial future with our all-in-one finance management app. Designed to simplify and streamline your money matters",
+    "signin": "Sign in",
+    "signup": "Sign up"
+  },
+  "login": {
+    "title": "Welcome back!",
+    "description": "Enter your Email & Password to Sign in",
+    "email": "Email",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgot": "Forgot Password?",
+    "signin": "Sign in",
+    "signup": "Sign up",
+    "or": "or",
+    "google": "Continue with Google",
+    "facebook": "Continue with Facebook",
+    "apple": "Continue with Apple",
+    "noaccount": "Don't have an Account?"
+  },
+  "forgotpw": {
+    "title": "Forgot your Password?",
+    "description": "Enter your Email to reset your Password",
+    "email": "Email",
+    "continue": "Continue",
+    "back": "Back to Sign in",
+    "signup": "Sign up"
+  },
+  "resetpw": {
+    "title": "Reset your Password",
+    "description": "Reset your password and confirm now",
+    "password": "Password",
+    "confirm": "Confirm Password",
+    "reset": "Reset Password"
+  },
+  "otp": {
+    "title": "Email Verification",
+    "description": "Enter Verification has been sent to your Email",
+    "confirm": "Confirm OTP",
+    "notreceive": "Didn't receive the it?",
+    "resend": "Resend link"
+  },
+  "signup": {
+    "title": "Welcome to FundFlex",
+    "description": "Enter your Email & Password to Sign up",
+    "email": "Email",
+    "password": "Password",
+    "confirm": "Confirm Password",
+    "signup": "Sign up",
+    "signin": "Sign in",
+    "or": "or",
+    "google": "Continue with Google",
+    "facebook": "Continue with Facebook",
+    "apple": "Continue with Apple",
+    "haveaccount": "Already have an Account?"
+  },
+  "onboarding": {
+    "firstscreen": "Comprehensive Budget Tracking",
+    "secondscreen": "Automatic Expense Categorization",
+    "thirdscreen": "Goal Setting and Progress Tracking"
+  },
+  "transaction": {
+    "newtransaction": "New Transaction",
+    "continue": "Continue"
+  },
+  "settings": {
+    "title": "Settings",
+    "editaccount": "Edit account",
+    "resetpassword": "Reset password",
+    "changetheme": "Change Theme",
+    "mysubscription": "My Subscription",
+    "language": "Language",
+    "currency": "Currency",
+    "helpandsupport": "Help & Support",
+    "termsandconditions": "Terms & Conditions",
+    "logout": "Logout",
+    "name": "Name",
+    "dob": "Date of birth",
+    "gender": "Gender",
+    "email": "Email",
+    "newpassword": "New Password",
+    "confirmpassword": "Confirm Password",
+    "changepassword": "Change password",
+    "save": "Save",
+    "selectlanguage": "Select Language",
+    "seatch": "Search",
+    "english": "English",
+    "vietnamese": "Vietnamese",
+    "changelanguage": "Change Language"
+  },
+  "tabLabel": {
+    "home": "Home",
+    "analytics": "Analytics",
+    "goals": "Goals",
+    "settings": "Settings"
+  }
+}
