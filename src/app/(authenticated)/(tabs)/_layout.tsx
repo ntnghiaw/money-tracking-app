@@ -67,27 +67,7 @@ const Layout = () => {
               )
             },
             headerTitle: t('transaction.newtransaction'),
-            header: (props) => (
-              <Header
-                {...props}
-                headerLeft={() => (
-                  <HeaderButton
-                    type='btn'
-                    onPress={() => router.back()}
-                    button={() => (
-                      <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />
-                    )}
-                  />
-                )}
-                headerRight={() => (
-                  <HeaderButton
-                    type='text'
-                    onPress={() => console.log(1)}
-                    text={t('transaction.continue')}
-                  />
-                )}
-              />
-            ),
+            headerShown: false
           }}
         />
         <Tabs.Screen

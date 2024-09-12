@@ -22,6 +22,15 @@ interface HeaderRequest {
   userId: string
 }
 
+
+interface ScanImageReceiptsResponse {
+  img_url: string
+  title: string
+  currency_code: string
+  date: string
+  total: number
+}
+
 export const walletApi = createApi({
   reducerPath: 'walletApi',
   tagTypes: ['Wallet', 'Transaction', 'Plan'],
@@ -331,6 +340,25 @@ export const walletApi = createApi({
       }),
       invalidatesTags: (result, error, data) => [{ type: 'Plan', id: 'LIST' }],
     }),
+    scanImageReceipts: builder.mutation<
+      Response<ScanImageReceiptsResponse>,
+      { image: any; auth: HeaderRequest }
+    >({
+      query: (body) => {
+        const formData = new FormData()
+        formData.append('file', body.image)
+        return {
+          url: '/transactions/scanReceipt',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data;',
+            Authorization: `${body.auth.accessToken}`,
+            'x-client-id': `${body.auth.userId}`,
+          },
+          body: formData,
+        }
+      },
+    }),
   }),
 })
 
@@ -350,4 +378,5 @@ export const {
   useCreatePlanMutation,
   useUpdatePlanMutation,
   useDeletePlanMutation,
+  useScanImageReceiptsMutation
 } = walletApi

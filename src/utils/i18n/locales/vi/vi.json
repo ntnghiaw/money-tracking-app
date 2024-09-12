@@ -79,7 +79,10 @@
     "create": "Tạo",
     "scanreceipts": "Scan hóa đơn",
     "takephoto": "Chụp ảnh",
-    "createdAt": "Ngày tạo"
+    "createdAt": "Ngày tạo",
+    "scan": "Scan",
+    "getimagefromlibrary": "Chọn ảnh từ thư viện",
+    "chooseimage": "Chọn ảnh"
   },
   "settings": {
     "title": "Cài đặt",

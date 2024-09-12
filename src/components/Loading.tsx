@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
   loading: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#383737',
+    opacity: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
   },

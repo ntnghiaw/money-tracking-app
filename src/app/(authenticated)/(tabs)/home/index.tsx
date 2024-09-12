@@ -154,7 +154,7 @@ const Home = () => {
                   date={formatDate(
                     item?.createdAt ? new Date(item?.createdAt) : new Date(),
                     'dd/mm/yy'
-                  )}
+                  )!}
                   img={() => (
                     <Image
                       source={getImg(item.category.icon)}

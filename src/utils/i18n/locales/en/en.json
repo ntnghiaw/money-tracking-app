@@ -80,7 +80,10 @@
     "create": "Create",
     "scanreceipts": "Scan Receipts",
     "takephoto": "Take a photo",
-    "createdAt": "Created At"
+    "createdAt": "Created At",
+    "scan": "Scan",
+    "getimagefromlibrary": "Get image from library",
+    "chooseimage": "Choose image"
   },
   "settings": {
     "title": "Settings",

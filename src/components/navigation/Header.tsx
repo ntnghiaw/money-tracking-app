@@ -34,7 +34,7 @@ const Header = ({ options, route, headerLeft, headerRight }: HeaderProps) => {
           {headerTitle?.toString()}
         </ThemedText>
       </View>
-      <View style={{ flex: 1 }}>{!!headerRight && headerRight()}</View>
+      <View style={{ flex: 1, alignItems: 'flex-end' }}>{!!headerRight && headerRight()}</View>
     </View>
   )
 }
