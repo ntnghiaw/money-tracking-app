@@ -1,9 +1,13 @@
 {
   "welcome": {
-    "slogan": "Manage &  Track Your Money in One App",
+    "slogan": "Manage & Track Your Money in One App",
     "description": "Take control of your financial future with our all-in-one finance management app. Designed to simplify and streamline your money matters",
     "signin": "Sign in",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "firstwallet": "Welcome! Set up your first wallet to start tracking your finances easily",
+    "yourfirstwallet": "Create your First Wallet",
+    "brand": "FundFlex"
+    
   },
   "login": {
     "title": "Welcome back!",
@@ -61,9 +65,22 @@
     "secondscreen": "Automatic Expense Categorization",
     "thirdscreen": "Goal Setting and Progress Tracking"
   },
+  "wallet": {
+    "createwallet": "Create Wallet",
+    "placeholdername": "Enter your wallet name"
+  },
   "transaction": {
     "newtransaction": "New Transaction",
-    "continue": "Continue"
+    "continue": "Continue",
+    "income": "Income",
+    "expense": "Expense",
+    "addtitle" : "Add Title",
+    "categories": "Categories",
+    "selectcategories": "Select Categories",
+    "create": "Create",
+    "scanreceipts": "Scan Receipts",
+    "takephoto": "Take a photo",
+    "createdAt": "Created At"
   },
   "settings": {
     "title": "Settings",
@@ -73,6 +90,7 @@
     "mysubscription": "My Subscription",
     "language": "Language",
     "currency": "Currency",
+    "choosecurrency": "Choose Currency",
     "helpandsupport": "Help & Support",
     "termsandconditions": "Terms & Conditions",
     "logout": "Logout",
@@ -95,5 +113,36 @@
     "analytics": "Analytics",
     "goals": "Goals",
     "settings": "Settings"
+  },
+  "home": {
+    "totalbalance": "Total Balance",
+    "setyourwallets": "Set your wallets",
+    "walletdescription": "Add wallets to start tracking your finances",
+    "income": "Income",
+    "expense": "Expense",
+    "history": "History",
+    "seeall": "See all",
+    "lessthan": "Less than your average income",
+    "morethan": "More than your average income",
+    "notransactions": "No transactions yet",
+    "chooseicon": "Choose Icon"
+
+  },
+  "analytics": {
+    "header": "Analytics",
+    "income": "Income",
+    "expense": "Expense",
+    "totalincome": "Total Income",
+    "totalexpense": "Total Expense",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "addnewcategories": "Add New Categories",
+    "addcategories": "Add Categories",
+    "categoryname": "Category Name",
+    "descriptioncategories": "Organize your finances by custom categories",
+    "history": "History",
+    "seeall": "See all"
   }
 }

@@ -8,7 +8,6 @@ interface LoginRequest {
 }
 
 interface RegisterRequest {
-  name: string
   email: string
   password: string
 }
@@ -22,11 +21,13 @@ export const authApi = createApi({
   }),
   endpoints: (builder) => ({
     login: builder.mutation<Response<AuthResponse>, LoginRequest>({
-      query: (body) => ({
-        url: '/login',
-        method: 'POST',
-        body,
-      }),
+      query: (body) => {
+        return {
+          url: '/login',
+          method: 'POST',
+          body,
+        }
+      },
     }),
     register: builder.mutation<Response<AuthResponse>, RegisterRequest>({
       query: (body) => ({

@@ -5,7 +5,6 @@ import type { WalletResponse, Wallet, WalletsState } from '@/src/types/enum'
 const initialState: WalletsState = {
   wallets: [],
   currentWallet: '',
-  currentCurrency: 'VND',
 }
 
 const walletSlice = createSlice({
@@ -16,13 +15,11 @@ const walletSlice = createSlice({
       state.currentWallet = action.payload.currentWallet
       state.wallets = action.payload.wallets
     },
-    setCurrentCurrency(state, action: PayloadAction<string>) {
-      state.currentCurrency = action.payload
-    }
+    
   },
 })
 
-export const { setWallets, setCurrentCurrency } = walletSlice.actions
+export const { setWallets } = walletSlice.actions
 
 const walletReducer = walletSlice.reducer
 export default walletReducer

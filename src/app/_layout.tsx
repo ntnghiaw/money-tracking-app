@@ -13,7 +13,8 @@ import { useSegments } from 'expo-router'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import 'intl-pluralrules'
 import '@/src/utils/i18n'
-import { TranslationProvider } from '../contexts/TranslationContext'
+import { LocalizationProvider } from '@/src/contexts/LocalizationContext'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const InitialLayout = () => {
   const router = useRouter()
@@ -21,13 +22,14 @@ const InitialLayout = () => {
   const { isAuthenticated, walletId, tokens, userId } = useAppSelector((state) => state.auth)
   useEffect(() => {
     if (isAuthenticated && !Boolean(walletId)) {
-      router.replace('/first-wallet')
+      router.replace('/(authenticated)/first-wallet')
     } else if (isAuthenticated && Boolean(walletId)) {
       router.replace('/(authenticated)/(tabs)/home')
     } else if (!isAuthenticated) {
       console.log('not authenticated')
       router.replace('/')
     }
+
   }, [isAuthenticated, walletId])
 
   return (
@@ -72,15 +74,6 @@ const InitialLayout = () => {
           presentation: 'modal',
         }}
       />
-      <Stack.Screen
-        name='first-wallet'
-        options={{
-          title: 'Create new wallet',
-          headerShadowVisible: false,
-          headerBackVisible: false,
-          // presentation: 'modal',
-        }}
-      />
       <Stack.Screen name='(authenticated)' options={{ headerShown: false }} />
     </Stack>
   )
@@ -89,18 +82,18 @@ const InitialLayout = () => {
 const RootLayoutNav = () => {
   return (
     <ActionSheetProvider>
-      <Provider store={store}>
-        {/* <> */}
-        <TranslationProvider>
-          <StatusBar style='dark' backgroundColor={'white'} />
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <PersistGate persistor={persistor}>
-              <InitialLayout />
-            </PersistGate>
-          </GestureHandlerRootView>
-          {/* </> */}
-        </TranslationProvider>
-      </Provider>
+        <Provider store={store}>
+          {/* <> */}
+          <LocalizationProvider>
+            <StatusBar style='dark' backgroundColor={'white'} />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <PersistGate persistor={persistor}>
+                <InitialLayout />
+              </PersistGate>
+            </GestureHandlerRootView>
+            {/* </> */}
+          </LocalizationProvider>
+        </Provider>
     </ActionSheetProvider>
   )
 }

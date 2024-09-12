@@ -18,7 +18,7 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             : route.name
         // remove +not-found or _sitemap from tabs
         if (['_sitemap', '+not-found'].includes(route.name)) return null
-
+        
         const isFocused = state.index === index
 
         const onPress = () => {
@@ -51,7 +51,12 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             style={styles.tabBarItem}
             key={route.name}
           >
-           {options.tabBarIcon && options.tabBarIcon({ size: 24, focused: isFocused, color: BrandColor.PrimaryColor[400] })}
+            {options.tabBarIcon &&
+              options.tabBarIcon({
+                size: 24,
+                focused: isFocused,
+                color: BrandColor.PrimaryColor[400],
+              })}
             {!!options.tabBarLabel && (
               <Text
                 style={[

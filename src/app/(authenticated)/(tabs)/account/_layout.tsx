@@ -58,6 +58,25 @@ const Layout = () => {
           // animation: 'slide_from_bottom',
         }}
       />
+      <Stack.Screen
+        name='currencies'
+        options={{
+          headerTitle: t('settings.choosecurrency'),
+          header: (props) => (
+            <Header
+              {...props}
+              headerLeft={() => (
+                <HeaderButton
+                  onPress={() => router.back()}
+                  type='btn'
+                  button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
+                />
+              )}
+            />
+          ),
+          // animation: 'slide_from_bottom',
+        }}
+      />
     </Stack>
   )
 }

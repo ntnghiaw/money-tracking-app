@@ -6,10 +6,8 @@ type CurrencyCode = (typeof codes)[number]
 export const formatter = (number: number, currencyCode: CurrencyCode): string =>
   new Intl.NumberFormat('de-DE', {
     style: 'currency',
-    currency: currencyCode,
-    maximumFractionDigits: 0,
+    currency: currencyCode ,
   }).format(number)
-/* $2,500.00 */
 
 // convert formatted number back to number
 export const numberString = (formattedNumber: string): number => {

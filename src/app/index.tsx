@@ -119,14 +119,85 @@
 //   },
 // })
 
+import { Image, StyleSheet, Text, View } from 'react-native'
+import { ThemedText } from '../components/ThemedText'
+import { TextType } from '../types/text'
+import { BrandColor, NeutralColor, TextColor } from '../constants/Colors'
+import { useLocale } from '../hooks/useLocale'
+import Button from '@/src/components/buttons/Button'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {  useRouter } from 'expo-router'
 
-import { StyleSheet, Text, View } from 'react-native'
+
 const Page = () => {
+  const { t } = useLocale()
+  const { bottom } = useSafeAreaInsets()
+  const router = useRouter()
   return (
-    <View>
-      <Text>Page</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require('@/src/assets/icons/logo.png')} style={styles.img} />
+      </View>
+      <View style={styles.welcome}>
+        <ThemedText
+          type={TextType.LargeTitleBold}
+          color={TextColor.Primary}
+          style={{ textAlign: 'center' }}
+        >
+          {t('welcome.slogan')}
+        </ThemedText>
+        <ThemedText
+          type={TextType.Caption12Regular}
+          color={TextColor.Secondary}
+          style={{ textAlign: 'center', marginTop: 12 }}
+        >
+          {t('welcome.description')}
+        </ThemedText>
+      </View>
+      <View style={styles.auth}>
+        <Button
+          type={'tertiary'}
+          text={t('welcome.signin')}
+          size={'large'}
+          state={'normal'}
+          onPress={() => router.replace('/login')}
+          style={{ width: '48%', backgroundColor: '#EBECEF', borderColor: BrandColor.Gray[400] }}
+          textColor={TextColor.Primary}
+        />
+        <Button
+          type={'primary'}
+          text={t('welcome.signup')}
+          size={'large'}
+          state={'normal'}
+          onPress={() => router.replace('/register')}
+          style={{ width: '48%' }}
+        />
+      </View>
     </View>
   )
 }
 export default Page
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#EBECEF',
+  },
+  header: {
+    marginTop: 80,
+  },
+  img: {
+    width: '100%',
+    resizeMode: 'contain',
+  },
+  welcome: {
+    marginTop: 40,
+    paddingHorizontal: 24,
+  },
+  auth: {
+    marginTop: 52,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+})

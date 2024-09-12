@@ -3,7 +3,10 @@
     "slogan": "Quản lý & Theo dõi Tiền của Bạn trong Một Ứng Dụng",
     "description": "Kiểm soát tài chính tương lai của bạn với ứng dụng quản lý tài chính one-in-app. Được thiết kế để đơn giản hóa và tối ưu hóa các vấn đề tài chính của bạn",
     "signin": "Đăng nhập",
-    "signup": "Đăng ký"
+    "signup": "Đăng ký",
+    "firstwallet": "Chào mừng! Tạo ví đầu tiên của bạn để bắt đầu theo dõi tài chính dễ dàng",
+    "yourfirstwallet": "Tạo Ví Đầu tiên của bạn",
+    "brand": "FundFlex"
   },
   "login": {
     "title": "Chào mừng trở lại!",
@@ -61,9 +64,22 @@
     "secondscreen": "Phân loại Chi tiêu Tự động",
     "thirdscreen": "Thiết lập Mục tiêu và Theo dõi Tiến trình"
   },
+  "wallet": {
+    "createwallet": "Tạo ví",
+    "placeholdername": "Nhập tên ví của bạn"
+  },
   "transaction": {
     "newtransaction": "Tạo mới giao dịch",
-    "continue": "Tiếp tục"
+    "continue": "Tiếp tục",
+    "income": "Thu nhập",
+    "expense": "Chi phí",
+    "addtitle": "Thêm tiêu đề",
+    "categories": "Danh mục",
+    "selectcategories": "Chọn danh mục",
+    "create": "Tạo",
+    "scanreceipts": "Scan hóa đơn",
+    "takephoto": "Chụp ảnh",
+    "createdAt": "Ngày tạo"
   },
   "settings": {
     "title": "Cài đặt",
@@ -73,6 +89,7 @@
     "mysubscription": "Đăng ký của tôi",
     "language": "Ngôn ngữ",
     "currency": "Đơn vị tiền tệ",
+    "choosecurrency": "Chọn đơn vị tiền tệ",
     "helpandsupport": "Trợ giúp & Hỗ trợ",
     "termsandconditions": "Điều khoản & Điều kiện",
     "logout": "Đăng xuất",
@@ -95,5 +112,35 @@
     "goals": "Mục tiêu",
     "analytics": "Phân tích",
     "settings": "Cài đặt"
+  },
+  "home": {
+    "totalbalance": "Tổng số dư",
+    "setyourwallets": "Thiết lập ví của bạn",
+    "walletdescription": "Quản lý tất cả các ví của bạn tại đây",
+    "income": "Thu nhập",
+    "expense": "Chi phí",
+    "history": "Lịch sử",
+    "seeall": "Tất cả",
+    "lessthan": "Ít hơn so với thu nhập trung bình của bạn",
+    "morethan": "Nhiều hơn so với thu nhập trung bình của bạn",
+    "notransactions": "Chưa có giao dịch nào",
+    "chooseicon": "Chọn biểu tượng"
+  },
+  "analytics": {
+    "header": "Phân tích",
+    "income": "Thu nhập",
+    "expense": "Chi phí",
+    "totalincome": "Tổng thu nhập",
+    "totalexpense": "Tổng chi phí",
+    "daily": "Hàng ngày",
+    "weekly": "Hàng tuần",
+    "monthly": "Hàng tháng",
+    "yearly": "Hàng năm",
+    "addnewcategories": "Thêm Danh mục Mới",
+    "addcategories": "Thêm Danh mục",
+    "categoryname": "Tên danh mục",
+    "descriptioncategories": "Tùy chỉnh các danh mục của bạn",
+    "history": "Lịch sử",
+    "seeall": "Tất cả"
   }
 }

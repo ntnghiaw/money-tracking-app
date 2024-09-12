@@ -16,9 +16,7 @@
 
 // import { Lock, Mail, Unlock } from 'react-native-feather'
 // import { Link, useRouter } from 'expo-router'
-// import { useLoginMutation } from '@/features/auth/auth.service'
-// import { setAuth } from '@/features/auth/authSlice'
-// import {   useAppDispatch, useAppSelector} from '@/hooks/hooks'
+
 // import { BrandColor, NeutralColor } from '@/constants/Colors'
 
 // const initialState = {
@@ -65,7 +63,7 @@
 //         setAuth({ tokens: metadata?.tokens, userId: metadata?.user?._id, isAuthenticated: true, walletId: metadata?.user?.wallets[0] })
 //       )
 //     }
-    
+
 //   }, [isSuccess])
 
 //   return (
@@ -362,14 +360,250 @@
 
 // export default Login
 
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BrandColor, NeutralColor, TextColor } from '../constants/Colors'
+import { ThemedText } from '../components/ThemedText'
+import { useLocale } from '../hooks/useLocale'
+import { TextType } from '../types/text'
+import { useLoginMutation } from '@/src/features/auth/auth.service'
+import { setAuth } from '@/src/features/auth/authSlice'
+import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
+import Input from '../components/Input'
+import { useEffect, useState } from 'react'
+import { EmailRegExp, PasswordRegExp } from '../utils/RegExp'
+import Button from '@/src/components/buttons/Button'
+import { Ionicons } from '@expo/vector-icons'
+import { Eye, EyeOff } from 'react-native-feather'
+import { useRouter } from 'expo-router'
 
-import { StyleSheet, Text, View } from 'react-native'
-const login = () => {
+const Page = () => {
+  const router = useRouter()
+  const { t } = useLocale()
+  const [isSecure, setIsSecure] = useState(true)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [state, setState] = useState<'normal' | 'focused' | 'typing' | 'error'>('normal')
+  const [login, { data, isSuccess, isError, error, isLoading }] = useLoginMutation()
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (data) {
+      // Alert.alert('Success', 'Login successful')
+      const metadata = data?.metadata
+      console.log("🚀 ~ useEffect ~ data?.metadata:", data?.metadata)
+      dispatch(
+        setAuth({
+          tokens: metadata?.tokens,
+          userId: metadata?.user?._id,
+          isAuthenticated: true,
+          walletId: metadata?.user?.wallets[0],
+        })
+      )
+    }
+  }, [isSuccess])
+  const [isValidated, setIsValidated] = useState({
+    email: false,
+    password: false,
+  })
+  const toggleSecure = () => {
+    setIsSecure((prev) => !prev)
+  }
+  
+  const handleLogin = async () => {
+    try {
+      
+      await login({ email, password })
+    } catch (error) {
+      console.log("🚀 ~ handleLogin ~ error:", error)
+      
+    }
+    setEmail('')
+    setPassword('')
+
+  }
   return (
-    <View>
-      <Text>login</Text>
+    <View style={styles.container}>
+      <View style={styles.logo}>
+        <Image source={require('@/src/assets/icons/logo.png')} style={styles.img} />
+      </View>
+      <View style={styles.welcome}>
+        <ThemedText type={TextType.Title22Bold} color={TextColor.Primary} style={styles.textAlign}>
+          {t('login.title')}
+        </ThemedText>
+        <ThemedText
+          type={TextType.SubheadlineRegular}
+          color={TextColor.Secondary}
+          style={styles.textAlign}
+        >
+          {t('login.description')}
+        </ThemedText>
+      </View>
+      <View style={styles.form}>
+        <Input
+          value={email}
+          placeholder={t('login.email')}
+          buttonLeft={() => (
+            <Image
+              source={require('@/src/assets/icons/mail.png')}
+              width={24}
+              height={24}
+              resizeMode='contain'
+            />
+          )}
+          validationOptions={{
+            pattern: [EmailRegExp, 'Invalid email address'],
+          }}
+          validate={(isValid: boolean) => {
+            setIsValidated((prev) => ({ ...prev, email: isValid }))
+          }}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <Input
+          value={password}
+          placeholder={t('login.password')}
+          buttonLeft={() => <Image source={require('@/src/assets/icons/lock-outline.png')} />}
+          buttonRight={() => (
+            <TouchableOpacity onPress={toggleSecure}>
+              {isSecure ? (
+                <EyeOff width={24} height={24} color={BrandColor.PrimaryColor[400]} />
+              ) : (
+                <Eye width={24} height={24} color={BrandColor.PrimaryColor[400]} />
+              )}
+            </TouchableOpacity>
+          )}
+          isSecure={isSecure}
+          validationOptions={{
+            pattern: [PasswordRegExp, 'Invalid password'],
+            minLength: [6, 'Password must be at least 6 characters'],
+          }}
+          validate={(isValid: boolean) => {
+            setIsValidated((prev) => ({ ...prev, password: isValid }))
+          }}
+          onChangeText={(text) => setPassword(text)}
+        />
+      </View>
+      <View style={styles.forgotPassword}>
+        <View></View>
+        <TouchableOpacity onPress={() => router.navigate('/reset-password')}>
+          <ThemedText type={TextType.Caption12Regular} color={BrandColor.Blue[600]}>
+            {t('login.forgot')}
+          </ThemedText>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.signIn}>
+        <Button
+          text={t('login.signin')}
+          size='large'
+          state={isValidated.email && isValidated.password ? 'normal' : 'disabled'}
+          onPress={handleLogin}
+          textColor={NeutralColor.White[50]}
+          type='primary'
+        />
+      </View>
+      <View style={styles.signUpRedirect}>
+        <ThemedText type={TextType.FootnoteRegular} color={TextColor.Primary}>
+          {t('login.noaccount')}
+        </ThemedText>
+        <TouchableOpacity onPress={() => router.navigate('/register')}>
+          <ThemedText type={TextType.FootnoteSemibold} color={BrandColor.Blue[600]}>
+            {t('login.signup')}
+          </ThemedText>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.oauth}>
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          <View style={[styles.seperator, { width: '45%' }]}></View>
+          <Text>or</Text>
+          <View style={[styles.seperator, { width: '45%' }]}></View>
+        </View>
+        <Button
+          text={t('login.apple')}
+          size='large'
+          state='normal'
+          onPress={() => console.log('facebook')}
+          buttonLeft={() => <Ionicons name='logo-apple' size={24} color={NeutralColor.White[50]} />}
+          textColor={NeutralColor.White[50]}
+          style={{ backgroundColor: NeutralColor.Black[950] }}
+          type='primary'
+        />
+        <Button
+          text={t('login.google')}
+          size='large'
+          state='normal'
+          onPress={() => console.log('google')}
+          buttonLeft={() => <Image source={require('@/src/assets/icons/google.jpg')} />}
+          textColor={TextColor.Primary}
+          type='tertiary'
+        />
+      </View>
     </View>
   )
 }
-export default login
-const styles = StyleSheet.create({})
+export default Page
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: NeutralColor.White[50],
+  },
+  logo: {
+    alignItems: 'center',
+    marginTop: 32,
+  },
+  img: {
+    borderRadius: 28,
+    width: 114,
+    height: 114,
+  },
+  welcome: {
+    marginTop: 12,
+    gap: 4,
+  },
+  textAlign: {
+    textAlign: 'center',
+  },
+  form: {
+    marginTop: 24,
+    width: '100%',
+    paddingHorizontal: 24,
+    gap: 22,
+  },
+  input: {
+    height: 50,
+    borderRadius: 14,
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  forgotPassword: {
+    marginTop: 24,
+    width: '100%',
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  signIn: {
+    marginTop: 24,
+    paddingHorizontal: 24,
+  },
+  signUpRedirect: {
+    marginTop: 24,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    gap: 4,
+    alignSelf: 'center',
+  },
+  oauth: {
+    marginTop: 24,
+    paddingHorizontal: 24,
+    gap: 14,
+  },
+  seperator: {
+    height: 1,
+    backgroundColor: BrandColor.Gray[400],
+  },
+})

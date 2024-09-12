@@ -90,7 +90,6 @@ export interface Wallet {
 export interface WalletsState {
   wallets: string[]
   currentWallet?: string
-  currentCurrency: string
 
 }
 
@@ -148,7 +147,6 @@ export interface Category {
   name: string
   icon: string
   type: 'expense' | 'income'
-  sub_categories: SubCategory[]
 }
 export interface SubCategory {
   _id: string
@@ -160,7 +158,8 @@ export interface SubCategory {
 export interface Transaction {
   _id: string
   amount: number
-  category: SubCategory 
+  title: string
+  category: Category 
   createdAt: string
   description: string
   type: 'expense' | 'income'

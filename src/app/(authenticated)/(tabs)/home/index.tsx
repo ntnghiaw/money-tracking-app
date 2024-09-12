@@ -1,477 +1,306 @@
-// import React, { useEffect, useMemo } from 'react'
-// import {
-//   View,
-//   SafeAreaView,
-//   TouchableOpacity,
-//   Text,
-//   StyleSheet,
-//   Image,
-//   Dimensions,
-//   ScrollView,
-//   StatusBar,
-//   Pressable,
-// } from 'react-native'
+import { Link, Stack, useRouter } from 'expo-router'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ThemedText } from '@/src/components/ThemedText'
+import { useLocale } from '@/src/hooks/useLocale'
+import { TextType } from '@/src/types/text'
+import { Entypo, Ionicons } from '@expo/vector-icons'
+import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
+import { useGetWalletByIdQuery } from '@/src/features/wallet/wallet.service'
+import { editTransaction } from '@/src/features/transaction/transactionSlice'
+import { useEffect } from 'react'
+import { formatter } from '@/src/utils/formatAmount'
+import { Plus } from 'react-native-feather'
+import InfoButton from '@/src/components/buttons/InfoButton'
+import TransactionItem from '@/src/components/TransactionItem'
+import { useCurrency } from '@/src/hooks/useCurrency'
+import { getImg } from '@/src/utils/getImgFromUri'
+import formatDate from '@/src/utils/formatDate'
 
-// import {
-//   RefreshCcw,
-//   Users,
-//   PlayCircle,
-//   Grid,
-//   Home,
-//   ShoppingCart,
-//   User,
-//   MoreVertical,
-//   PlusCircle,
-//   ChevronRight,
-// } from 'react-native-feather'
-// import { PieChart } from 'react-native-gifted-charts'
-// import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
-// import { useGetWalletByIdQuery } from '@/features/wallet/wallet.service'
-// import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
-// import Loading from '@/components/Loading'
-// import { useSafeAreaInsets } from 'react-native-safe-area-context'
-// import { formatter } from '@/utils/formatAmount'
-// import { Transaction } from '@/types/enum'
-// import { handleStatistic } from '@/utils/handleStatistic'
-// import { useRouter } from 'expo-router'
-// import { editTransaction } from '@/features/transaction/transactionSlice'
-// import { setCurrentCurrency } from '@/features/wallet/walletSlice'
-// import { BrandColor, NeutralColor } from '@/constants/Colors'
+const Home = () => {
+  const router = useRouter()
+  const { top } = useSafeAreaInsets()
+  const { t } = useLocale()
+  const { currentCurrency } = useCurrency()
+  const dispatch = useAppDispatch()
+  const { userId, tokens, walletId } = useAppSelector((state) => state.auth)
+  const { isLoading, isSuccess, data } = useGetWalletByIdQuery({
+    walletId: walletId,
+    auth: {
+      userId: userId,
+      accessToken: tokens.accessToken,
+    },
+  })
 
-// const screenWidth = Dimensions.get('window').width
-// const screenHeight = Dimensions.get('window').height
-// // percentage of each category
-// const pieDataInit = [
-//   {
-//     value: 100,
-//     color: BrandColor.PrimaryColor[500],
-//   },
-// ]
-
-// const HomePage = () => {
-//   const router = useRouter()
-//   const dispatch = useAppDispatch()
-//   const { userId, tokens, walletId } = useAppSelector((state) => state.auth)
-//   const { currentCurrency: currency } = useAppSelector((state) => state.wallets)
-//   const { isLoading, isSuccess, data } = useGetWalletByIdQuery({
-//     walletId: walletId,
-//     auth: {
-//       userId: userId,
-//       accessToken: tokens.accessToken,
-//     },
-//   })
-//   useEffect(() => {
-//     if (data) {
-//       dispatch(setCurrentCurrency(data.metadata.currency))
-//     }
-//   }, [data])
-
-//   const wallet = data?.metadata
-//   const transactions = wallet?.transactions
-//   const recentTransactions = transactions?.slice(0, 3) // get 3 recent transactions
-//   const expenseTransactions = transactions?.filter(
-//     (transaction) => transaction.type === 'expense')
-//   const { data: categories, total } = useMemo(
-//     () => handleStatistic(expenseTransactions!),
-//     [transactions]
-//   )
-//   const pieData = useMemo(
-//     () =>
-//       categories.map((category, index) => ({
-//         value: category.percentage,
-//         color: BrandColor.PrimaryColor[300],
-//       })),
-//     [categories]
-//   )
-
- 
-//   return (
-//     <SafeAreaView style={[styles.container]}>
-//       <Loading isLoading={isLoading} text='Loading...' />
-//       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-//         <View style={styles.welcome}>
-//           <View style={styles.form_welcome}>
-//             <Text style={{ color: '#7D8895' }}>Your wallet name</Text>
-//             <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-//               <Text style={{ fontSize: 20, color: 'green', minWidth: 100 }}>{wallet?.name}</Text>
-//               <TouchableOpacity
-//                 onPress={() => router.navigate('/(authenticated)/(tabs)/home/wallets')}
-//               >
-//                 <RefreshCcw width={20} height={20} stroke={NeutralColor.GrayMedium[500]} />
-//               </TouchableOpacity>
-//             </View>
-//           </View>
-//           <View style={styles.form_balance}>
-//             <Text style={{ color: '#7D8895' }}>Your Balance</Text>
-//             {/* ₫ */}
-//             <Text style={{ fontSize: 20 }}>{formatter(wallet?.balance ?? 0, currency)}</Text>
-//           </View>
-//         </View>
-//         <View style={styles.expense_structure}>
-//           <View style={styles.expense_text}>
-//             <Text style={styles.titleText}>Expense structure</Text>
-//             <Text>Last 30 Days</Text>
-//           </View>
-//           <View style={styles.expense_form}>
-//             <View style={styles.expense_cirle}>
-//               <PieChart
-//                 data={pieData.length > 0 ? pieData : pieDataInit}
-//                 donut
-//                 showGradient
-//                 sectionAutoFocus
-//                 radius={90}
-//                 innerRadius={70}
-//                 innerCircleColor={'#fafafa'}
-//                 centerLabelComponent={() => {
-//                   return (
-//                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-//                       <Text style={{ fontSize: 18, color: NeutralColor.GrayMedium[500], fontWeight: '500' }}>
-//                         ALL
-//                       </Text>
-//                       <Text style={{ fontSize: 14, color: NeutralColor.GrayMedium[500] }}>
-//                         {formatter(total, currency)}
-//                       </Text>
-//                     </View>
-//                   )
-//                 }}
-//               />
-//             </View>
-//             <View style={styles.expense_categories}>
-//               {categories.length > 0 ? (
-//                 categories.map((category, index) => (
-//                   <View style={styles.expense_notation} key={index}>
-//                     <View
-//                       style={[styles.small_circle, { backgroundColor: BrandColor.PrimaryColor[300] }]}
-//                     />
-//                     <Text>
-//                       {category.name}: {category.percentage}%
-//                     </Text>
-//                   </View>
-//                 ))
-//               ) : (
-//                 <Text style={{ textAlign: 'center' }}>No transactions</Text>
-//               )}
-//               {/* <View style={styles.expense_notation}>
-//                 <View style={[styles.small_circle, { backgroundColor: Colors.firstCategory }]} />
-//                 <Text>Shopping: 47%</Text>
-//               </View>
-//               <View style={styles.expense_notation}>
-//                 <View style={[styles.small_circle, { backgroundColor: Colors.secondCategory }]} />
-//                 <Text>Bank Loans: 40%</Text>
-//               </View>
-//               <View style={styles.expense_notation}>
-//                 <View style={[styles.small_circle, { backgroundColor: Colors.thirdCategory }]} />
-//                 <Text>Saving: 16%</Text>
-//               </View>
-//               <View style={styles.expense_notation}>
-//                 <View style={[styles.small_circle, { backgroundColor: Colors.fourthCategory }]} />
-//                 <Text>Education: 3%</Text>
-//               </View> */}
-//             </View>
-//           </View>
-//           <Text style={styles.show_more}>Show more</Text>
-//         </View>
-//         <View style={styles.operationSection}>
-//           <View style={styles.operationHeading}>
-//             <Text style={styles.titleText}>Easy Operations</Text>
-//             <MoreVertical width={24} height={24} stroke={NeutralColor.GrayMedium[500]} />
-//           </View>
-//           <View style={styles.operationList}>
-//             <View style={styles.operation}>
-//               <TouchableOpacity
-//                 style={styles.opbutton}
-//                 onPress={() => router.navigate('/(authenticated)/(tabs)/home/wallets')}
-//               >
-//                 <RefreshCcw width={24} height={24} stroke={NeutralColor.GrayMedium[500]} />
-//               </TouchableOpacity>
-//               <Text style={styles.opText}>Transfer</Text>
-//             </View>
-//             <View style={styles.operation}>
-//               <TouchableOpacity
-//                 style={styles.opbutton}
-//                 onPress={() => router.navigate('/(authenticated)/(tabs)/transaction')}
-//               >
-//                 <PlusCircle width={32} height={32} stroke={NeutralColor.GrayMedium[500]} />
-//               </TouchableOpacity>
-//               <Text style={styles.opText}>Add</Text>
-//             </View>
-//             <View style={styles.operation}>
-//               <TouchableOpacity style={styles.opbutton}>
-//                 <Users width={24} height={24} stroke={NeutralColor.GrayMedium[500]} />
-//               </TouchableOpacity>
-//               <Text style={styles.opText}>Shared</Text>
-//             </View>
-//             <View style={styles.operation}>
-//               <TouchableOpacity style={styles.opbutton}>
-//                 <Grid width={24} height={24} stroke={NeutralColor.GrayMedium[500]} />
-//               </TouchableOpacity>
-//               <Text style={styles.opText}>More</Text>
-//             </View>
-//           </View>
-//         </View>
-//         <View style={styles.recent_transactions}>
-//           <TouchableOpacity onPress={() => router.navigate('/(authenticated)/(tabs)/home/history')}>
-//             <Text style={styles.titleText}>Recent Transations</Text>
-//             <ChevronRight
-//               width={24}
-//               height={24}
-//               color={NeutralColor.GrayMedium[500]}
-//               style={{ position: 'absolute', right: 12, top: 8 }}
-//             />
-//           </TouchableOpacity>
-
-//           {recentTransactions?.map((transaction, index) => (
-//             <TouchableOpacity
-//               style={styles.list_transations}
-//               key={index}
-//               onPress={() => {
-//                 dispatch(editTransaction({ _id: transaction._id }))
-//                 router.navigate('/(authenticated)/(tabs)/transaction')
-//               }}
-//             >
-//               <View style={styles.transation_icon_container}>
-//                 <Icons
-//                   name={transaction?.category?.icon}
-//                   size={32}
-//                   color={BrandColor.PrimaryColor[100]}
-//                 />
-//               </View>
-//               <View style={styles.transation_title_container}>
-//                 <Text style={styles.transactionCategoryText}>{transaction?.category?.name}</Text>
-//                 <Text style={styles.transactionCreatedAtText}>
-//                   {new Date(transaction?.createdAt).toDateString()}
-//                 </Text>
-//               </View>
-//               <View style={styles.transation_money}>
-//                 {transaction.type === 'income' ? (
-//                   <Text style={[styles.transactionAmountText, { color: '#50C474' }]}>
-//                     {formatter(transaction.amount, currency)}
-//                   </Text>
-//                 ) : (
-//                   <Text style={[{ color: '#FF5B5B' }, styles.transactionAmountText]}>
-//                     - {formatter(transaction.amount, currency)}
-//                   </Text>
-//                 )}
-//               </View>
-//             </TouchableOpacity>
-//           ))}
-//           {recentTransactions?.length === 0 && (
-//             <Text style={{ textAlign: 'center', marginTop: 20 }}>No transactions</Text>
-//           )}
-//         </View>
-//       </ScrollView>
-//     </SafeAreaView>
-//   )
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     paddingTop: StatusBar.currentHeight,
-//   },
-//   scrollView: {
-//     marginHorizontal: 20,
-//   },
-//   welcome: {
-//     width: screenWidth * 0.9,
-//     height: screenHeight * 0.1,
-//     // backgroundColor: 'white',
-//     display: 'flex',
-//     flexDirection: 'row',
-//     marginTop: 10,
-//   },
-//   form_welcome: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     width: screenWidth * 0.45,
-//     height: screenHeight * 0.1,
-//     justifyContent: 'space-around',
-//   },
-//   form_balance: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     width: screenWidth * 0.45,
-//     height: screenHeight * 0.1,
-//     justifyContent: 'space-around',
-//     alignItems: 'center',
-//   },
-//   expense_structure: {
-//     width: screenWidth * 0.9,
-//     height: screenHeight * 0.3,
-//     // backgroundColor: 'white',
-//     display: 'flex',
-//   },
-//   expense_text: {
-//     width: '100%',
-//     height: '25%',
-//     display: 'flex',
-//     flexDirection: 'column',
-//     justifyContent: 'space-around',
-//     fontWeight: 'bold',
-//   },
-//   expense_form: {
-//     width: '100%',
-//     height: '75%',
-//     display: 'flex',
-//     flexDirection: 'row',
-//   },
-//   expense_cirle: {
-//     width: '50%',
-//     height: screenHeight * 0.2,
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: 10,
-//   },
-//   expense_categories: {
-//     width: '50%',
-//     height: '100%',
-//     display: 'flex',
-//     flexDirection: 'column',
-//     justifyContent: 'space-around',
-//     marginLeft: 30,
-//   },
-//   expense_notation: {
-//     width: '100%',
-//     height: '20%',
-//     display: 'flex',
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   small_circle: {
-//     width: 10,
-//     height: 10,
-//     borderRadius: 50,
-//     marginRight: 10,
-//   },
-//   operationSection: {
-//     width: screenWidth * 0.9,
-//     height: screenHeight * 0.1,
-//   },
-
-//   operationHeading: {
-//     width: screenWidth * 0.9,
-//     height: screenHeight * 0.05,
-//     display: 'flex',
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   },
-//   opText: {
-//     fontWeight: '500',
-//     fontSize: 16,
-//     color: NeutralColor.GrayMedium[500],
-//   },
-//   operationList: {
-//     width: screenWidth * 0.9,
-//     height: screenHeight * 0.1,
-//     justifyContent: 'space-between',
-//     flexDirection: 'row',
-//     gap: 8,
-//   },
-//   operation: {
-//     height: screenHeight * 0.06,
-//     display: 'flex',
-//     alignItems: 'center',
-//     gap: 8,
-//   },
-//   opbutton: {
-//     width: 50,
-//     height: 50,
-//     borderRadius: 8,
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: 'white',
-//   },
-//   show_more: {
-//     width: screenWidth * 0.9,
-//     // backgroundColor:'white',
-//     textAlign: 'right',
-//     paddingRight: 30,
-//     paddingTop: 10,
-//   },
-
-//   recent_transactions: {
-//     marginTop: 40,
-//     width: screenWidth * 0.9,
-//     display: 'flex',
-
-//     //  backgroundColor:'white',
-//   },
-//   titleText: {
-//     width: screenWidth * 0.9,
-//     marginTop: 10,
-//     marginBottom: 10,
-//     fontWeight: '500',
-//     fontSize: 15,
-//   },
-//   list_transations: {
-//     width: screenWidth * 0.9,
-//     height: screenHeight * 0.09,
-//     backgroundColor: 'white',
-//     marginBottom: 10,
-//     borderRadius: 8,
-//     display: 'flex',
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   transation_icon_container: {
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 12,
-//     borderRadius: 8,
-//     marginHorizontal: 12,
-//     backgroundColor: '#F7F7F7',
-//   },
-//   transaction_icon: {
-//     width: 40,
-//     height: 40,
-//     backgroundColor: 'white',
-//   },
-//   transation_title_container: {
-//     width: screenWidth * 0.3,
-//     height: screenWidth * 0.1,
-//     justifyContent: 'space-between',
-//   },
-//   transation_money: {
-//     width: screenWidth * 0.4,
-//     height: screenWidth * 0.1,
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   transactionAmountText: {
-//     fontSize: 18,
-//   },
-//   transactionCategoryText: {
-//     fontSize: 16,
-//     fontWeight: '500',
-//   },
-//   transactionCreatedAtText: {
-//     fontSize: 14,
-//   },
-// })
-
-// export default HomePage
-
-
-import { Stack } from 'expo-router'
-import { StyleSheet, Text, View } from 'react-native'
-import { getHeaderTitle } from '@react-navigation/elements';
-const index = () => {
+  const wallet = data?.metadata
+  const transactions = wallet?.transactions
+  const recentTransactions = transactions?.slice(0, 6) // get 3 recent transactions
+  console.log(recentTransactions)
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <Stack.Screen
         options={{
-
+          header: () => (
+            <View style={[styles.header, { paddingTop: top }]}>
+              <View style={styles.logo}>
+                <Image source={require('@/src/assets/icons/logo.png')} style={styles.logoImg} />
+                <ThemedText color={TextColor.Primary} type={TextType.Title22Bold}>
+                  {t('welcome.brand')}
+                </ThemedText>
+              </View>
+              <TouchableOpacity style={styles.notification}>
+                <Image
+                  source={require('@/src/assets/icons/bell.jpg')}
+                  style={styles.notificationIcon}
+                />
+              </TouchableOpacity>
+            </View>
+          ),
         }}
       />
-      <Text>index</Text>
-    </View>
+      <ScrollView style={{ flex: 1 }}>
+        <View style={styles.balanceSection}>
+          <View style={styles.totalBalance}>
+            <ThemedText color={TextColor.Secondary} type={TextType.FootnoteRegular}>
+              {t('home.totalbalance')}
+            </ThemedText>
+          </View>
+          <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
+            {formatter(wallet?.balance ?? 0, currentCurrency)}
+          </ThemedText>
+          {/* <View style={styles.summary}>
+            <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />
+            <ThemedText color={BrandColor.PrimaryColor[400]} type={TextType.CaptionSemibold}>
+              {`25% `}
+            </ThemedText>
+            <ThemedText color={TextColor.Secondary} type={TextType.Caption11Regular}>
+              {t('home.morethan')}
+            </ThemedText>
+          </View> */}
+          <View style={styles.summary}>
+            <Entypo name='triangle-down' size={16} color={BrandColor.Red[500]} />
+            <ThemedText color={BrandColor.Red[500]} type={TextType.CaptionSemibold}>
+              {`25% `}
+            </ThemedText>
+            <ThemedText color={BrandColor.Gray[600]} type={TextType.Caption11Regular}>
+              {t('home.lessthan')}
+            </ThemedText>
+          </View>
+        </View>
+        <View style={styles.operationSection}>
+          <TouchableOpacity style={[styles.btn50, { backgroundColor: BrandColor.Red[50] }]}>
+            <View style={[styles.icon, { backgroundColor: BrandColor.Red[500] }]}>
+              <Ionicons name='chevron-down' size={12} color={BrandColor.Red[500]} />
+            </View>
+
+            <ThemedText color={BrandColor.Red[500]} type={TextType.FootnoteSemibold}>
+              {t('home.expense')}
+            </ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.btn50, { backgroundColor: BrandColor.Blue[50] }]}>
+            <View style={[styles.icon, { backgroundColor: BrandColor.PrimaryColor[400] }]}>
+              <Ionicons name='chevron-up' size={12} color={BrandColor.PrimaryColor[400]} />
+            </View>
+            <ThemedText color={BrandColor.PrimaryColor[400]} type={TextType.FootnoteSemibold}>
+              {t('home.income')}
+            </ThemedText>
+          </TouchableOpacity>
+          <View style={styles.btn100}>
+            <InfoButton
+              title={t('home.setyourwallets')}
+              icon={() => <Ionicons name='card' size={24} color={BrandColor.PrimaryColor[400]} />}
+              buttonRight={() => (
+                <Plus width={20} height={20} color={BrandColor.PrimaryColor[400]} />
+              )}
+              description={t('home.walletdescription')}
+              onPress={() => router.navigate('/(authenticated)/(tabs)/home/wallets')}
+            />
+          </View>
+        </View>
+        <View style={styles.historySection}>
+          <View style={styles.headerSection}>
+            <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
+              {t('home.history')}
+            </ThemedText>
+            <Link href='/(authenticated)/(tabs)/home/history' asChild>
+              <Text style={styles.link}>{t('home.seeall')}</Text>
+            </Link>
+          </View>
+          <View>
+            {recentTransactions?.length === 0 && (
+              <ThemedText
+                type={TextType.FootnoteRegular}
+                color={TextColor.Secondary}
+                style={{ textAlign: 'center', marginTop: 30 }}
+              >
+                {t(`home.notransactions`)}
+              </ThemedText>
+            )}
+            {recentTransactions?.map((item, index) => (
+              <TouchableOpacity key={index}>
+                <TransactionItem
+                  title={item.title}
+                  category={item.category.name}
+                  amount={item.amount}
+                  date={formatDate(
+                    item?.createdAt ? new Date(item?.createdAt) : new Date(),
+                    'dd/mm/yy'
+                  )}
+                  img={() => (
+                    <Image
+                      source={getImg(item.category.icon)}
+                      style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                    />
+                  )}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
-export default index
-const styles = StyleSheet.create({})
+export default Home
+const styles = StyleSheet.create({
+  header: {
+    height: 80,
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: NeutralColor.GrayLight[100],
+  },
+  logo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  logoImg: {
+    width: 36,
+    height: 36,
+    borderRadius: 9,
+    resizeMode: 'contain',
+  },
+  notification: {
+    height: 38,
+    width: 38,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: NeutralColor.GrayLight[100],
+  },
+  notificationIcon: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+  },
+  balanceSection: {
+    marginTop: 26,
+    alignItems: 'center',
+    gap: 8,
+  },
+  totalBalance: {
+    minWidth: 102,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderRadius: 25,
+    borderColor: BrandColor.Gray[200],
+  },
+  summary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  operationSection: {
+    marginTop: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  icon: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    opacity: 0.4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  btn50: {
+    height: 54,
+    width: '49%',
+    flexDirection: 'row',
+    gap: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingVertical: 16,
+    borderColor: BrandColor.Gray[100],
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btn100: {
+    marginTop: 18,
+    width: '100%',
+  },
+
+  historySection: {
+    marginTop: 18,
+    gap: 6,
+  },
+  headerSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  link: {
+    color: '#2A85FF',
+    fontSize: 15,
+    lineHeight: 20,
+    letterSpacing: -0.4,
+    textTransform: 'capitalize',
+  },
+  item: {
+    minHeight: 64,
+    gap: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomColor: BrandColor.Gray[100],
+    borderBottomWidth: 1,
+  },
+  imgCover: {
+    width: 33,
+    height: 33,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: BrandColor.Gray[200],
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  info: {
+    gap: 2,
+  },
+  amount: {
+    gap: 2,
+    position: 'absolute',
+    right: 0,
+  },
+})
