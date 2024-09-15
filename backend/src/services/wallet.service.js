@@ -29,7 +29,10 @@ const { getInfoData } = require('../utils')
     if (!foundUser) {
       throw new BadRequestError('Invalid user')
     }
-    const newWallet = await walletModel.create(wallet)
+    const newWallet = await walletModel.create({
+      ...wallet,
+      currency: 'VND',
+    })
     if (!newWallet) {
       throw new BadRequestError('Cannot create wallet')
     }

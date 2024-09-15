@@ -28,7 +28,6 @@ const walletSchema = new Schema(
     currency: {
       type: String,
       enum: currencyCode,
-      required: true,
     },
     type: {
       type: String,

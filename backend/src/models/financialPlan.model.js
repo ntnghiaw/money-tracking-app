@@ -22,7 +22,7 @@ const budgetSchema = new Schema(
     categories: 
       [{
         type: Schema.Types.ObjectId,
-        ref: 'SubCategory',
+        ref: 'Category',
         required: true
       },
     ],
@@ -31,11 +31,7 @@ const budgetSchema = new Schema(
       default: Date.now,
       required: true,
     },
-    due_date: {
-      type: Date,
-      default: Date.now,
-      required: true,
-    },
+  
     records: [
       {
         type: Schema.Types.ObjectId,
@@ -55,10 +51,6 @@ const goalSchema = new Schema(
       type: Number,
       required: true,
     },
-    desired_date: {
-      type: Date,
-      required: true,
-    },
     current_amount: {
       type: Number,
       default: 0,
@@ -73,10 +65,11 @@ const goalSchema = new Schema(
           type: Date,
           default: Date.now,
         },
-        description: {
+        title: {
           type: String,
           maxLength: 255,
-        }
+        },
+        _id: Schema.Types.ObjectId,
       },
     ],
   },
@@ -100,6 +93,11 @@ const financialPlanSchema = new Schema(
     type: {
       type: String,
       enum: ['budget', 'goal'],
+      required: true,
+    },
+    end_date: {
+      type: Date,
+      default: Date.now,
       required: true,
     },
     attributes: {

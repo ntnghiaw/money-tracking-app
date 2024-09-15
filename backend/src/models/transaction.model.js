@@ -12,9 +12,18 @@ const transactionSchema = new Schema(
       min: [0, 'Amount must be greater than 0'],
       default: 0,
     },
+    title: {
+      type: String,
+      required: true,
+      maxLength: 50,
+    },
+    img_url: {
+      type: String,
+      maxLength: 255,
+    },
     category: {
       type: Types.ObjectId,
-      ref: 'SubCategory',
+      ref: 'Category',
     },
     description: {
       type: String,

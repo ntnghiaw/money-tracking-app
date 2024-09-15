@@ -40,6 +40,7 @@ const authentication = asyncHandler(async (req, res, next) => {
         5 - ok all => return next()
     */
   const userId = req.headers[HEADER.CLIENT_ID]
+  console.log("🚀 ~ authentication ~ userId:", userId)
   if (!userId) throw new AuthFailureError('Invalid request')
   const keyStore = await KeyTokenService.findByUserId(userId)
   if (!keyStore) throw new AuthFailureError('Auth failure')

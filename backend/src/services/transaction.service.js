@@ -3,10 +3,10 @@ const { categoryModel } = require('../models/category.model')
 const { getStartDate } = require('../utils/date')
 const UserServices = require('./user.service')
 const { walletModel } = require('../models/wallet.model')
-const { BadRequestError, InternalServerError, NotFoundError } = require('../core/error.response')
-const { Types, Mongoose } = require('mongoose')
-const { updateFinancialPlan } = require('./financialPlan.service')
+const { BadRequestError, InternalServerError } = require('../core/error.response')
 const { planModel, budgetModel } = require('../models/financialPlan.model')
+const OCRService = require('./OCR.service')
+
 const {
   updateFinancialPlanByTransactionId,
   updateSpentAmountBudget,
@@ -14,20 +14,15 @@ const {
 } = require('../models/repositories/financialPlan.repo')
 const { findPlansFilteredByTransaction } = require('../models/repositories/wallet.repo')
 
+
 class TransactionService {
-  static getAllTransactions = async ({
-    walletId,
-    options = {
-      limit: 20,
-      offset: '',
-      sort: 'desc',
-      filter: 'daily',
-    },
-  }) => {
+  static getAllTransactions = async ({ walletId, options }) => {
     const foundWallet = await walletModel.findOne({ _id: walletId })
     if (!foundWallet) {
       throw new BadRequestError('Invalid wallet')
     }
+    console.log('start date', getStartDate(options.filter))
+    console.log('end date', new Date(new Date().getTime() + 60000 * 420))
     try {
       const { transactions } = await walletModel.findOne({ _id: walletId }).populate({
         path: 'transactions',
@@ -37,13 +32,13 @@ class TransactionService {
             $gte: getStartDate(options.filter),
             $lt: new Date(new Date().getTime() + 60000 * 420), // timezone GMT +7
           },
+          type: options.type !== 'all' ? options.type : { $in: ['income', 'expense'] },
         },
         options: {
           limit: options.limit,
           sort: { createdAt: options.sort === 'desc' ? -1 : 1 },
         },
       })
-
       console.log(transactions)
 
       return transactions
@@ -76,9 +71,7 @@ class TransactionService {
       throw new BadRequestError('Invalid user or wallet')
     }
     // check valid category
-    const foundCategory = await categoryModel
-      .findOne({ sub_categories: transaction.category })
-      .lean()
+    const foundCategory = await categoryModel.findOne({ _id: transaction.category }).lean()
 
     if (!foundCategory) {
       throw new BadRequestError('Category not found')
@@ -131,9 +124,7 @@ class TransactionService {
       throw new BadRequestError('Not found wallet or user')
     }
     if (update.category) {
-      const foundCategory = await categoryModel
-        .findOne({ sub_categories: update.category._id })
-        .lean()
+      const foundCategory = await categoryModel.findOne({ _id: update.category._id }).lean()
       if (!foundCategory) {
         throw new BadRequestError('Category not found')
       }
@@ -307,6 +298,16 @@ class TransactionService {
       console.log(error)
       throw new InternalServerError('Delete all transactions error')
     }
+  }
+
+  static scanReceiptImage = async ({ userId, file}) => {
+    const foundUser = await UserServices.findById(userId)
+    if (!foundUser) {
+      throw new BadRequestError('Invalid user')
+    }
+    const result =  await OCRService.processImage(file)
+    console.log("🚀 ~ TransactionService ~ scanReceiptImage= ~ result:", result)
+    return result
   }
 }
 

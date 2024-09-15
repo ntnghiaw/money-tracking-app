@@ -1,9 +1,11 @@
 'use strict'
 
+const { path } = require('../app')
 const { BadRequestError } = require('../core/error.response')
 const { categoryModel } = require('../models/category.model')
 const userModel = require('../models/user.model')
 const { getInfoData } = require('../utils')
+const { uploadImageFromLocal } = require('./upload.service')
 
 class UserService {
   static create = async (user) => {
@@ -18,9 +20,14 @@ class UserService {
     }
   }
 
-  static updateInfo = async ({ userId, user: { name, dob, gender, avatar_url } }) => {
+  static updateInfo = async ({
+    userId,
+    user: { name, dob, gender },
+    file: { path, fileName, folderName },
+  }) => {
+    const { thumb_url } = await uploadImageFromLocal({ path, fileName, folderName })
     const filter = { _id: userId },
-      update = { name, dob, gender, avatar_url },
+      update = { name, dob, gender, avatar_url: thumb_url },
       options = { new: true, update: true }
     return await userModel.findOneAndUpdate(filter, update, options).lean()
   }

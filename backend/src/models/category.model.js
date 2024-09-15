@@ -44,12 +44,7 @@ const categorySchema = new Schema(
       },
       required: true,
     },
-    sub_categories: [
-      {
-        type: Types.ObjectId,
-        ref: 'SubCategory',
-      },
-    ],
+  
   },
   {
     timestamps: true,
@@ -59,5 +54,5 @@ const categorySchema = new Schema(
 
 module.exports = {
   categoryModel: model(DOCUMENT_NAME, categorySchema),
-  subCategoryModel: model('SubCategory', subcategorySchema),
+  // subCategoryModel: model('SubCategory', subcategorySchema),
 }

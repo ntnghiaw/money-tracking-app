@@ -7,13 +7,14 @@ const { getInfoData } = require('../utils')
 const {
   updateFinancialPlanById,
   getDetailsPlanById,
+  addAmounToGoal,
+  deleteRecordFromGoal,
+  addAmountToGoal,
+  updateRecordInGoal,
 } = require('../models/repositories/financialPlan.repo')
 
 class FinancialPlanFactory {
-  /*
-     type: 'budget' | 'goal'
-     payload
-   */
+
   static financialPlanRegistry = {} // key-class
 
   static registerFinancialPlanType(type, classRef) {
@@ -36,36 +37,56 @@ class FinancialPlanFactory {
     return new planClass(walletId, bodyUpdate).updateFinancialPlan(planId)
   }
 
-  static async deleteFinancialPlan({ walletId, planId }) {
+  static async deleteFinancialPlan({ walletId, planId, type }) {
     const planClass = FinancialPlanFactory.financialPlanRegistry[type]
     if (!planClass) {
       throw new BadRequestError(`Invalid Plan Type  ${type}`)
     }
-    return new planClass(walletId).deleteFinancialPlan(planId)
+    return planClass.deleteFinancialPlan(walletId, planId)
   }
 
   static async getFinancialPlanById({ walletId, planId }) {
-    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
-    if (!planClass) {
-      throw new BadRequestError(`Invalid Plan Type  ${type}`)
-    }
-    return new planClass(walletId).getFinancialPlanById(planId)
+   
+   return await FinancialPlan.getFinancialPlanById(walletId, planId)
   }
 
-  static async getAllFinancialPlans({ type, walletId }) {
-    const planClass = FinancialPlanFactory.financialPlanRegistry[type]
-    if (!planClass) {
-      throw new BadRequestError(`Invalid Plan Type  ${type}`)
+  static async getAllFinancialPlans({  walletId, filter, type }) {
+
+   return await FinancialPlan.getAllFinancialPlans({  walletId, type, filter })
+
+  }
+  static async addRecordToGoal({ walletId, planId, record }) {
+    const foundWallet = await walletModel.findOne({ _id: walletId })
+
+    if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
+      throw new BadRequestError('Invalid wallet')
     }
-    return new planClass(walletId).getAllFinancialPlans(planId)
+    return await addAmountToGoal({ planId, record })
+  }
+
+  static async deleteRecordById({ walletId, planId, recordId }) {
+    const foundWallet = await walletModel.findOne({ _id: walletId })
+    if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
+      throw new BadRequestError('Invalid wallet')
+    }
+    return await deleteRecordFromGoal({ planId, recordId })
+  }
+
+  static async updateRecordById({ walletId, planId, recordId, record }) {
+    const foundWallet = await walletModel.findOne({ _id: walletId })
+    if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
+      throw new BadRequestError('Invalid wallet')
+    }
+    return await updateRecordInGoal({ planId, recordId, record })
   }
 }
 
 class FinancialPlan {
-  constructor(walletId, { name = '', description = '', type = 'budget', attributes = [] }) {
+  constructor(walletId, { name = '', description = '', type = 'budget', attributes = [], end_date=Date.now() }) {
     this.name = name
     this.description = description
     this.type = type
+    this.end_date = end_date
     this.attributes = attributes
     this.walletId = walletId
   }
@@ -85,7 +106,7 @@ class FinancialPlan {
   }
 
   async updateFinancialPlan({ _id, attributes }) {
-    return await updateFinancialPlanById(_id, { ...this, attributes }, { new: true })
+    return await updateFinancialPlanById(_id, attributes, {...this} , this.type)
   }
 
   static async deleteFinancialPlan(walletId, planId) {
@@ -101,9 +122,9 @@ class FinancialPlan {
   static async getFinancialPlanById(walletId, planId) {
     try {
       const foundWallet = await walletModel.findOne({ _id: walletId }).lean()
-      if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
-        throw new BadRequestError('Invalid Plan')
-      }
+      // if (!foundWallet || !foundWallet.financial_plans.includes(planId)) {
+      //   throw new BadRequestError('Invalid Plan')
+      // }
       return await getDetailsPlanById(planId)
     } catch (error) {
       console.log(error)
@@ -111,14 +132,26 @@ class FinancialPlan {
     }
   }
 
-  static async getAllFinancialPlans(walletId) {
+  static async getAllFinancialPlans({walletId, type, filter}) {
     try {
-      const foundWallet = await walletModel.findOne({ _id: walletId }).lean()
-      if (!foundWallet) {
-        throw new BadRequestError('Invalid Wallet')
+      const { financial_plans } = await walletModel
+        .findOne({ _id: walletId })
+        .populate({
+          path: 'financial_plans',
+          match: {
+            type: type,
+          },
+        })
+        .lean()
+      if (!financial_plans) {
+        throw new BadRequestError('Not found')
       }
-      return await getAllPlans(walletId)
-    } catch (error) {}
+      return financial_plans
+    } catch (error) {
+      console.log("🚀 ~ FinancialPlan ~ getAllFinancialPlans ~ error:", error)
+      throw new InternalServerError('Get Plans error')
+      
+    }
   }
 }
 
@@ -131,11 +164,11 @@ class Budget extends FinancialPlan {
       let records = []
       let spentAmount = 0
       // filter records by categories
-      for (const subCategory of categories) {
+      for (const category of categories) {
         const { transactions } = await walletModel.findOne({ _id: this.walletId }).populate({
           path: 'transactions',
           match: {
-            category: subCategory, // id of subcategory
+            category: category, // id of subcategory
             createdAt: {
               $gte: start_date,
               $lt: due_date,
@@ -257,8 +290,6 @@ class Budget extends FinancialPlan {
   }
 
   static async deleteFinancialPlan(walletId, planId) {
-    console.log(planId)
-
     try {
       const deletedBudget = await budgetModel.deleteOne({ _id: planId })
       if (!deletedBudget) {
@@ -281,18 +312,75 @@ class Budget extends FinancialPlan {
 class Goal extends FinancialPlan {
   async createFinancialPlan() {
     try {
-      const newGoal = await goalModel.create(this.attributes)
+      const newGoal = await goalModel.create({
+        ...this.attributes,
+        records: [],
+      })
+      console.log("🚀 ~ Goal ~ createFinancialPlan ~ newGoal:", newGoal)
       if (!newGoal) {
         throw new BadRequestError('Create new Goal error')
       }
 
-      const newPlan = await super.createFinancialPlan(newGoal._id)
+      const newPlan = await super.createFinancialPlan({
+        _id: newGoal._id,
+        attributes: getInfoData({
+          object: newGoal,
+          fields: ['target_amount', 'current_amount', 'records'],
+        }),
+      })
       if (!newPlan) {
         throw new BadRequestError('Create new Plan error')
       }
       return newPlan
     } catch (error) {
       throw new InternalServerError('Create new Goal error')
+    }
+  }
+
+  async updateFinancialPlan(planId) {
+    const foundPlan = await planModel.findOne({ _id: planId })
+    if (!foundPlan) {
+      throw new BadRequestError('Invalid Plan')
+    }
+    try {
+      console.log(planId)
+      const { target_amount } = this.attributes
+      const updatedGoal = await goalModel.findOneAndUpdate(
+        { _id: planId },
+        { target_amount },
+        { new: true }
+      )
+      if (!updatedGoal) {
+        throw new BadRequestError('Update Goal error')
+      }
+      const updatedPlan = await super.updateFinancialPlan({
+        _id: planId,
+        attributes: getInfoData({
+          object: updatedGoal,
+          fields: ['target_amount'],
+        }),
+      })
+      if (!updatedPlan) {
+        throw new BadRequestError('Update Plan error')
+      }
+      return updatedPlan
+    } catch (error) {
+      console.log("🚀 ~ Goal ~ updateFinancialPlan ~ error:", error)
+      throw new InternalServerError('Update Goal error')
+    }
+  }
+
+  static async deleteFinancialPlan(walletId, planId) {
+    try {
+      const deletedGoal = await goalModel.deleteOne({ _id: planId })
+      if (!deletedGoal) {
+        throw new InternalServerError('Delete Goal error')
+      }
+      const deletedPlan = await super.deleteFinancialPlan(walletId, planId)
+      return deletedPlan
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerError('Delete Goal error 2')
     }
   }
 }

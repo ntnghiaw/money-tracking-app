@@ -3,7 +3,7 @@
 const mongoose = require('mongoose')
 const {
   db: { host, port, name },
-} = require('../configs/config.mongodb')
+} = require('../configs/mongodb.config')
 const connectString =
   process.env.MONGO_URI || `mongodb://${host}:${port}/${name}`
 const { countConnection } = require('../helpers/check.connect')
