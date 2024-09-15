@@ -1,6 +1,6 @@
 import { AuthResponse, AuthState, Response } from '@/src/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
+import {baseQuery} from '@/src/features'
 
 interface LoginRequest {
   email: string
@@ -15,36 +15,30 @@ interface RegisterRequest {
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  tagTypes: ['Auth'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.EXPO_PUBLIC_API_URL}/v1/api/auth`,
-  }),
+  baseQuery,
   endpoints: (builder) => ({
-    login: builder.mutation<Response<AuthResponse>, LoginRequest>({
+    login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => {
         return {
-          url: '/login',
+          url: '/auth/login',
           method: 'POST',
           body,
         }
       },
+      transformResponse: (response: { metadata: AuthResponse }) => response.metadata,
     }),
     register: builder.mutation<Response<AuthResponse>, RegisterRequest>({
       query: (body) => ({
-        url: '/signup',
+        url: '/auth/signup',
         method: 'POST',
         body,
       }),
     }),
 
-    logout: builder.mutation<Response<AuthResponse>, AuthState>({
-      query: (data) => ({
-        url: '/logout',
+    logout: builder.mutation<Response<AuthResponse>, void>({
+      query: () => ({
+        url: '/auth/logout',
         method: 'POST',
-        headers: {
-          Authorization: `${data?.tokens.accessToken}`,
-          'x-client-id': `${data?.userId}`,
-        },
       }),
     }),
   }),

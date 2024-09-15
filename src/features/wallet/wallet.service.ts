@@ -1,3 +1,4 @@
+import { RootState } from '@/src/store/store'
 import {
   AuthState,
   Budget,
@@ -7,14 +8,15 @@ import {
   Transaction,
   Wallet,
   WalletResponse,
-  WalletType,
 } from '@/src/types/enum'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '@/src/features'
+import config from '@/src/config'
 
 interface WalletRequest {
   name: string
   currency: string
-  type: WalletType
+  type: 'shared' | 'private'
 }
 
 interface HeaderRequest {
@@ -23,53 +25,36 @@ interface HeaderRequest {
 }
 
 
-interface ScanImageReceiptsResponse {
-  img_url: string
-  title: string
-  currency_code: string
-  date: string
-  total: number
-}
 
 export const walletApi = createApi({
   reducerPath: 'walletApi',
   tagTypes: ['Wallet', 'Transaction', 'Plan'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.EXPO_PUBLIC_API_URL}/v1/api`,
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     createFirstWallet: builder.mutation<
       Response<WalletResponse>,
       {
         wallet: WalletRequest
-        auth: HeaderRequest
       }
     >({
       query: (body) => ({
-        url: '/wallets',
+        
+        url: config.api.endpoints.wallets,
         method: 'POST',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
         body: body.wallet,
       }),
+      
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
     createNewWallet: builder.mutation<
       Response<WalletResponse>,
       {
         wallet: WalletRequest
-        auth: HeaderRequest
       }
     >({
       query: (body) => ({
-        url: '/wallets',
+        url: config.api.endpoints.wallets,
         method: 'POST',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
         body: body.wallet,
       }),
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
@@ -80,16 +65,11 @@ export const walletApi = createApi({
       {
         walletId: string
         wallet: Pick<Wallet, 'name' | 'currency'>
-        auth: HeaderRequest
       }
     >({
       query: (body) => ({
-        url: `/wallets/${body.walletId}`,
+        url: `${config.api.endpoints.wallets}/${body.walletId}`,
         method: 'POST',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
         body: body.wallet,
       }),
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
@@ -99,54 +79,33 @@ export const walletApi = createApi({
       Response<WalletResponse>,
       {
         walletId: string
-        auth: HeaderRequest
       }
     >({
       query: (body) => ({
-        url: `/wallets/${body.walletId}`,
+        url: `${config.api.endpoints.wallets}/${body.walletId}`,
         method: 'DELETE',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
       }),
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
 
-    getAllWallets: builder.query<
-      Response<Wallet[]>,
-      {
-        auth: HeaderRequest
-      }
-    >({
+    getAllWallets: builder.query<Response<Wallet[]>, {}>({
       query: (body) => ({
-        url: `/wallets`,
+        url: config.api.endpoints.wallets,
         method: 'GET',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
       }),
       providesTags: (result) =>
         result?.metadata
           ? [
+              ...result.metadata.map(({ _id }) => ({ type: 'Wallet' as const, id: _id })),
               { type: 'Wallet', id: 'LIST' },
-              { type: 'Wallet' as const, id: 'LIST' },
             ]
           : [{ type: 'Wallet' as const, id: 'LIST' }],
     }),
 
-    getWalletById: builder.query<
-      Response<WalletResponse>,
-      { walletId: string; auth: HeaderRequest }
-    >({
+    getWalletById: builder.query<Response<WalletResponse>, { walletId: string }>({
       query: (payload) => ({
-        url: `/wallets/${payload.walletId}`,
+        url: `${config.api.endpoints.wallets}/${payload.walletId}`,
         method: 'GET',
-        headers: {
-          Authorization: `${payload.auth.accessToken}`,
-          'x-client-id': `${payload.auth.userId}`,
-        },
       }),
 
       providesTags: (result) =>
@@ -155,210 +114,29 @@ export const walletApi = createApi({
               { type: 'Wallet', id: result.metadata._id },
               { type: 'Wallet' as const, id: 'LIST' },
             ]
-          : [{ type: 'Wallet' as const, id: 'LIST' }],
-    }),
-    getTransactionById: builder.query<
-      Response<Transaction>,
-      { id: string; walletId: string; auth: HeaderRequest }
-    >({
-      query: (data) => ({
-        url: `/transactions/${data.walletId}/${data.id}`,
-        method: 'GET',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-      }),
-      providesTags: (result, error, data) => [{ type: 'Transaction', id: data.id }],
+          : [{ type: 'Wallet', id: 'LIST' }],
     }),
 
-    createTransaction: builder.mutation<
-      Response<Transaction>,
-      {
-        transaction: Omit<Transaction, '_id'>
-        walletId: string
-        auth: HeaderRequest
-      }
-    >({
-      query: (body) => ({
-        url: `/transactions/${body.walletId}`,
-        method: 'POST',
-        headers: {
-          Authorization: `${body.auth.accessToken}`,
-          'x-client-id': `${body.auth.userId}`,
-        },
-        body: body.transaction,
-      }),
+    // createTransaction: builder.mutation<
+    //   Response<Transaction>,
+    //   {
+    //     transaction: Omit<Transaction, '_id'>
+    //     walletId: string
+    //   }
+    // >({
+    //   query: (body) => ({
+    //     url: `/transactions/${body.walletId}`,
+    //     method: 'POST',
+    //     body: body.transaction,
+    //   }),
 
-      invalidatesTags: (result, error, body) => [
-        { type: 'Wallet', id: 'LIST' },
-        { type: 'Plan', id: 'LIST' },
-      ],
-    }),
-
-    updateTransaction: builder.mutation<
-      Response<Transaction>,
-      {
-        id: string
-        walletId: string
-        auth: HeaderRequest
-        updatedTransaction: Omit<Transaction, '_id'>
-      }
-    >({
-      query: (data) => ({
-        url: `/transactions/${data.walletId}/${data.id}`,
-        method: 'POST',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-        body: data.updatedTransaction,
-      }),
-      invalidatesTags: (result, error, data) => [
-        { type: 'Transaction', id: data.id },
-        { type: 'Wallet', id: 'LIST' },
-        { type: 'Plan', id: 'LIST' },
-      ],
-    }),
-
-    deleteTransaction: builder.mutation<
-      Response<Transaction>,
-      {
-        id: string
-        walletId: string
-        auth: HeaderRequest
-      }
-    >({
-      query: (data) => ({
-        url: `/transactions/${data.walletId}/${data.id}`,
-        method: 'DELETE',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-      }),
-      invalidatesTags: (result, error, data) => [
-        { type: 'Transaction', id: data.id },
-        { type: 'Wallet', id: 'LIST' },
-        { type: 'Plan', id: 'LIST' },
-      ],
-    }),
+    //   invalidatesTags: (result, error, body) => [
+    //     { type: 'Wallet', id: 'LIST' },
+    //     { type: 'Plan', id: 'LIST' },
+    //   ],
+    // }),
 
     /* Budget  & Goal */
-    getAllPlans: builder.query<
-      Response<FinancialPlan<Goal | Budget>[]>,
-      { walletId: string; auth: HeaderRequest }
-    >({
-      query: (data) => ({
-        url: `/financialPlans/${data.walletId}`,
-        method: 'GET',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-      }),
-      providesTags: (result) =>
-        result?.metadata
-          ? [
-              { type: 'Plan', id: 'LIST' },
-              { type: 'Plan' as const, id: 'LIST' },
-            ]
-          : [{ type: 'Plan' as const, id: 'LIST' }],
-    }),
-    getPlanById: builder.query<
-      Response<FinancialPlan<Goal | Budget>>,
-      { walletId: string; planId: string; auth: HeaderRequest }
-    >({
-      query: (data) => ({
-        url: `/financialPlans/${data.walletId}/${data.planId}`,
-        method: 'GET',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-      }),
-      providesTags: (result) =>
-        result?.metadata
-          ? [
-              { type: 'Plan', id: result.metadata._id },
-              { type: 'Plan' as const, id: result.metadata._id },
-            ]
-          : [{ type: 'Plan' as const, id: 'id' }],
-    }),
-
-    createPlan: builder.mutation<
-      Response<FinancialPlan<Goal | Budget>>,
-      { walletId: string; auth: HeaderRequest; body: Omit<FinancialPlan<Goal | Budget>, '_id'> }
-    >({
-      query: (data) => ({
-        url: `/financialPlans/${data.walletId}`,
-        method: 'POST',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-        body: data.body,
-      }),
-      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: 'LIST' }],
-    }),
-
-    updatePlan: builder.mutation<
-      Response<FinancialPlan<Goal | Budget>[]>,
-      {
-        walletId: string
-        planId: string
-        auth: HeaderRequest
-        body: Omit<FinancialPlan<Goal | Budget>, '_id'>
-      }
-    >({
-      query: (data) => ({
-        url: `/financialPlans/${data.walletId}/${data.planId}`,
-        method: 'POST',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-        body: data.body,
-      }),
-      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: data.planId }],
-    }),
-    deletePlan: builder.mutation<
-      Response<FinancialPlan<Goal | Budget>[]>,
-      {
-        walletId: string
-        planId: string
-        auth: HeaderRequest
-      }
-    >({
-      query: (data) => ({
-        url: `/financialPlans/${data.walletId}/${data.planId}`,
-        method: 'DELETE',
-        headers: {
-          Authorization: `${data.auth.accessToken}`,
-          'x-client-id': `${data.auth.userId}`,
-        },
-      }),
-      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: 'LIST' }],
-    }),
-    scanImageReceipts: builder.mutation<
-      Response<ScanImageReceiptsResponse>,
-      { image: any; auth: HeaderRequest }
-    >({
-      query: (body) => {
-        const formData = new FormData()
-        formData.append('file', body.image)
-        return {
-          url: '/transactions/scanReceipt',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data;',
-            Authorization: `${body.auth.accessToken}`,
-            'x-client-id': `${body.auth.userId}`,
-          },
-          body: formData,
-        }
-      },
-    }),
   }),
 })
 
@@ -369,14 +147,4 @@ export const {
   useDeleteWalletMutation,
   useGetWalletByIdQuery,
   useGetAllWalletsQuery,
-  useCreateTransactionMutation,
-  useUpdateTransactionMutation,
-  useGetTransactionByIdQuery,
-  useDeleteTransactionMutation,
-  useGetAllPlansQuery,
-  useGetPlanByIdQuery,
-  useCreatePlanMutation,
-  useUpdatePlanMutation,
-  useDeletePlanMutation,
-  useScanImageReceiptsMutation
 } = walletApi

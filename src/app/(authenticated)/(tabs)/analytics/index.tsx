@@ -23,6 +23,10 @@ import { useActionSheet } from '@expo/react-native-action-sheet'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import CustomizedModalView from '@/src/components/modals/CustomizedModalView'
 import Input from '@/src/components/Input'
+import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
+import { useGetWalletByIdQuery } from '@/src/features/wallet/wallet.service'
+import formatDate from '@/src/utils/formatDate'
+import { getImg } from '@/src/utils/getImgFromUri'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -42,6 +46,14 @@ const Page = () => {
     { title: t('analytics.income') },
     { title: t('analytics.expense') },
   ]
+    const dispatch = useAppDispatch()
+    const { walletId } = useAppSelector((state) => state.auth)
+    const { isLoading, data, isError } = useGetWalletByIdQuery({
+      walletId,
+    })
+    const transactions = useMemo(() => data?.metadata.transactions.filter((transaction) => {
+      return selectedTab === CustomTab.Tab1 ? transaction.type === 'income' : transaction.type === 'expense'
+    }), [data, selectedTab])
 
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
   //   const bottomSheetChooseIconModalRef = useRef<BottomSheetModal>(null)
@@ -107,22 +119,33 @@ const Page = () => {
           </Link>
         </View>
         <View>
-          {/* {recentTransactions?.length === 0 && (
-              <ThemedText
-                type={TextType.FootnoteRegular}
-                color={TextColor.Secondary}
-                style={{ textAlign: 'center', marginTop: 30 }}
-              >
-                {t(`home.notransactions`)}
-              </ThemedText>
-            )} */}
-          <TransactionItem
-            title='Supermarket'
-            category='Groceries'
-            amount={200000}
-            date='12 June 2024'
-            img={() => <Image source={require('@/src/assets/icons/cart.png')} />}
-          />
+          {transactions?.length === 0 && (
+            <ThemedText
+              type={TextType.FootnoteRegular}
+              color={TextColor.Secondary}
+              style={{ textAlign: 'center', marginTop: 30 }}
+            >
+              {t(`home.notransactions`)}
+            </ThemedText>
+          )}
+          {transactions?.map((item, index) => (
+            <TouchableOpacity key={index}>
+              <TransactionItem
+                title={item.title}
+                category={item.category.name}
+                amount={item.amount}
+                date={
+                  formatDate(item?.createdAt ? new Date(item?.createdAt) : new Date(), 'dd/mm/yy')!
+                }
+                img={() => (
+                  <Image
+                    source={getImg(item.category.icon)}
+                    style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                  />
+                )}
+              />
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
       {/* <BottomSheetModal

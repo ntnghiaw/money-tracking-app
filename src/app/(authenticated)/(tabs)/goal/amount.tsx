@@ -1,6 +1,5 @@
 import { BackgroundColor, BrandColor } from '@/src/constants/Colors'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import { CustomTab } from '.'
 import { useEffect, useMemo, useState } from 'react'
 import { useLocale } from '@/src/hooks/useLocale'
 import { useCurrency } from '@/src/hooks/useCurrency'
@@ -10,7 +9,7 @@ import Input from '@/src/components/Input'
 import { Image } from 'react-native'
 import Button from '@/src/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Href, router } from 'expo-router'
+import { router } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import { icons } from '@/src/constants/Icons'
 import { useCreateCategoryMutation } from '@/src/features/user/user.service'
@@ -26,8 +25,8 @@ const getImg = (icon: string) => {
 
 const Page = () => {
   const { icon } = useLocalSearchParams()
+  const { walletId } = useAppSelector((state) => state.auth)
   const categoryImg = useMemo(() => getImg(icon?.toString()), [icon])
-  const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
   const [name, setName] = useState('')
   const { bottom } = useSafeAreaInsets()
   const { t } = useLocale()
@@ -42,25 +41,14 @@ const Page = () => {
   useEffect(() => {
     if (data) {
       router.setParams({})
-      router.navigate('/(authenticated)/(tabs)/account/categories' as Href)
+      router.back()
     }
   }, [isSuccess])
 
-  const handleCreateCategory = async () => {
-    try {
-      await createCategory({
-        name,
-        icon: icon?.toString(),
-        type: selectedTab === CustomTab.Tab1 ? 'income' : 'expense',
-      })
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingVertical: 24, gap: 24 }}>
-        <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         <TouchableOpacity
           style={[styles.icon, { alignSelf: 'center' }]}
           onPress={() => router.push('/(authenticated)/(tabs)/analytics/icons')}
@@ -86,7 +74,7 @@ const Page = () => {
           text={t('analytics.addcategories')}
           size={'medium'}
           state={'normal'}
-          onPress={handleCreateCategory}
+          onPress={() => console.log('add')}
         />
       </View>
     </SafeAreaView>

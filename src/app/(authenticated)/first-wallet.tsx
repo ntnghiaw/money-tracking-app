@@ -53,7 +53,7 @@ const Page = () => {
     code: '',
   })
   const [keyboardOpen, setKeyboardOpen] = useState(false)
-  const { userId, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
+  const { user, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
   const { currentWallet } = useAppSelector((state) => state.wallets)
   const dispatch = useAppDispatch()
 
@@ -88,13 +88,12 @@ const Page = () => {
     }
     if (data) {
       dispatch(setWallets({ wallets: [data.metadata._id], currentWallet: data.metadata._id }))
-      dispatch(setAuth({ userId, tokens, isAuthenticated, walletId: data.metadata._id }))
+      dispatch(setAuth({ user, tokens, isAuthenticated, walletId: data.metadata._id }))
     }
   }, [isSuccess])
   const handleCreateWallet = async () => {
     await createFirstWallet({
       wallet: { name, currency: currency.code, type: 'private' },
-      auth: { accessToken: tokens.accessToken, userId: userId },
     })
   }
 

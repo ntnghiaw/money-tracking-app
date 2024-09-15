@@ -9,7 +9,7 @@ const ICON_SIZE = 28
 
 const Page = () => {
   const { t, currentLanguage, changeLanguage } = useLocale()
-  // console.log(currentLanguage)
+  console.log(currentLanguage)
   return (
     <View style={styles.container}>
       {/* <Text>Page</Text> */}

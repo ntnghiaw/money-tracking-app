@@ -387,21 +387,6 @@ const Page = () => {
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    if (data) {
-      // Alert.alert('Success', 'Login successful')
-      const metadata = data?.metadata
-      console.log("🚀 ~ useEffect ~ data?.metadata:", data?.metadata)
-      dispatch(
-        setAuth({
-          tokens: metadata?.tokens,
-          userId: metadata?.user?._id,
-          isAuthenticated: true,
-          walletId: metadata?.user?.wallets[0],
-        })
-      )
-    }
-  }, [isSuccess])
   const [isValidated, setIsValidated] = useState({
     email: false,
     password: false,
@@ -409,18 +394,19 @@ const Page = () => {
   const toggleSecure = () => {
     setIsSecure((prev) => !prev)
   }
-  
+
+  useEffect(() => {
+    if (data) {
+      setEmail('')
+      setPassword('')
+    }
+  }, [isSuccess])
   const handleLogin = async () => {
     try {
-      
       await login({ email, password })
     } catch (error) {
-      console.log("🚀 ~ handleLogin ~ error:", error)
-      
+      console.log('🚀 ~ handleLogin ~ error:', error)
     }
-    setEmail('')
-    setPassword('')
-
   }
   return (
     <View style={styles.container}>
@@ -499,6 +485,7 @@ const Page = () => {
           onPress={handleLogin}
           textColor={NeutralColor.White[50]}
           type='primary'
+          isLoading={isLoading}
         />
       </View>
       <View style={styles.signUpRedirect}>

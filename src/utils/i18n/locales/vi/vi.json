@@ -84,6 +84,30 @@
     "getimagefromlibrary": "Chọn ảnh từ thư viện",
     "chooseimage": "Chọn ảnh"
   },
+  "goals": {
+    "header": "Mục tiêu",
+    "goaldetails": "Chi tiết Mục tiêu",
+    "addnew": "Thêm mới",
+    "addnewgoal": "Thêm Mục tiêu mới",
+    "createnewgoal": "Tạo Mục tiêu mới",
+    "titlegoal": "Tên Mục tiêu",
+    "goalamount": "Số tiền Mục tiêu",
+    "totalsavings": "Tổng số tiền",
+    "nogoals": "Chưa có Mục tiêu nào",
+    "addamount": "Thêm một khoảng tiền",
+    "add": "Tạo mới",
+    "titleamount": "Tên",
+    "amount": "Số tiền",
+    "history": "Lịch sử",
+    "amountdescription": "Thêm số tiền vào mục tiêu của bạn",
+    "edit": "Chỉnh sửa",
+    "editgoal": "Chỉnh sửa Mục tiêu",
+    "targetamount": "Mục tiêu",
+    "desireddate": "Ngày hết hạn",
+    "saving": "Tiết kiệm",
+    "save": "Lưu",
+    "delete": "Xóa"
+  },
   "settings": {
     "title": "Cài đặt",
     "editaccount": "Chỉnh sửa tài khoản",
@@ -108,7 +132,10 @@
     "seatch": "Tìm kiếm",
     "english": "Tiếng Anh",
     "vietnamese": "Tiếng Việt",
-    "changelanguage": "Thay đổi ngôn ngữ"
+    "changelanguage": "Thay đổi ngôn ngữ",
+    "categories": "Danh mục",
+    "budgets": "Thiết lập ngân sách",
+    "add": "Thêm mới"
   },
   "tabLabel": {
     "home": "Nhà",

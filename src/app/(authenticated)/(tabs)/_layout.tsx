@@ -71,10 +71,11 @@ const Layout = () => {
           }}
         />
         <Tabs.Screen
-          name='goal/index'
+          name='goal'
           options={{
             tabBarLabel: t('tabLabel.goals'),
             headerTitleAlign: 'center',
+            headerShown: false,
             title: 'Statistics',
             tabBarIcon: ({ size, focused, color }) => {
               if (focused) {

@@ -85,6 +85,31 @@
     "getimagefromlibrary": "Get image from library",
     "chooseimage": "Choose image"
   },
+  "goals": {
+    "header": "Goals",
+    "goaldetails": "Goal Details",
+    "addnew": "Add New",
+    "addnewgoal": "Add New Goal",
+    "createnewgoal": "Create New Goal",
+    "titlegoal": "Title",
+    "goalamount": "Target Amount",
+    "totalsavings": "Total Savings",
+    "nogoals": "No Goals yet",
+    "addamount": "Add Amount",
+    "amount": "Amount",
+    "add": "Add",
+    "titleamount": "Title",
+    "history": "History",
+    "amountdescription": "Add the amount you want to save for this goal",
+    "edit": "Edit",
+    "editgoal": "Edit Goal",
+    "targetamount": "Target Amount",
+    "desireddate": "Desired Date",
+    "saving": "Saving",
+    "save": "Save",
+    "delete": "Delete"
+
+  },
   "settings": {
     "title": "Settings",
     "editaccount": "Edit account",
@@ -109,7 +134,10 @@
     "seatch": "Search",
     "english": "English",
     "vietnamese": "Vietnamese",
-    "changelanguage": "Change Language"
+    "changelanguage": "Change Language",
+    "categories": "Categories",
+    "budgets": "Budgets",
+    "add": "Add"
   },
   "tabLabel": {
     "home": "Home",

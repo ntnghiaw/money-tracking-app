@@ -368,10 +368,9 @@
 
 // export default Page
 
-
 import { ThemedText } from '@/src/components/ThemedText'
 import TransactionItem from '@/src/components/TransactionItem'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { useGetWalletByIdQuery } from '@/src/features/wallet/wallet.service'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import { useCurrency } from '@/src/hooks/useCurrency'
@@ -380,21 +379,41 @@ import { TextType } from '@/src/types/text'
 import formatDate from '@/src/utils/formatDate'
 import { getImg } from '@/src/utils/getImgFromUri'
 import { useRouter } from 'expo-router'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Image, SafeAreaView, ScrollView } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-const { useGetTransactionsQuery } = require('@/src/features/wallet/wallet.service')
+import {useGetCategoriesQuery} from '@/src/features/user/user.service'
+import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
+import { CustomTab } from '../analytics'
+import { Stack } from 'expo-router'
+import Header from '@/src/components/navigation/Header'
+import HeaderButton from '@/src/components/navigation/HeaderButton'
+import { AntDesign } from '@expo/vector-icons'
+import Loading from '@/src/components/Loading'
+
+
+
 const history = () => {
-    const router = useRouter()
-    const {t} = useLocale()
-    const dispatch = useAppDispatch()
-    const { walletId } = useAppSelector((state) => state.auth)
-    const {currentCurrency: currency} = useCurrency()
-    const { isLoading, data, isError } = useGetWalletByIdQuery({
-      walletId,
-    })
-    const transactions = useMemo(() => data?.metadata.transactions, [data])
+  const router = useRouter()
+  const { t } = useLocale()
+  const dispatch = useAppDispatch()
+  const { walletId } = useAppSelector((state) => state.auth)
+  const { currentCurrency: currency } = useCurrency()
+  const { isLoading, data:categories, isError } = useGetCategoriesQuery()
+  const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
+  const buttons: TabButtonType[] = [
+    { title: t('transaction.income') },
+    { title: t('transaction.expense') },
+  ]
+
+    const categoriesFilteredByType = useMemo(
+      () =>
+        categories?.filter((category) =>
+          selectedTab === 0 ? category.type === 'income' : category.type === 'expense'
+        ),
+      [categories, selectedTab]
+    )
   return (
     <SafeAreaView
       style={{
@@ -403,32 +422,46 @@ const history = () => {
         flex: 1,
       }}
     >
-      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        {transactions?.length === 0 && (
-          <ThemedText
-            type={TextType.FootnoteRegular}
-            color={TextColor.Secondary}
-            style={{ textAlign: 'center', marginTop: 30 }}
-          >
-            {t(`home.notransactions`)}
-          </ThemedText>
-        )}
-        {transactions?.map((item, index) => (
-          <TouchableOpacity key={index}>
-            <TransactionItem
-              title={item.title}
-              category={item.category.name}
-              amount={item.amount}
-              date={
-                formatDate(item?.createdAt ? new Date(item?.createdAt) : new Date(), 'dd/mm/yy')!
-              }
-              img={() => (
-                <Image
-                  source={getImg(item.category.icon)}
-                  style={{ width: 20, height: 20, resizeMode: 'contain' }}
+      <Stack.Screen
+        options={{
+          headerTitle: t('settings.categories'),
+          header: (props) => (
+            <Header
+              {...props}
+              headerLeft={() => (
+                <HeaderButton
+                  onPress={() => router.back()}
+                  type='btn'
+                  button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
+                />
+              )}
+              headerRight={() => (
+                <HeaderButton
+                  onPress={() =>
+                    router.push('/(authenticated)/(tabs)/analytics/create-category')
+                  }
+                  type='text'
+                  text={t('settings.add')}
                 />
               )}
             />
+          ),
+        }}
+      />
+      {<Loading isLoading={isLoading} text='Loading..' />}
+      <View style={{ paddingVertical: 24, gap: 24 }}>
+        <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      </View>
+
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+        {categoriesFilteredByType?.map((category) => (
+          <TouchableOpacity key={category._id} style={styles.item}>
+            <View style={styles.iconCover}>
+              <Image source={getImg(category.icon)} style={styles.iconCategory} />
+            </View>
+            <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+              {category.name}
+            </ThemedText>
           </TouchableOpacity>
         ))}
         <View style={{ height: 100 }}></View>
@@ -437,4 +470,31 @@ const history = () => {
   )
 }
 export default history
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  item: {
+    width: '100%',
+    backgroundColor: BrandColor.Gray[50],
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderBottomColor: BrandColor.Gray[100],
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconCover: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: BrandColor.Gray[200],
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconCategory: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
+  },
+})

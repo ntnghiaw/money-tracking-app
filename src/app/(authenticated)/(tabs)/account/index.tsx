@@ -201,21 +201,21 @@ const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
     const dispatch = useAppDispatch()
-    const { userId, tokens, walletId, isAuthenticated } = useAppSelector((state) => state.auth)
+    const { user, tokens, walletId, isAuthenticated } = useAppSelector((state) => state.auth)
     const [logout, { data, isSuccess, isError, error, isLoading }] = useLogoutMutation()
-    const { data: userInfo, isError: isErrorGetInfo } = useGetProfileQuery({
-      auth: { userId, accessToken: tokens?.accessToken },
-    })
+    const { data: userInfo, isError: isErrorGetInfo } = useGetProfileQuery()
 
   const handleLogout = async () => {
-    await logout({ userId, tokens, isAuthenticated, walletId })
-    dispatch(clearAuth())
+    await logout()
   }
   return (
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }}>
         <View style={[styles.form, { marginTop: 18 }]}>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/profile')}
+          >
             <Image style={styles.imageIcon} source={require('@/src/assets/icons/account.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.editaccount')}
@@ -275,6 +275,29 @@ const Page = () => {
             </TouchableOpacity>
           </Link>
         </View>
+
+        <View style={styles.form}>
+          <Link href={'/(authenticated)/(tabs)/account/categories' as Href} asChild>
+            <TouchableOpacity style={styles.item}>
+              <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+                {t('settings.categories')}
+              </ThemedText>
+              <View style={styles.right}>
+                <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
+              </View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={'/(authenticated)/(tabs)/account/currencies' as Href} asChild>
+            <TouchableOpacity style={styles.item}>
+              <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+                {t('settings.budgets')}
+              </ThemedText>
+              <View style={styles.right}>
+                <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
+              </View>
+            </TouchableOpacity>
+          </Link>
+        </View>
         <View style={styles.form}>
           <TouchableOpacity style={styles.item}>
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
@@ -301,7 +324,7 @@ const Page = () => {
             state='normal'
             buttonLeft={() => <LogOut width={24} height={24} color={NeutralColor.White[50]} />}
             onPress={handleLogout}
-            style={{ backgroundColor: BrandColor.Red[400], marginTop: 18}}
+            style={{ backgroundColor: BrandColor.Red[400], marginTop: 18 }}
           />
         </View>
       </ScrollView>

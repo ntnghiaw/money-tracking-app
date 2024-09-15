@@ -8,7 +8,7 @@ import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButton
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
 import Input from '@/src/components/Input'
-import MaskInput, { Masks } from 'react-native-mask-input'
+import MaskInput from 'react-native-mask-input'
 import { AMOUNT_VND } from '@/src/constants/Masks'
 import { formatter } from '@/src/utils/formatAmount'
 import formatDate from '@/src/utils/formatDate'
@@ -19,20 +19,22 @@ import { ChevronDown } from 'react-native-feather'
 import { ThemedText } from '@/src/components/ThemedText'
 import { TextType } from '@/src/types/text'
 import { Dimensions } from 'react-native'
-import CustomizedModalView from '@/src/components/modals/CustomizedModalView'
 import { getImg } from '@/src/utils/getImgFromUri'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
 import Button from '@/src/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Category, Transaction } from '@/src/types/enum'
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
 import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
+
+
+
 import {
   useCreateTransactionMutation,
   useGetTransactionByIdQuery,
   useUpdateTransactionMutation,
-} from '@/src/features/wallet/wallet.service'
+} from '@/src/features/transaction/transaction.service'
+
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { editTransaction } from '@/src/features/transaction/transactionSlice'
 import * as MediaLibrary from 'expo-media-library'
@@ -59,8 +61,7 @@ const initialTransaction = {
 }
 
 const Page = () => {
-  
-  const { userId, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
+  const { user, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
   const { bottom } = useSafeAreaInsets()
   const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
   const [transaction, setTransaction] = useState(initialTransaction)
@@ -75,20 +76,14 @@ const Page = () => {
   const bottomSheetCategoryModalRef = useRef<BottomSheetModal>(null)
   const snapPointsCategory = useMemo(() => ['85%'], [])
 
-  const { data: categoriesRes } = useGetAllCategoriesQuery({
-    accessToken: tokens.accessToken,
-    userId,
-  })
+  const { data: categoriesRes } = useGetAllCategoriesQuery()
   const categoriesFilteredByType = useMemo(
     () =>
-      categoriesRes?.metadata.filter((category) =>
+      categoriesRes?.filter((category) =>
         selectedTab === 0 ? category.type === 'income' : category.type === 'expense'
       ),
-    [selectedTab]
+    [categoriesRes, selectedTab]
   )
-
-
- 
   const renderBackdropCategoryModal = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -150,7 +145,6 @@ const Page = () => {
     {
       id: _id,
       walletId,
-      auth: { accessToken: tokens.accessToken, userId },
     },
     { skip: !_id }
   )
@@ -166,29 +160,23 @@ const Page = () => {
       error: updateError,
     },
   ] = useUpdateTransactionMutation()
-  const { data: categories } = useGetAllCategoriesQuery({
-    accessToken: tokens.accessToken,
-    userId,
-  })
+  const { data: categories } = useGetAllCategoriesQuery()
 
   useEffect(() => {
     console.log(img_url, total, title, createdAt)
-     if (img_url && total && title && createdAt) {
-       setTransaction((pre) => ({
-         ...pre,
-         amount: total.toString(),
-         title: title.toString(),
-         createdAt: createdAt.toString(),
-       }))
-     }
-    if (data) {
+    if (img_url && total && title && createdAt) {
+      setTransaction((pre) => ({
+        ...pre,
+        amount: total.toString(),
+        title: title.toString(),
+        createdAt: createdAt.toString(),
+      }))
+    }
+    if (data && isSuccess) {
       Alert.alert('Success', 'Transaction has been created successfully')
       setTransaction(initialTransaction)
     }
-   
   }, [isSuccess, img_url, total, title, createdAt])
-
-
 
   const validateTransactionInfo = (transaction: Omit<Transaction, '_id'>) => {
     if (!transaction.amount) return { isValid: false, message: 'Amount is required' }
@@ -226,7 +214,6 @@ const Page = () => {
           type: selectedTab === 0 ? 'income' : 'expense',
         },
         walletId,
-        auth: { accessToken: tokens.accessToken, userId },
       }).unwrap()
     } else {
       await createTransaction({
@@ -239,7 +226,6 @@ const Page = () => {
           type: selectedTab === 0 ? 'income' : 'expense',
         },
         walletId,
-        auth: { accessToken: tokens.accessToken, userId },
       }).unwrap()
     }
     distpatch(editTransaction({ _id: '' }))
@@ -378,6 +364,7 @@ const Page = () => {
           size={'large'}
           state={'normal'}
           onPress={handleSubmit}
+          isLoading={isLoading || updateLoading}
         />
       </View>
 

@@ -15,18 +15,22 @@ import 'intl-pluralrules'
 import '@/src/utils/i18n'
 import { LocalizationProvider } from '@/src/contexts/LocalizationContext'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import {useNetInfo} from '@react-native-community/netinfo'
 
 const InitialLayout = () => {
   const router = useRouter()
   const segment = useSegments()
-  const { isAuthenticated, walletId, tokens, userId } = useAppSelector((state) => state.auth)
+  const { isAuthenticated, walletId } = useAppSelector((state) => state.auth)
+
+  const netInfo = useNetInfo()
+
+  // console.log('netInfo', netInfo)
   useEffect(() => {
     if (isAuthenticated && !Boolean(walletId)) {
       router.replace('/(authenticated)/first-wallet')
     } else if (isAuthenticated && Boolean(walletId)) {
       router.replace('/(authenticated)/(tabs)/home')
     } else if (!isAuthenticated) {
-      console.log('not authenticated')
       router.replace('/')
     }
 

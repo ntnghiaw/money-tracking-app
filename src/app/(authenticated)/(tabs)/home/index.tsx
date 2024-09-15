@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from 'react-native'
 import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -25,6 +26,7 @@ import TransactionItem from '@/src/components/TransactionItem'
 import { useCurrency } from '@/src/hooks/useCurrency'
 import { getImg } from '@/src/utils/getImgFromUri'
 import formatDate from '@/src/utils/formatDate'
+import Loading from '@/src/components/Loading'
 
 const Home = () => {
   const router = useRouter()
@@ -32,19 +34,24 @@ const Home = () => {
   const { t } = useLocale()
   const { currentCurrency } = useCurrency()
   const dispatch = useAppDispatch()
-  const { userId, tokens, walletId } = useAppSelector((state) => state.auth)
-  const { isLoading, isSuccess, data } = useGetWalletByIdQuery({
+  const { walletId } = useAppSelector((state) => state.auth)
+  const { isLoading, isSuccess, data, isError, error, isFetching,  } = useGetWalletByIdQuery({
     walletId: walletId,
-    auth: {
-      userId: userId,
-      accessToken: tokens.accessToken,
-    },
   })
+  
+  useEffect(() => {
 
+    if(!isFetching) {
+      console.log('isFetching', isFetching)
+      if (isError) {
+        Alert.alert('Error', error.message)
+      }
+    }
+
+  }, [isError, isFetching])
   const wallet = data?.metadata
   const transactions = wallet?.transactions
-  const recentTransactions = transactions?.slice(0, 6) // get 3 recent transactions
-  console.log(recentTransactions)
+  const recentTransactions = transactions?.slice(0, 6) // get 6 recent transactions
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -67,6 +74,8 @@ const Home = () => {
           ),
         }}
       />
+      {<Loading isLoading={isLoading} text='Loading..' />}
+
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.balanceSection}>
           <View style={styles.totalBalance}>
@@ -151,10 +160,12 @@ const Home = () => {
                   title={item.title}
                   category={item.category.name}
                   amount={item.amount}
-                  date={formatDate(
-                    item?.createdAt ? new Date(item?.createdAt) : new Date(),
-                    'dd/mm/yy'
-                  )!}
+                  date={
+                    formatDate(
+                      item?.createdAt ? new Date(item?.createdAt) : new Date(),
+                      'dd/mm/yy'
+                    )!
+                  }
                   img={() => (
                     <Image
                       source={getImg(item.category.icon)}

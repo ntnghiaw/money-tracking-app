@@ -7,7 +7,7 @@ export type ThemedTextProps = TextProps & {
 }
 
 export function ThemedText({ style, color, type = TextType.Default, ...rest }: ThemedTextProps) {
-  return <Text style={[{ color }, { letterSpacing: 0.5 }, styles[type], style]} {...rest} />
+  return <Text style={[{ color }, { letterSpacing: 0.5, flexWrap:'nowrap' }, styles[type], style]} {...rest} />
 }
 
 /* 

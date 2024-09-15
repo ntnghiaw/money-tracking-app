@@ -11,6 +11,7 @@ import { TextType } from '@/src/types/text'
 import { type ReactElement } from 'react'
 import { BrandColor, NeutralColor } from '@/src/constants/Colors'
 import { hexToRgb } from '@/src/utils/convert'
+import { ActivityIndicator } from 'react-native'
 
 export enum ButtonType {
   Primary = 'primary',
@@ -33,6 +34,7 @@ export enum ButtonState {
 export type ButtonProps = TouchableOpacityProps & {
   text: string
   textColor?: string
+  isLoading?: boolean
   type: 'primary' | 'secondary' | 'tertiary'
   size: 'small' | 'medium' | 'large'
   state: 'normal' | 'disabled' | 'hover'
@@ -50,6 +52,7 @@ const Button = ({
   type,
   size,
   state = ButtonState.Normal,
+  isLoading,
   onPress,
   ...rest
 }: ButtonProps) => {
@@ -60,7 +63,7 @@ const Button = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      disabled={state === ButtonState.Disabled}
+      disabled={state === ButtonState.Disabled || isLoading}
       style={[
         styles.layout,
         styles[type],
@@ -76,11 +79,13 @@ const Button = ({
               ? `rgba(${hexToRgb(textColor)}, 0.3)`
               : BrandColor.Gray[200], // if state is hover, add border color except for tertiary without hover state (default is gray)
         },
-        { opacity: state === ButtonState.Disabled ? 0.4 : 1 },
+        { opacity: (state === ButtonState.Disabled || isLoading) ? 0.4 : 1 },
         style,
       ]}
       {...rest}
     >
+      {isLoading && <ActivityIndicator style={styles.indicator} />}
+
       {rest.buttonLeft && rest.buttonLeft()}
       <ThemedText
         color={
@@ -120,6 +125,10 @@ const styles = StyleSheet.create({
     backgroundColor: NeutralColor.White[50],
     borderWidth: 2,
     borderColor: BrandColor.Gray[200],
+  },
+  indicator: {
+    position: 'absolute',
+    left: screenWidth/2 -24,
   },
 })
 export default Button

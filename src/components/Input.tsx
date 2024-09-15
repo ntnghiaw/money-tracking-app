@@ -120,7 +120,7 @@ const Input = ({
   return (
     <Pressable style={[styles.layout, styles[state]]} onPress={() => setState('focused')}>
       {rest.buttonLeft && rest.buttonLeft()}
-      <ThemedText type={TextType.CaptionSemibold} color={TextColor.Primary} style={styles.label}>
+      <ThemedText type={TextType.FootnoteSemibold} color={TextColor.Primary} style={styles.label}>
         {label}
       </ThemedText>
       <TextInput

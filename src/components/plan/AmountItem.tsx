@@ -1,45 +1,39 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { BrandColor, NeutralColor, TextColor } from '../constants/Colors'
+import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import React from 'react'
 import { Image } from 'react-native'
-import { TextType } from '../types/text'
-import { ThemedText } from './ThemedText'
-import { formatter } from '../utils/formatAmount'
-import { useCurrency } from '../hooks/useCurrency'
+import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/src/components/ThemedText'
+import { formatter } from '@/src/utils/formatAmount'
+import { useCurrency } from '@/src/hooks/useCurrency'
 
-export type TransactionItemProps = {
+export type AmountItemProps = {
   title: string
-  category: string
   amount: number
-  img: () => React.ReactElement
   date: string
 }
 
-const TransactionItem = ({ title, category, amount, img, date }: TransactionItemProps) => {
+const AmountItem = ({ title, amount, date }: AmountItemProps) => {
   const { currentCurrency } = useCurrency()
   return (
     <View style={styles.item}>
-      <View style={styles.imgCover}>{img && img()}</View>
       <View style={styles.info}>
         <ThemedText type={TextType.FootnoteSemibold} color={TextColor.Primary}>
           {title}
         </ThemedText>
         <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
-          {category}
+          {date}
         </ThemedText>
       </View>
       <View style={styles.amount}>
         <ThemedText type={TextType.CalloutSemibold} color={BrandColor.PrimaryColor[400]}>
           {formatter(amount, currentCurrency)}
         </ThemedText>
-        <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
-          {date}
-        </ThemedText>
       </View>
     </View>
   )
 }
-export default TransactionItem
+export default AmountItem
 const styles = StyleSheet.create({
   item: {
     minHeight: 64,
@@ -61,6 +55,8 @@ const styles = StyleSheet.create({
   },
   info: {
     gap: 2,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   amount: {
     gap: 2,

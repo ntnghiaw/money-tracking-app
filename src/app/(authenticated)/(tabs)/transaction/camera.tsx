@@ -6,13 +6,13 @@ import * as MediaLibrary from 'expo-media-library'
 import { Image } from 'react-native'
 import Button from '@/src/components/buttons/Button'
 import * as ImagePicker from 'expo-image-picker'
-import { BackgroundColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor,  TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { Stack, useRouter } from 'expo-router'
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import { useScanImageReceiptsMutation } from '@/src/features/wallet/wallet.service'
+import { useScanImageReceiptsMutation } from '@/src/features/transaction/transaction.service'
 import { useAppSelector } from '@/src/hooks/hooks'
 import { Alert } from 'react-native'
 import * as FileSystem from 'expo-file-system'
@@ -24,7 +24,7 @@ const screenHeight = Dimensions.get('window').height
 
 const Page = () => {
   const [image, setImage] = useState(null)
-  const { userId, tokens } = useAppSelector((state) => state.auth)
+  const { user, tokens } = useAppSelector((state) => state.auth)
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions()
   const { t } = useLocale()
   const router = useRouter()
@@ -70,7 +70,7 @@ const Page = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: tokens.accessToken,
-          'x-client-id': userId,
+          'x-client-id': user._id,
         },
         body: formData,
       })
@@ -82,7 +82,7 @@ const Page = () => {
         params: {
           img_url: data?.metadata?.img_url,
           total: data?.metadata?.total,
-          createdAt: data?.metadata?.date,
+          createdAt: data?.metadata?.createdAt,
           title: data?.metadata?.title,
         },
       })

@@ -5,16 +5,18 @@ import { getLocales, getCurrencies } from 'react-native-localize'
 const USER_LANGUAGE_KEY = 'USER_LANGUAGE'
 const USER_CURRENCY_KEY = 'USER_CURRENCY'
 
+
+
 export const LocalizationContext = createContext({
-  currentLanguage: 'en',
+  currentLanguage: 'vi',
   changeLanguage: (_lng: string) => {},
-  currentCurrency: 'USD',
+  currentCurrency: getCurrencies()[0],
   changeCurrency: (_currency: string) => {},
 })
 
 export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentLanguage, setCurrentLanguage] = useState(i18next.language ?? 'en')
-  const [currentCurrency, setCurrentCurrency] = useState('USD')
+  const [currentLanguage, setCurrentLanguage] = useState(i18next.language ?? 'vi')
+  const [currentCurrency, setCurrentCurrency] = useState('VND')
 
   const changeLanguage = async (lng: string) => {
     setCurrentLanguage(lng)
@@ -35,7 +37,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       ]) 
       if (Array.isArray(userLocale)) {
         setCurrentLanguage(userLocale[0])
-        setCurrentCurrency(userLocale[1] ?? 'USD')
+        setCurrentCurrency(userLocale[1] ?? 'VND')
         i18next.changeLanguage(userLocale[0])
       }
     }

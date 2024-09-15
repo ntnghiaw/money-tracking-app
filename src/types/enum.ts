@@ -41,7 +41,6 @@ export interface WalletResponse {
   currency: string
   balance: number
   type: 'private' | 'shared'
-  
 }
 
 export interface TransactionResponse {
@@ -52,7 +51,6 @@ export interface TransactionResponse {
   description: string
   type: 'expense' | 'income'
 }
-
 
 export interface Response<T> {
   message: string
@@ -67,12 +65,10 @@ export interface AuthResponse {
 
 export interface AuthState {
   tokens: Tokens
-  userId: string
+  user: User
   walletId: string
-  [others: string]: any
   isAuthenticated: boolean
 }
-
 
 export interface Wallet {
   _id: string
@@ -90,33 +86,39 @@ export interface Wallet {
 export interface WalletsState {
   wallets: string[]
   currentWallet?: string
-
 }
 
 export type FinancialPlanAttribute = Goal | Budget
 
+export type FinancialPlan =
+  | {
+      _id: string
+      name: string
+      description?: string
+      type: 'budget'
+      end_date: string
+      attributes: Budget
+    }
+  | {
+      _id: string
+      name: string
+      description?: string
+      type: 'goal'
+      end_date: string
+      attributes: Goal
+    }
 
-export type FinancialPlan = {
+
+export interface Amount {
+  amount: number
+  title: string
+  createdAt: string
   _id: string
-  name: string
-  description?: string
-  type: 'budget'
-  records?: Transaction[]
-  attributes: Budget
-} | {
-  _id: string
-  name: string
-  description?: string
-  type: 'goal'
-  records?: Transaction[]
-  attributes: Goal
 }
-
 export interface Goal {
-  targetAmount: number
-  desiredDate: string
-  currentAmount: number
-  records: Transaction[]
+  target_amount: number
+  current_amount: number
+  records: Amount[]
 }
 
 export interface Debt {
@@ -133,14 +135,11 @@ export interface Debt {
 
 export interface Budget {
   target_amount: number | string
-  spentAmount: number | string
-  categories: SubCategory[]
+  spent_amount: number | string
+  categories: Category[]
   start_date: string
-  due_date: string
   records: Transaction[]
 }
-
-
 
 export interface Category {
   _id: string
@@ -159,7 +158,7 @@ export interface Transaction {
   _id: string
   amount: number
   title: string
-  category: Category 
+  category: Category
   createdAt: string
   description: string
   type: 'expense' | 'income'
@@ -177,4 +176,7 @@ export interface User {
   wallets: string[]
 }
 
-export type UserProfile = Pick<User, 'name' | 'gender' | 'avatar_url' | 'dob' | '_id' | 'email' | 'phone'>
+export type UserProfile = Pick<
+  User,
+  'name' | 'gender' | 'avatar_url' | 'dob' | '_id' | 'email' | 'phone'
+>
