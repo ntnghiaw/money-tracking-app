@@ -40,7 +40,6 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   [categoryApi.reducerPath]: categoryApi.reducer,
   transaction: transactionReducer,
-  [transactionApi.reducerPath]: transactionApi.reducer,
   user: userReducer,
   [userApi.reducerPath]: userApi.reducer,
 })

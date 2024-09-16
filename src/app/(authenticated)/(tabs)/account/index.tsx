@@ -298,7 +298,7 @@ const Page = () => {
             </TouchableOpacity>
           </Link>
         </View>
-        <View style={styles.form}>
+        {/* <View style={styles.form}>
           <TouchableOpacity style={styles.item}>
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.helpandsupport')}
@@ -315,7 +315,7 @@ const Page = () => {
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View>
           <Button
             text={t('settings.logout')}

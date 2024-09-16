@@ -20,7 +20,6 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         if (['_sitemap', '+not-found'].includes(route.name)) return null
         
         const isFocused = state.index === index
-
         const onPress = () => {
           const event = navigation.emit({
             type: 'tabPress',
@@ -48,8 +47,9 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={styles.tabBarItem}
+            style={[styles.tabBarItem]}
             key={route.name}
+
           >
             {options.tabBarIcon &&
               options.tabBarIcon({

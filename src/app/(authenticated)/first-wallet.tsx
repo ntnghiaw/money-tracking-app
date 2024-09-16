@@ -41,7 +41,6 @@ import Button from '@/src/components/buttons/Button'
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL
 
 const Page = () => {
   const router = useRouter()
@@ -87,8 +86,8 @@ const Page = () => {
       router.replace('/(authenticated)/(tabs)/home')
     }
     if (data) {
-      dispatch(setWallets({ wallets: [data.metadata._id], currentWallet: data.metadata._id }))
-      dispatch(setAuth({ user, tokens, isAuthenticated, walletId: data.metadata._id }))
+      dispatch(setWallets({ wallets: [data._id], currentWallet: data._id }))
+      dispatch(setAuth({ user, tokens, isAuthenticated, walletId: data._id }))
     }
   }, [isSuccess])
   const handleCreateWallet = async () => {

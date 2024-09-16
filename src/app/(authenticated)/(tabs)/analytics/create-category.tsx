@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Href, router } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import { icons } from '@/src/constants/Icons'
-import { useCreateCategoryMutation } from '@/src/features/user/user.service'
+import { useCreateCategoryMutation } from '@/src/features/category/category.service'
 import { useAppSelector } from '@/src/hooks/hooks'
 
 const getImg = (icon: string) => {
@@ -41,8 +41,11 @@ const Page = () => {
 
   useEffect(() => {
     if (data) {
+      setName('')
       router.setParams({})
-      router.navigate('/(authenticated)/(tabs)/account/categories' as Href)
+
+      router.back()
+      console.log(router)
     }
   }, [isSuccess])
 

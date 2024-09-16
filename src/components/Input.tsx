@@ -9,6 +9,7 @@ import {
   NativeSyntheticEvent,
   TextInputFocusEventData,
   Text,
+  TextInputEndEditingEventData,
 } from 'react-native'
 import { ThemedText } from './ThemedText'
 import { TextType } from '@/src/types/text'
@@ -102,8 +103,8 @@ const Input = ({
     validate && validate(true)
   }
 
-  const onBlurHandler = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    onValidate(text)
+  const onEndEditingHandler = (e: NativeSyntheticEvent<TextInputEndEditingEventData>) => {
+    onValidate(e.nativeEvent.text)
   }
 
   const onFocusHandler = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
@@ -131,9 +132,10 @@ const Input = ({
         cursorColor={BrandColor.PrimaryColor[400]}
         secureTextEntry={isSecure}
         onFocus={onFocusHandler}
-        onBlur={onBlurHandler}
+        onEndEditing={onEndEditingHandler}
         autoFocus={state === 'focused'}
         onChangeText={onChangeTextHandler}
+        readOnly={rest.editable === false}
       />
       {rest.buttonRight && rest.buttonRight()}
       <Text style={styles.errorMsg}>{message}</Text>

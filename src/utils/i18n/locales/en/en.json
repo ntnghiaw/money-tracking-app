@@ -137,7 +137,12 @@
     "changelanguage": "Change Language",
     "categories": "Categories",
     "budgets": "Budgets",
-    "add": "Add"
+    "add": "Add",
+    "editcategory": "Edit",
+    "category": "Category",
+    "savecategory": "Save",
+    "deletecategory": "Delete",
+    "deletecategorymessage": "Are you sure you want to delete this category?"
   },
   "tabLabel": {
     "home": "Home",

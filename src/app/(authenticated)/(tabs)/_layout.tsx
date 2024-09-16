@@ -26,7 +26,10 @@ const Layout = () => {
   const {t} = useLocale()
   return (
     <BottomSheetModalProvider>
-      <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ tabBarHideOnKeyboard: true }}>
+      <Tabs
+        tabBar={(props) => <TabBar {...props} />}
+        screenOptions={{ tabBarHideOnKeyboard: true }}
+      >
         <Tabs.Screen
           name='home'
           options={{
@@ -38,6 +41,7 @@ const Layout = () => {
               }
               return <Image source={require('@/src/assets/icons/home.jpg')} />
             },
+            tabBarHideOnKeyboard: true,
           }}
         />
         <Tabs.Screen
@@ -67,7 +71,8 @@ const Layout = () => {
               )
             },
             headerTitle: t('transaction.newtransaction'),
-            headerShown: false
+            headerShown: false,
+            tabBarHideOnKeyboard: true,
           }}
         />
         <Tabs.Screen
@@ -83,6 +88,7 @@ const Layout = () => {
               }
               return <Image source={require('@/src/assets/icons/goals.jpg')} />
             },
+            tabBarHideOnKeyboard: true,
           }}
         />
         <Tabs.Screen
@@ -96,6 +102,7 @@ const Layout = () => {
               }
               return <Image source={require('@/src/assets/icons/settings.jpg')} />
             },
+            tabBarHideOnKeyboard: true,
           }}
         />
       </Tabs>

@@ -9,7 +9,6 @@ import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
 import Input from '@/src/components/Input'
 import MaskInput from 'react-native-mask-input'
-import { AMOUNT_VND } from '@/src/constants/Masks'
 import { formatter } from '@/src/utils/formatAmount'
 import formatDate from '@/src/utils/formatDate'
 import { SafeAreaView } from 'react-native'
@@ -70,13 +69,14 @@ const Page = () => {
   const { t } = useLocale()
   const { currentCurrency } = useCurrency()
   const buttons: TabButtonType[] = [
-    { title: t('transaction.income') },
     { title: t('transaction.expense') },
+    { title: t('transaction.income') },
   ]
   const bottomSheetCategoryModalRef = useRef<BottomSheetModal>(null)
   const snapPointsCategory = useMemo(() => ['85%'], [])
 
   const { data: categoriesRes } = useGetAllCategoriesQuery()
+  console.log("🚀 ~ Page ~ categoriesRes:", categoriesRes)
   const categoriesFilteredByType = useMemo(
     () =>
       categoriesRes?.filter((category) =>
@@ -163,7 +163,6 @@ const Page = () => {
   const { data: categories } = useGetAllCategoriesQuery()
 
   useEffect(() => {
-    console.log(img_url, total, title, createdAt)
     if (img_url && total && title && createdAt) {
       setTransaction((pre) => ({
         ...pre,
@@ -287,7 +286,6 @@ const Page = () => {
                   return { ...pre, amount: masked }
                 }) // you can use the unmasked value as well
               }}
-              mask={AMOUNT_VND}
             />
           </View>
 

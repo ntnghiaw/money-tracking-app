@@ -7,8 +7,8 @@ const Page = () => {
   const router = useRouter()
   console.log(router)
   const onChooseIcon = (name:string) => {
-   router.navigate({
-     pathname: `/(authenticated)/(tabs)/analytics/create-category`,
+   router.navigate({  
+     pathname: `/(authenticated)/(tabs)/account/create-category`,
      params: { icon: name },
    })
   }

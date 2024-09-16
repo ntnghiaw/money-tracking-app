@@ -23,7 +23,6 @@ import { AntDesign } from '@expo/vector-icons'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
 import CustomizedModalScrollView from '@/src/components/modals/CustomizedModalScrollView'
 import Input from '@/src/components/Input'
-import { AMOUNT_VND } from '@/src/constants/Masks'
 import MaskInput from 'react-native-mask-input'
 import { formatter } from '@/src/utils/formatAmount'
 import {useUpdateAmountToGoalMutation} from '@/src/features/plan/plan.service'
@@ -184,7 +183,6 @@ const History = () => {
                 onChangeText={(masked, unmasked) => {
                   setEditAmount((pre) => ({ ...pre, amount: parseInt(masked) })) // you can use the unmasked value as well
                 }}
-                mask={AMOUNT_VND}
               />
             </View>
           </View>

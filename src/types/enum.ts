@@ -58,7 +58,7 @@ export interface Response<T> {
   metadata: T
 }
 
-export interface AuthResponse {
+export interface Auth {
   tokens: Tokens
   user: User
 }

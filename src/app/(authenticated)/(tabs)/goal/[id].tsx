@@ -36,7 +36,6 @@ import { AntDesign, FontAwesome6, Foundation } from '@expo/vector-icons'
 import MaskInput, { Masks } from 'react-native-mask-input'
 import CustomizedModalScrollView from '@/src/components/modals/CustomizedModalScrollView'
 import { useAddAmountToGoalMutation } from '@/src/features/plan/plan.service'
-import { AMOUNT_VND } from '@/src/constants/Masks'
 import AmountItem from '@/src/components/plan/AmountItem'
 import Loading from '@/src/components/Loading'
 
@@ -279,7 +278,6 @@ const Page = () => {
                   onChangeText={(masked, unmasked) => {
                     setAmount(masked) // you can use the unmasked value as well
                   }}
-                  mask={AMOUNT_VND}
                 />
               </View>
             </View>

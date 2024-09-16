@@ -13,20 +13,7 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name='index' />
-      <Stack.Screen
-        name='categories'
-        options={{
-          title: 'Choose Category',
-          presentation: 'modal',
-          headerRight: () => (
-            <Pressable onPress={() => router.back()}>
-              <X width={24} height={24} color={NeutralColor.Black[800]} />
-            </Pressable>
-          ),
-          headerStyle: { backgroundColor: DefaultTheme.colors.background },
-          headerShadowVisible: false,
-        }}
-      />
+      
      
     </Stack>
   )

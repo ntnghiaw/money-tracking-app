@@ -1,4 +1,4 @@
-import { AuthResponse, AuthState, Response } from '@/src/types/enum'
+import { Auth, AuthState, Response } from '@/src/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {baseQuery} from '@/src/features'
 
@@ -17,7 +17,7 @@ export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery,
   endpoints: (builder) => ({
-    login: builder.mutation<AuthResponse, LoginRequest>({
+    login: builder.mutation<Auth, LoginRequest>({
       query: (body) => {
         return {
           url: '/auth/login',
@@ -25,17 +25,18 @@ export const authApi = createApi({
           body,
         }
       },
-      transformResponse: (response: { metadata: AuthResponse }) => response.metadata,
+      transformResponse: (response: { metadata: Auth }) => response.metadata,
     }),
-    register: builder.mutation<Response<AuthResponse>, RegisterRequest>({
+    signup: builder.mutation<Auth, RegisterRequest>({
       query: (body) => ({
         url: '/auth/signup',
         method: 'POST',
         body,
       }),
+      transformResponse: (response: { metadata: Auth }) => response.metadata,
     }),
 
-    logout: builder.mutation<Response<AuthResponse>, void>({
+    logout: builder.mutation<Response<Auth>, void>({
       query: () => ({
         url: '/auth/logout',
         method: 'POST',
@@ -44,4 +45,4 @@ export const authApi = createApi({
   }),
 })
 
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi
+export const { useLoginMutation, useSignupMutation, useLogoutMutation } = authApi

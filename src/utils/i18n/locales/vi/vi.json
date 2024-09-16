@@ -135,7 +135,12 @@
     "changelanguage": "Thay đổi ngôn ngữ",
     "categories": "Danh mục",
     "budgets": "Thiết lập ngân sách",
-    "add": "Thêm mới"
+    "add": "Thêm mới",
+    "editcategory": "Chỉnh sửa",
+    "category": "Danh mục",
+    "savecategory": "Lưu",
+    "deletecategory": "Xóa",
+    "deletecategorymessage": "Bạn có chắc chắn muốn xóa danh mục này không?"
   },
   "tabLabel": {
     "home": "Nhà",

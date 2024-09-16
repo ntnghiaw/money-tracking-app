@@ -94,7 +94,6 @@ import CustomizedModalView from '@/src/components/modals/CustomizedModalView'
 import Input from '@/src/components/Input'
 import { formatter } from '@/src/utils/formatAmount'
 import MaskInput from 'react-native-mask-input'
-import { AMOUNT_VND } from '@/src/constants/Masks'
 import { useCurrency } from '@/src/hooks/useCurrency'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import formatDate from '@/src/utils/formatDate'
@@ -318,7 +317,6 @@ const Page = () => {
                 onChangeText={(masked, unmasked) => {
                   setAmount(masked) // you can use the unmasked value as well
                 }}
-                mask={AMOUNT_VND}
               />
             </View>
 

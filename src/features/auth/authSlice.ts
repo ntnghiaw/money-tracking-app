@@ -1,8 +1,8 @@
-import AsyncStorage  from '@react-native-async-storage/async-storage';
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import type { AuthState, Tokens, User } from '@/src/types/enum'
-import { authApi } from '@/src/features/auth/auth.service';
+import { authApi } from '@/src/features/auth/auth.service'
 const initialState: AuthState = {
   tokens: {
     accessToken: '',
@@ -38,29 +38,31 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(authApi.endpoints.login.matchFulfilled, (state, { payload }) => {
-      const {tokens, user} = payload
+      const { tokens, user } = payload
       state.tokens = tokens
       state.user = user
       state.isAuthenticated = true
       state.walletId = user.wallets[0]
     })
+    builder.addMatcher(authApi.endpoints.signup.matchFulfilled, (state, { payload }) => {
+      const { tokens, user } = payload
+      state.tokens = tokens
+      state.user = user
+      state.isAuthenticated = true
+    })
     builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
-       state.tokens = {
-         accessToken: '',
-         refreshToken: '',
-       }
-       state.user = {} as User
-       state.isAuthenticated = false
-       state.walletId = ''
+      state.tokens = {
+        accessToken: '',
+        refreshToken: '',
+      }
+      state.user = {} as User
+      state.isAuthenticated = false
+      state.walletId = ''
     })
   },
 })
-
-
 
 export const { setAuth, clearAuth, setDefaultWallet } = authSlice.actions
 
 const authReducer = authSlice.reducer
 export default authReducer
-
-

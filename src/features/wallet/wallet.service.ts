@@ -32,7 +32,7 @@ export const walletApi = createApi({
   baseQuery,
   endpoints: (builder) => ({
     createFirstWallet: builder.mutation<
-      Response<WalletResponse>,
+      WalletResponse,
       {
         wallet: WalletRequest
       }
@@ -43,7 +43,7 @@ export const walletApi = createApi({
         method: 'POST',
         body: body.wallet,
       }),
-      
+      transformResponse: (response: { metadata: WalletResponse }) => response.metadata,
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
     createNewWallet: builder.mutation<

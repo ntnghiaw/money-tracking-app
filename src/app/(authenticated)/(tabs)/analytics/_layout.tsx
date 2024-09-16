@@ -55,7 +55,7 @@ const Layout = () => {
         name='icons'
         options={{
           headerTitle: t('home.chooseicon'),
-          
+
           header: (props) => (
             <Header
               {...props}
@@ -68,7 +68,7 @@ const Layout = () => {
               )}
             />
           ),
-          
+
           // headerShown: false,
         }}
       />

@@ -19,7 +19,6 @@ import { TextType } from '@/src/types/text'
 import MaskInput from 'react-native-mask-input'
 import { useCurrency } from '@/src/hooks/useCurrency'
 import { formatter } from '@/src/utils/formatAmount'
-import { AMOUNT_VND } from '@/src/constants/Masks'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import { Pressable } from 'react-native'
@@ -173,7 +172,6 @@ const EditGoal = () => {
             onChangeText={(masked, unmasked) => {
               setAmount(masked) // you can use the unmasked value as well
             }}
-            mask={AMOUNT_VND}
           />
         </View>
         <Input
