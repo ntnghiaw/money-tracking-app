@@ -4,7 +4,6 @@ import { BrandColor } from '@/src/constants/Colors'
 
 type BarChartProps = {
   data: Array<any>
-
 }
 
 const DATA = Array.from({ length: 7 }, (_, i) => ({
@@ -19,7 +18,7 @@ const BarChart = () => {
         data={DATA}
         xKey='day'
         yKeys={['highTmp']}
-        // axisOptions={{ formatYLabel: (v) => `${formatter(v, currentCurrency)}` }}
+        // axisOptions={{ formatYLabel: (v) => `${formatter(v, currencyCode)}` }}
       >
         {({ points, chartBounds }) => (
           //👇 pass a PointsArray to the Bar component, as well as options.

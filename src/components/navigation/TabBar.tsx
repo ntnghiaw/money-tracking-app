@@ -3,11 +3,20 @@ import { type BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { BrandColor, NeutralColor } from '@/src/constants/Colors'
 import { Pressable } from 'react-native'
+import { useMemo, useState } from 'react'
 
 function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { bottom } = useSafeAreaInsets()
+  const hideTabs = useMemo(() => {
+     for (let route of state.routes) {
+        const { options } = descriptors[route.key]
+        if (JSON.stringify(options.tabBarStyle) === JSON.stringify({ display: 'none' })) {
+          return true
+        }
+      }
+   }, [state])
   return (
-    <View style={[styles.tabBarContainer, { bottom: bottom }]}>
+    <View style={[styles.tabBarContainer, { bottom: bottom }, hideTabs ? {display: 'none'} : {display: 'flex'} ]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label =
@@ -18,7 +27,7 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             : route.name
         // remove +not-found or _sitemap from tabs
         if (['_sitemap', '+not-found'].includes(route.name)) return null
-        
+
         const isFocused = state.index === index
         const onPress = () => {
           const event = navigation.emit({
@@ -49,7 +58,6 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             onLongPress={onLongPress}
             style={[styles.tabBarItem]}
             key={route.name}
-
           >
             {options.tabBarIcon &&
               options.tabBarIcon({
@@ -63,6 +71,8 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   styles.tabBarLabel,
                   { color: isFocused ? BrandColor.PrimaryColor[400] : BrandColor.Gray[400] },
                 ]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
               >
                 {label.toString()}
               </Text>
@@ -94,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabBarLabel: {
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 18,
   },
 })

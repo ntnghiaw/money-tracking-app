@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  Alert,
 } from 'react-native'
 import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -17,41 +16,43 @@ import { TextType } from '@/src/types/text'
 import { Entypo, Ionicons } from '@expo/vector-icons'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import { useGetWalletByIdQuery } from '@/src/features/wallet/wallet.service'
-import { editTransaction } from '@/src/features/transaction/transactionSlice'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { formatter } from '@/src/utils/formatAmount'
 import { Plus } from 'react-native-feather'
 import InfoButton from '@/src/components/buttons/InfoButton'
 import TransactionItem from '@/src/components/TransactionItem'
-import { useCurrency } from '@/src/hooks/useCurrency'
 import { getImg } from '@/src/utils/getImgFromUri'
 import formatDate from '@/src/utils/formatDate'
 import Loading from '@/src/components/Loading'
+import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
+import Button from '@/src/components/buttons/Button'
+
+const MAX_RECENT_TRANSACTIONS = 5
 
 const Home = () => {
   const router = useRouter()
   const { top } = useSafeAreaInsets()
   const { t } = useLocale()
-  const { currentCurrency } = useCurrency()
+  const { currencyCode } = useLocale()
   const dispatch = useAppDispatch()
+  const [type, setType] = useState('expense')
   const { walletId } = useAppSelector((state) => state.auth)
-  const { isLoading, isSuccess, data, isError, error, isFetching,  } = useGetWalletByIdQuery({
+  const { data } = useGetWalletByIdQuery({
     walletId: walletId,
   })
-  
-  useEffect(() => {
 
-    if(!isFetching) {
-      console.log('isFetching', isFetching)
-      if (isError) {
-        Alert.alert('Error', error.message)
-      }
-    }
+  const { data: transactions, isLoading: isFetchingTransaction } = useGetAllTransactionsQuery({
+    walletId: walletId,
+    query: {
+      type
+    },
+  })
 
-  }, [isError, isFetching])
   const wallet = data?.metadata
-  const transactions = wallet?.transactions
-  const recentTransactions = transactions?.slice(0, 6) // get 6 recent transactions
+  const recentTransactions =
+    useMemo(() => {
+      return transactions?.slice(0, MAX_RECENT_TRANSACTIONS)
+    }, [transactions]) || [] // get 6 recent transactions
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -74,7 +75,7 @@ const Home = () => {
           ),
         }}
       />
-      {<Loading isLoading={isLoading} text='Loading..' />}
+      {<Loading isLoading={isFetchingTransaction} text='Loading..' />}
 
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.balanceSection}>
@@ -84,7 +85,7 @@ const Home = () => {
             </ThemedText>
           </View>
           <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
-            {formatter(wallet?.balance ?? 0, currentCurrency)}
+            {formatter(wallet?.balance ?? 0, currencyCode)}
           </ThemedText>
           {/* <View style={styles.summary}>
             <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />
@@ -155,28 +156,40 @@ const Home = () => {
               </ThemedText>
             )}
             {recentTransactions?.map((item, index) => (
-              <TouchableOpacity key={index}>
+              <TouchableOpacity
+                key={index}
+                onPress={() =>
+                  router.push({
+                    pathname: `/(authenticated)/(tabs)/home/[transaction]`,
+                    params: { transaction: item._id },
+                  })
+                }
+              >
                 <TransactionItem
                   title={item.title}
                   category={item.category.name}
                   amount={item.amount}
+                  type={item.type}
+                  icon= {item.category.icon}
                   date={
                     formatDate(
                       item?.createdAt ? new Date(item?.createdAt) : new Date(),
                       'dd/mm/yy'
                     )!
                   }
-                  img={() => (
-                    <Image
-                      source={getImg(item.category.icon)}
-                      style={{ width: 20, height: 20, resizeMode: 'contain' }}
-                    />
-                  )}
                 />
               </TouchableOpacity>
             ))}
           </View>
         </View>
+        <Button 
+          type='primary'
+          size='large'
+          state='normal'
+          text='Set Type'
+          onPress={() => setType((prev) => (prev === 'expense' ? 'income' : 'expense'))}
+        
+        />
       </ScrollView>
     </SafeAreaView>
   )

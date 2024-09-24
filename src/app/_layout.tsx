@@ -13,32 +13,34 @@ import { useSegments } from 'expo-router'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import 'intl-pluralrules'
 import '@/src/utils/i18n'
+import Toast from 'react-native-toast-message'
+
 import { LocalizationProvider } from '@/src/contexts/LocalizationContext'
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { SettingsProvider } from '@/src/contexts/SettingsContext'
 import {useNetInfo} from '@react-native-community/netinfo'
 
 const InitialLayout = () => {
   const router = useRouter()
   const segment = useSegments()
   const { isAuthenticated, walletId } = useAppSelector((state) => state.auth)
-
   const netInfo = useNetInfo()
 
   // console.log('netInfo', netInfo)
   useEffect(() => {
-    if (isAuthenticated && !Boolean(walletId)) {
+    if (isAuthenticated && !Boolean(walletId) ) {
       router.replace('/(authenticated)/first-wallet')
-    } else if (isAuthenticated && Boolean(walletId)) {
+    } else if (isAuthenticated && Boolean(walletId) && segment[1] !== '(tabs)') {
       router.replace('/(authenticated)/(tabs)/home')
     } else if (!isAuthenticated) {
-      router.replace('/')
+      router.replace('/login')
     }
 
   }, [isAuthenticated, walletId])
 
   return (
     <Stack>
-      <Stack.Screen name='index' options={{ headerShown: false }} />
+      <Stack.Screen name='(authenticated)' options={{ headerShown: false }} />
+      {/* <Stack.Screen name='index' options={{ headerShown: false }} /> */}
       <Stack.Screen
         name='register'
         options={{
@@ -78,7 +80,6 @@ const InitialLayout = () => {
           presentation: 'modal',
         }}
       />
-      <Stack.Screen name='(authenticated)' options={{ headerShown: false }} />
     </Stack>
   )
 }
@@ -86,18 +87,21 @@ const InitialLayout = () => {
 const RootLayoutNav = () => {
   return (
     <ActionSheetProvider>
-        <Provider store={store}>
-          {/* <> */}
+      <Provider store={store}>
+        {/* <> */}
+        <SettingsProvider>
           <LocalizationProvider>
             <StatusBar style='dark' backgroundColor={'white'} />
             <GestureHandlerRootView style={{ flex: 1 }}>
               <PersistGate persistor={persistor}>
                 <InitialLayout />
+                <Toast />
               </PersistGate>
             </GestureHandlerRootView>
             {/* </> */}
           </LocalizationProvider>
-        </Provider>
+        </SettingsProvider>
+      </Provider>
     </ActionSheetProvider>
   )
 }

@@ -1,35 +1,19 @@
-import { RootState } from '@/src/store/store'
 import {
-  AuthState,
-  Budget,
-  FinancialPlan,
-  Goal,
   Response,
-  Transaction,
   Wallet,
   WalletResponse,
 } from '@/src/types/enum'
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from '@/src/features'
+
 import config from '@/src/config'
+import { appApi } from '@/src/features/api.service'
 
 interface WalletRequest {
   name: string
-  currency: string
+  currency?: string
   type: 'shared' | 'private'
 }
 
-interface HeaderRequest {
-  accessToken: string
-  userId: string
-}
-
-
-
-export const walletApi = createApi({
-  reducerPath: 'walletApi',
-  tagTypes: ['Wallet', 'Transaction', 'Plan'],
-  baseQuery,
+export const walletApi = appApi.injectEndpoints({
   endpoints: (builder) => ({
     createFirstWallet: builder.mutation<
       WalletResponse,
@@ -38,7 +22,6 @@ export const walletApi = createApi({
       }
     >({
       query: (body) => ({
-        
         url: config.api.endpoints.wallets,
         method: 'POST',
         body: body.wallet,
@@ -116,27 +99,6 @@ export const walletApi = createApi({
             ]
           : [{ type: 'Wallet', id: 'LIST' }],
     }),
-
-    // createTransaction: builder.mutation<
-    //   Response<Transaction>,
-    //   {
-    //     transaction: Omit<Transaction, '_id'>
-    //     walletId: string
-    //   }
-    // >({
-    //   query: (body) => ({
-    //     url: `/transactions/${body.walletId}`,
-    //     method: 'POST',
-    //     body: body.transaction,
-    //   }),
-
-    //   invalidatesTags: (result, error, body) => [
-    //     { type: 'Wallet', id: 'LIST' },
-    //     { type: 'Plan', id: 'LIST' },
-    //   ],
-    // }),
-
-    /* Budget  & Goal */
   }),
 })
 

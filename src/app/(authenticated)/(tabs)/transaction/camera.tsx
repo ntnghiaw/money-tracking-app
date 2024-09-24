@@ -44,9 +44,11 @@ const Page = () => {
         aspect: [1, 1],
         quality: 1,
       })
-      setImage(result?.assets[0])
+      if(result) {
+        setImage(result?.assets[0])
+      }
     } catch (error) {
-      console.error('Error fetching media library assets', error)
+      console.log('Error fetching media library assets', error)
     }
   }
 

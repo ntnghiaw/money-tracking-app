@@ -16,13 +16,12 @@ import {
 
 import authReducer from '@/src/features/auth/authSlice'
 import walletReducer from '@/src/features/wallet/walletSlice'
-import { walletApi } from '@/src/features/wallet/wallet.service'
-import { categoryApi } from '@/src/features/category/category.service'
 import categoryReducer from '@/src/features/category/categorySlice'
 import transactionReducer from '@/src/features/transaction/transactionSlice'
-import { transactionApi } from '@/src/features/transaction/transaction.service'
 import userReducer from '@/src/features/user/UserSlice'
 import { userApi } from '@/src/features/user/user.service'
+import { appApi } from '@/src/features/api.service'
+import { rtkQueryErrorLogger } from '@/src/services/errorHandling.service'
 
 const authPersistConfig = {
   key: 'auth',
@@ -32,13 +31,11 @@ const authPersistConfig = {
 }
 
 const rootReducer = combineReducers({
+  [appApi.reducerPath]: appApi.reducer,
   auth: persistReducer(authPersistConfig, authReducer),
-
   [authApi.reducerPath]: authApi.reducer,
   wallets: walletReducer,
-  [walletApi.reducerPath]: walletApi.reducer,
   category: categoryReducer,
-  [categoryApi.reducerPath]: categoryApi.reducer,
   transaction: transactionReducer,
   user: userReducer,
   [userApi.reducerPath]: userApi.reducer,
@@ -52,7 +49,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, walletApi.middleware, categoryApi.middleware, transactionApi.middleware, userApi.middleware),
+    }).concat(appApi.middleware, authApi.middleware,  userApi.middleware, rtkQueryErrorLogger),
 })
 
 export const persistor = persistStore(store)

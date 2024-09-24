@@ -3,7 +3,6 @@ import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { CustomTab } from '.'
 import { useEffect, useMemo, useState } from 'react'
 import { useLocale } from '@/src/hooks/useLocale'
-import { useCurrency } from '@/src/hooks/useCurrency'
 import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
 import { TouchableOpacity } from 'react-native'
 import Input from '@/src/components/Input'
@@ -31,7 +30,7 @@ const Page = () => {
   const [name, setName] = useState('')
   const { bottom } = useSafeAreaInsets()
   const { t } = useLocale()
-  const { currentCurrency } = useCurrency()
+  const { currencyCode } = useLocale()
   const [createCategory, { data, isSuccess, isError }] = useCreateCategoryMutation()
 
   const buttons: TabButtonType[] = [
@@ -45,7 +44,6 @@ const Page = () => {
       router.setParams({})
 
       router.back()
-      console.log(router)
     }
   }, [isSuccess])
 

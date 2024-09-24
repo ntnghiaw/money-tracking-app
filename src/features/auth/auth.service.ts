@@ -1,4 +1,4 @@
-import { Auth, AuthState, Response } from '@/src/types/enum'
+import { Auth, AuthState, Response, UserProfile } from '@/src/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {baseQuery} from '@/src/features'
 
@@ -42,7 +42,15 @@ export const authApi = createApi({
         method: 'POST',
       }),
     }),
+    changePassword: builder.mutation<UserProfile, { oldPassword: string; newPassword: string }>({
+      query: (body) => ({
+        url: '/auth/changePassword',
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response: { metadata: UserProfile }) => response.metadata,
+    }),
   }),
 })
 
-export const { useLoginMutation, useSignupMutation, useLogoutMutation } = authApi
+export const { useLoginMutation, useSignupMutation, useLogoutMutation, useChangePasswordMutation } = authApi

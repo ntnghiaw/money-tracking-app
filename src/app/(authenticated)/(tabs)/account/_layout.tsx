@@ -3,7 +3,7 @@ import HeaderButton from '@/src/components/navigation/HeaderButton'
 import { Colors, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { AntDesign } from '@expo/vector-icons'
-import { Link, Stack, useRouter } from 'expo-router'
+import { Link, Stack, useRouter, useSegments } from 'expo-router'
 import { View, Text, Pressable } from 'react-native'
 import { ChevronLeft } from 'react-native-feather'
 
@@ -77,6 +77,8 @@ const Layout = () => {
           // animation: 'slide_from_bottom',
         }}
       />
+      <Stack.Screen name='goal' options={{ headerShown: false }} />
+      <Stack.Screen name='category' options={{ headerShown: false }} />
     </Stack>
   )
 }

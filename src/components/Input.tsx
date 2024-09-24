@@ -39,6 +39,8 @@ export enum ButtonState {
 
 export type InputProps = TextInputProps & {
   label?: string
+  error?: boolean
+  errorMessage?: string
   textColor?: string
   isSecure?: boolean
   buttonLeft?: () => ReactElement
@@ -60,6 +62,8 @@ const Input = ({
   placeholder,
   textColor = BrandColor.Blue[600],
   isSecure,
+  error,
+  errorMessage,
   value,
   onChangeText,
   validate,
@@ -68,6 +72,12 @@ const Input = ({
   const [state, setState] = useState<'normal' | 'focused' | 'typing' | 'error'>('normal')
   const [message, setMessage] = useState<string>('')
   const [text, setText] = useState<string>('')
+  useEffect(() => {
+    if (error && errorMessage) {
+      setState(error ? 'error' : 'normal')
+      setMessage(errorMessage)
+    }
+  }, [error])
 
   const onValidate = (text: string) => {
     if (rest.validationOptions?.required && text.trim() === '') {
@@ -138,7 +148,17 @@ const Input = ({
         readOnly={rest.editable === false}
       />
       {rest.buttonRight && rest.buttonRight()}
-      <Text style={styles.errorMsg}>{message}</Text>
+      <View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          top: 54,
+          left: 12,
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Text style={styles.errorMsg}>{message}</Text>
+      </View>
     </Pressable>
   )
 }
@@ -183,10 +203,6 @@ const styles = StyleSheet.create({
     left: 12,
   },
   errorMsg: {
-    position: 'absolute',
-    width: '100%',
-    bottom: -20,
-    left: 12,
     color: BrandColor.Red[400],
   },
 })

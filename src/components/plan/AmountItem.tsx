@@ -1,33 +1,34 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import React from 'react'
 import { Image } from 'react-native'
 import { TextType } from '@/src/types/text'
 import { ThemedText } from '@/src/components/ThemedText'
 import { formatter } from '@/src/utils/formatAmount'
-import { useCurrency } from '@/src/hooks/useCurrency'
+import { useLocale } from '@/src/hooks/useLocale'
+import { format } from 'date-fns'
 
 export type AmountItemProps = {
-  title: string
+  title?: string
   amount: number
   date: string
 }
 
 const AmountItem = ({ title, amount, date }: AmountItemProps) => {
-  const { currentCurrency } = useCurrency()
+  const { currencyCode } = useLocale()
   return (
     <View style={styles.item}>
-      <View style={styles.info}>
-        <ThemedText type={TextType.FootnoteSemibold} color={TextColor.Primary}>
-          {title}
-        </ThemedText>
-        <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
-          {date}
+      <View style={styles.amount}>
+        <ThemedText type={TextType.HeadlineSemibold} color={BrandColor.Red[300]}>
+          {formatter(amount, currencyCode)}
         </ThemedText>
       </View>
-      <View style={styles.amount}>
-        <ThemedText type={TextType.CalloutSemibold} color={BrandColor.PrimaryColor[400]}>
-          {formatter(amount, currentCurrency)}
+      <View style={styles.info}>
+        {/* <ThemedText type={TextType.FootnoteSemibold} color={TextColor.Primary}>
+          {title}
+        </ThemedText> */}
+        <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Secondary}>
+          {format(new Date(date), 'PPP')}
         </ThemedText>
       </View>
     </View>
@@ -40,9 +41,13 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 16,
-    borderBottomColor: BrandColor.Gray[100],
-    borderBottomWidth: 1,
+    borderColor: BrandColor.Gray[100],
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: BackgroundColor.LightTheme.Primary,
   },
   imgCover: {
     width: 33,
@@ -59,9 +64,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   amount: {
+    flex: 3,
     gap: 2,
-    position: 'absolute',
-    right: 0,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
 })

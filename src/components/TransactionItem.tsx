@@ -1,36 +1,49 @@
-import { StyleSheet, Text, View } from 'react-native'
-import { BrandColor, NeutralColor, TextColor } from '../constants/Colors'
+import { StyleSheet, Text, View, ViewProps } from 'react-native'
+import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import React from 'react'
 import { Image } from 'react-native'
-import { TextType } from '../types/text'
+import { TextType } from '@/src/types/text'
 import { ThemedText } from './ThemedText'
-import { formatter } from '../utils/formatAmount'
-import { useCurrency } from '../hooks/useCurrency'
+import { formatter } from '@/src/utils/formatAmount'
+import { useLocale } from '@/src/hooks/useLocale'
+import categoriesDefault from '@/src/constants/Categories'
+import { getImg } from '../utils/getImgFromUri'
 
-export type TransactionItemProps = {
+
+export type TransactionItemProps = ViewProps & {
   title: string
   category: string
+  icon: string
   amount: number
-  img: () => React.ReactElement
+  // img: () => React.ReactElement
   date: string
+  type: 'income' | 'expense'
 }
 
-const TransactionItem = ({ title, category, amount, img, date }: TransactionItemProps) => {
-  const { currentCurrency } = useCurrency()
+const TransactionItem = ({ title, category, amount, icon, type, date, style }: TransactionItemProps) => {
+  const { currencyCode, t } = useLocale()
   return (
-    <View style={styles.item}>
-      <View style={styles.imgCover}>{img && img()}</View>
-      <View style={styles.info}>
-        <ThemedText type={TextType.FootnoteSemibold} color={TextColor.Primary}>
-          {title}
-        </ThemedText>
-        <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
-          {category}
-        </ThemedText>
+    <View style={[styles.item, style]}>
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={styles.imgCover}>
+          <Image source={getImg(icon)} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
+        </View>
+        <View style={styles.info}>
+          <ThemedText type={TextType.FootnoteSemibold} color={TextColor.Primary}>
+            {title}
+          </ThemedText>
+          <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
+            {categoriesDefault.includes(category) ? t(`categories.${category}`) : category}
+          </ThemedText>
+        </View>
       </View>
+
       <View style={styles.amount}>
-        <ThemedText type={TextType.CalloutSemibold} color={BrandColor.PrimaryColor[400]}>
-          {formatter(amount, currentCurrency)}
+        <ThemedText
+          type={TextType.CalloutSemibold}
+          color={type === 'income' ? BrandColor.PrimaryColor[400] : BrandColor.Red[300]}
+        >
+          {formatter(amount, currencyCode)}
         </ThemedText>
         <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
           {date}
@@ -49,6 +62,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomColor: BrandColor.Gray[100],
     borderBottomWidth: 1,
+    justifyContent: 'space-between',
   },
   imgCover: {
     width: 33,
@@ -64,8 +78,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     gap: 2,
-    position: 'absolute',
-    right: 0,
+    
     alignItems: 'flex-end',
   },
 })

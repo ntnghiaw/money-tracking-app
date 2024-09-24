@@ -210,7 +210,7 @@ const Page = () => {
   }
   return (
     <View style={styles.container}>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={[styles.form, { marginTop: 18 }]}>
           <TouchableOpacity
             style={styles.item}
@@ -224,7 +224,7 @@ const Page = () => {
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={() => router.navigate('/(authenticated)/(tabs)/account/change-password')}>
             <Image style={styles.imageIcon} source={require('@/src/assets/icons/lock.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.resetpassword')}
@@ -233,19 +233,25 @@ const Page = () => {
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/category')}
+          >
             <Image style={styles.imageIcon} source={require('@/src/assets/icons/change.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-              {t('settings.changetheme')}
+              {t('settings.categories')}
             </ThemedText>
             <View style={styles.right}>
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/goal')}
+          >
             <Image style={styles.imageIcon} source={require('@/src/assets/icons/parts.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-              {t('settings.mysubscription')}
+              {t('settings.goals')}
             </ThemedText>
             <View style={styles.right}>
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
@@ -277,20 +283,20 @@ const Page = () => {
         </View>
 
         <View style={styles.form}>
-          <Link href={'/(authenticated)/(tabs)/account/categories' as Href} asChild>
+          <Link href={'/(authenticated)/(tabs)/account/notifications' as Href} asChild>
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-                {t('settings.categories')}
+                {t('settings.notifications')}
               </ThemedText>
               <View style={styles.right}>
                 <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={'/(authenticated)/(tabs)/account/currencies' as Href} asChild>
+          <Link href={'/(authenticated)/(tabs)/account/settings' as Href} asChild>
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-                {t('settings.budgets')}
+                {t('settings.settings')}
               </ThemedText>
               <View style={styles.right}>
                 <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
@@ -324,9 +330,10 @@ const Page = () => {
             state='normal'
             buttonLeft={() => <LogOut width={24} height={24} color={NeutralColor.White[50]} />}
             onPress={handleLogout}
-            style={{ backgroundColor: BrandColor.Red[400], marginTop: 18 }}
+            style={{ backgroundColor: BrandColor.Red[400], marginTop: 32 }}
           />
         </View>
+        <View style={{height: 120}}></View>
       </ScrollView>
     </View>
   )

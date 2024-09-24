@@ -91,7 +91,7 @@ export interface WalletsState {
 export type FinancialPlanAttribute = Goal | Budget
 
 export type FinancialPlan =
-  | {
+   {
       _id: string
       name: string
       description?: string
@@ -111,7 +111,7 @@ export type FinancialPlan =
 
 export interface Amount {
   amount: number
-  title: string
+  title?: string
   createdAt: string
   _id: string
 }
@@ -136,7 +136,7 @@ export interface Debt {
 export interface Budget {
   target_amount: number | string
   spent_amount: number | string
-  categories: Category[]
+  categories: Category[] 
   start_date: string
   records: Transaction[]
 }
@@ -158,9 +158,10 @@ export interface Transaction {
   _id: string
   amount: number
   title: string
-  category: Category
+  category: Category 
+  img_url?: string
   createdAt: string
-  description: string
+  description?: string
   type: 'expense' | 'income'
 }
 

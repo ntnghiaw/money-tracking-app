@@ -37,23 +37,31 @@ import { ThemedText } from '@/src/components/ThemedText'
 import { TextType } from '@/src/types/text'
 import Input from '@/src/components/Input'
 import Button from '@/src/components/buttons/Button'
+import { isFetchBaseQueryError } from '@/src/utils/helpers'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
+const initialState: { name: string } = {
+  name: '',
+}
+
+type FormError =
+  | {
+      [key in keyof typeof initialState]: string
+    }
+  | null
 
 const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
-  const [name, setName] = useState('')
-  const [currency, setCurrency] = useState({
-    symbol: '',
-    name: '',
-    code: '',
-  })
+  const [form, setForm] = useState(initialState)
   const [keyboardOpen, setKeyboardOpen] = useState(false)
-  const { user, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
+  const auth = useAppSelector((state) => state.auth)
   const { currentWallet } = useAppSelector((state) => state.wallets)
+   const [isValidated, setIsValidated] = useState({
+     name: false,
+   })
   const dispatch = useAppDispatch()
 
   const { showActionSheetWithOptions } = useActionSheet()
@@ -78,22 +86,26 @@ const Page = () => {
     []
   )
 
-  const [createFirstWallet, { data, isSuccess, isError, error, isLoading }] =
-    useCreateFirstWalletMutation()
+  const [createFirstWallet, addWalletResult] = useCreateFirstWalletMutation()
 
-  useEffect(() => {
-    if (walletId) {
-      router.replace('/(authenticated)/(tabs)/home')
+  const errorForm: FormError = useMemo(() => {
+    const errorResult = addWalletResult.error
+    if (isFetchBaseQueryError(errorResult)) {
+      console.log(errorResult.data)
+      return errorResult?.data as FormError
     }
-    if (data) {
-      dispatch(setWallets({ wallets: [data._id], currentWallet: data._id }))
-      dispatch(setAuth({ user, tokens, isAuthenticated, walletId: data._id }))
-    }
-  }, [isSuccess])
+    return null
+  }, [addWalletResult])
+
+
   const handleCreateWallet = async () => {
-    await createFirstWallet({
-      wallet: { name, currency: currency.code, type: 'private' },
-    })
+    try {
+      await createFirstWallet({
+        wallet: { name: form.name, type: 'private' },
+      }).unwrap()
+    } catch (error) {
+      console.log('🚀 ~ handleCreateWal ~ error:', error)
+    }
   }
 
   return (
@@ -108,12 +120,7 @@ const Page = () => {
             {error.data.message ? error.data.message : 'Create Failed! Pls try again'}
           </Text>
         )} */}
-        {isLoading && (
-          <View style={[StyleSheet.absoluteFill, styles.loading]}>
-            <ActivityIndicator size='large' color={BrandColor.PrimaryColor[500]} />
-            <Text style={{ fontSize: 18, padding: 10 }}>Creating Wallet...</Text>
-          </View>
-        )}
+
         <SafeAreaView style={styles.inner}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -123,7 +130,7 @@ const Page = () => {
                     <Image style={styles.image} source={require('@/src/assets/icons/logo.png')} />
                   </View>
                 )}
-                <View >
+                <View>
                   <ThemedText
                     type={TextType.LargeTitleBold}
                     color={TextColor.Primary}
@@ -139,63 +146,35 @@ const Page = () => {
                     {t('welcome.firstwallet')}
                   </ThemedText>
                 </View>
-                <View style={{marginTop: 48}}>
-                  <Input 
-                    value={name}
-                    onChangeText={setName}
+                <View style={{ marginTop: 48 }}>
+                  <Input
+                    value={form.name}
+                    onChangeText={(text) => setForm({ ...form, name: text })}
                     placeholder={t('wallet.placeholdername')}
-                    validationOptions={
-                      {
-                        required: [true, 'Name is required'],
-                        minLength: [3, 'Name must be at least 3 characters'],
-                        pattern: [/^[a-zA-Z0-9\s]+$/, 'Name must be alphanumeric'],
-                      }
-                    }
-                  />
-                  <Button
-                    type='primary'
-                    size='large'
-                    state='normal'
-                    text={t('wallet.createwallet')}
-                    onPress={handleCreateWallet}
-                    style={{backgroundColor: BrandColor.Blue[600], marginTop: 24}}
+                    validationOptions={{
+                      required: [true, 'Name is required'],
+                      minLength: [3, 'Name must be at least 3 characters'],
+                      pattern: [/^[a-zA-Z0-9\s]+$/, 'Name must be alphanumeric'],
+                    }}
+                    error={!!errorForm}
+                    errorMessage={errorForm?.error.name}
+                    validate={(isValid: boolean) => {
+                      setIsValidated((prev) => ({ ...prev, name: isValid }))
+                    }}
                   />
                 </View>
-                <BottomSheetModal
-                  ref={bottomSheetModalRef}
-                  index={0}
-                  backdropComponent={renderBackdrop}
-                  snapPoints={snapPoints}
-                  handleComponent={null}
-                  enableOverDrag={false}
-                  enablePanDownToClose
-                >
-                  <ScrollView>
-                    {Currency.map((item, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        onPress={() => {
-                          setCurrency({
-                            symbol: item.symbol,
-                            name: item.name,
-                            code: item.code,
-                          })
-                          bottomSheetModalRef.current?.dismiss()
-                        }}
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          paddingVertical: 40,
-                          paddingHorizontal: 40,
-                        }}
-                      >
-                        <Text>{item.symbol}</Text>
-                        <Text style={{ fontSize: 18 }}>{item.name}</Text>
-                        <Text style={{ fontSize: 18 }}>{item.code}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
-                </BottomSheetModal>
+                <Button
+                  type='primary'
+                  size='large'
+                  text={t('wallet.createwallet')}
+                  state={isValidated.name ? 'normal' : 'disabled'}
+                  isLoading={addWalletResult.isLoading}
+                  onPress={handleCreateWallet}
+                  style={{
+                    backgroundColor: BrandColor.Blue[600],
+                    marginTop: 32,
+                  }}
+                />
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>

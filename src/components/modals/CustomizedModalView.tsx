@@ -6,18 +6,21 @@ import { TextType } from '@/src/types/text'
 import { NeutralColor, TextColor } from '@/src/constants/Colors'
 import Button from '@/src/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ReactElement } from 'react'
 
 const screenWidth = Dimensions.get('window').width
 
 type CustomizedModalViewProps = BottomSheetViewProps & {
   headerLabel: string
   buttonText: string
+  headerLeft?: () => React.ReactNode
   onPress: () => void
 }
 
 const CustomizedModalView = ({
   headerLabel,
   buttonText,
+  headerLeft,
   onPress,
   children,
 }: CustomizedModalViewProps) => {
@@ -26,16 +29,19 @@ const CustomizedModalView = ({
   return (
     <BottomSheetView style={styles.bottomSheetModal}>
       <View style={styles.header}>
+        <View style={{position: 'absolute', 
+          left: 0,
+          top: 24,
+        }}>{headerLeft && headerLeft()}</View>
         <View style={styles.horizontalBar}></View>
         <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
           {headerLabel}
         </ThemedText>
       </View>
-      <View style={{width: '100%',alignItems: 'center', paddingHorizontal: 24, height: '85%'}}>
-      {children}
-
+      <View style={{ width: '100%', alignItems: 'center', paddingHorizontal: 24, height: '85%' }}>
+        {children}
       </View>
-      <View style={{position: 'absolute', bottom: bottom + 12}}>
+      <View style={{ position: 'absolute', bottom: bottom + 12 }}>
         <Button
           type={'primary'}
           text={buttonText}

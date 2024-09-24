@@ -7,7 +7,6 @@
     "firstwallet": "Welcome! Set up your first wallet to start tracking your finances easily",
     "yourfirstwallet": "Create your First Wallet",
     "brand": "FundFlex"
-    
   },
   "login": {
     "title": "Welcome back!",
@@ -71,19 +70,43 @@
   },
   "transaction": {
     "newtransaction": "New Transaction",
+    "edittransaction": "Edit Transaction",
     "continue": "Continue",
     "income": "Income",
     "expense": "Expense",
-    "addtitle" : "Add Title",
+    "addtitle": "Add Title",
     "categories": "Categories",
     "selectcategories": "Select Categories",
     "create": "Create",
     "scanreceipts": "Scan Receipts",
     "takephoto": "Take a photo",
-    "createdAt": "Created At",
+    "createdAt": "Created Date",
     "scan": "Scan",
     "getimagefromlibrary": "Get image from library",
-    "chooseimage": "Choose image"
+    "chooseimage": "Choose image",
+    "transactiondetails": "Transaction Details",
+    "amount": "Amount",
+    "typetransaction": "Type Transaction",
+    "title": "Title",
+    "document": "Document"
+  },
+  "budgets": {
+    "youhavenobudgets": "You have no budgets yet",
+    "runningbudgets": "Running Budgets",
+    "createbudget": "Create a Budget",
+    "description": "Start saving money by creating a budgets and we will help you stick to it",
+    "targetamount": "Target Amount",
+    "selectcategory": "Select Category",
+    "newbudget": "New Budget",
+    "selecttimerange": "Select Time Range",
+    "enddate": "End Date",
+    "startdate": "Start Date",
+    "duration": "Duration",
+    "type": "Type",
+    "budgetdetails": "Budget Details",
+    "spentamount": "Spent Amount",
+    "title": "Title",
+    "editbudget": "Edit Budget"
   },
   "goals": {
     "header": "Goals",
@@ -103,12 +126,12 @@
     "amountdescription": "Add the amount you want to save for this goal",
     "edit": "Edit",
     "editgoal": "Edit Goal",
+    "editamount": "Edit Amount",
     "targetamount": "Target Amount",
     "desireddate": "Desired Date",
     "saving": "Saving",
     "save": "Save",
     "delete": "Delete"
-
   },
   "settings": {
     "title": "Settings",
@@ -137,18 +160,21 @@
     "changelanguage": "Change Language",
     "categories": "Categories",
     "budgets": "Budgets",
-    "add": "Add",
-    "editcategory": "Edit",
+    "goals": "Goals",
     "category": "Category",
-    "savecategory": "Save",
-    "deletecategory": "Delete",
-    "deletecategorymessage": "Are you sure you want to delete this category?"
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "createcategory": "Create New Category",
+    "deletecategorymessage": "Are you sure you want to delete this category?",
+    "oldpassword": "Enter your password",
+    "newpassword": "Enter new password",
   },
   "tabLabel": {
     "home": "Home",
     "analytics": "Analytics",
     "goals": "Goals",
-    "settings": "Settings"
+    "settings": "Settings",
+    "budgets": "Budgets"
   },
   "home": {
     "totalbalance": "Total Balance",
@@ -162,7 +188,6 @@
     "morethan": "More than your average income",
     "notransactions": "No transactions yet",
     "chooseicon": "Choose Icon"
-
   },
   "analytics": {
     "header": "Analytics",
@@ -180,5 +205,40 @@
     "descriptioncategories": "Organize your finances by custom categories",
     "history": "History",
     "seeall": "See all"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "ok": "OK",
+    "delete": "Delete",
+    "save": "Save",
+    "continue": "Continue",
+    "edit": "Edit",
+    "add": "Add",
+    "create": "Create",
+    "update": "Update",
+    "deletemessage": "Are you sure you want to delete this item?"
+  },
+  "categories": {
+    "Bonuses": "Bonus",
+    "Business Revenue": "Business",
+    "Clothing": "Clothing",
+    "Dining out": "Dining Out",
+    "Dividends": "Dividends",
+    "Education": "Education",
+    "Entertainment": "Entertainment",
+    "Freelance": "Freelance",
+    "Gifts": "Gifts",
+    "Groceries": "Groceries",
+    "Healthcare": "Health care",
+    "Insurance": "Insurance",
+    "Investments": "Investments",
+    "Rent/Mortgage": "Rent",
+    "Rental Income": "Rental",
+    "Royalties": "Royalties",
+    "Salary": "Salary",
+    "Side Jobs": "Side Jobs",
+    "Transportation": "Transportation",
+    "Donations": "Donations",
+    "Utilities (Electricity, Water, Gas)": "Utilities (Electricity, Water, Gas)"
   }
 }

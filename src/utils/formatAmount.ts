@@ -7,6 +7,7 @@ export const formatter = (number: number, currencyCode: CurrencyCode): string =>
   new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: currencyCode ,
+    maximumFractionDigits: 0,
   }).format(number)
 
 // convert formatted number back to number

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { AuthState, Tokens, User } from '@/src/types/enum'
 import { authApi } from '@/src/features/auth/auth.service'
+import { walletApi } from '../wallet/wallet.service'
 const initialState: AuthState = {
   tokens: {
     accessToken: '',
@@ -43,6 +44,9 @@ const authSlice = createSlice({
       state.user = user
       state.isAuthenticated = true
       state.walletId = user.wallets[0]
+    })
+    builder.addMatcher(walletApi.endpoints.createFirstWallet.matchFulfilled, (state, { payload }) => {
+      state.walletId = payload._id
     })
     builder.addMatcher(authApi.endpoints.signup.matchFulfilled, (state, { payload }) => {
       const { tokens, user } = payload

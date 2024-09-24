@@ -380,7 +380,6 @@ import { StyleSheet, Text, View } from 'react-native'
 import {useGetProfileQuery} from '@/src/features/user/user.service'
 const Page = () => {
   const { data, isError, isLoading } = useGetProfileQuery()
-  console.log("🚀 ~ Page ~ data:", data)
   
   return (
     <View>

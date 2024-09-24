@@ -1,4 +1,4 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/query"
+import { fetchBaseQuery  } from "@reduxjs/toolkit/query"
 import { RootState } from "@/src/store/store"
 import config from "@/src/config"
 
@@ -6,7 +6,6 @@ import config from "@/src/config"
 export const baseQuery = fetchBaseQuery({
   baseUrl: config.api.baseUrl,
   timeout: config.api.timeout,
-  
   prepareHeaders: (headers, { getState }) => {
     const { user, tokens } = (getState() as RootState).auth
 

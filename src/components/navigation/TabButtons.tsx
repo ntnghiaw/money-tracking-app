@@ -1,5 +1,5 @@
 import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {
   runOnJS,
@@ -20,7 +20,7 @@ type TabButtonsProps = {
 
 const TabButtons = ({ buttons, selectedTab, setSelectedTab }: TabButtonsProps) => {
   const [dimensions, setDimensions] = useState({ height: 20, width: 100 })
-
+  const [index, setIndex] = useState(selectedTab)
   const buttonWidth = dimensions.width / buttons.length
 
   const tabPositionX = useSharedValue(0)
@@ -34,14 +34,14 @@ const TabButtons = ({ buttons, selectedTab, setSelectedTab }: TabButtonsProps) =
 
   const handlePress = (index: number) => {
     setSelectedTab(index)
+    setIndex(index)
   }
 
-  const onTabPress = (index: number) => {
-    tabPositionX.value = withTiming(buttonWidth * index, {}, () => {
+  tabPositionX.value = useMemo(() => {
+    return withTiming(buttonWidth * index, {}, () => {
       runOnJS(handlePress)(index)
     })
-  }
-
+  }, [index])
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: tabPositionX.value }],
@@ -57,7 +57,7 @@ const TabButtons = ({ buttons, selectedTab, setSelectedTab }: TabButtonsProps) =
             position: 'absolute',
             backgroundColor: BackgroundColor.LightTheme.Primary,
             borderRadius: 8,
-            width: buttonWidth ,
+            width: buttonWidth,
             height: dimensions.height,
             marginHorizontal: 4,
             marginVertical: 4,
@@ -74,7 +74,7 @@ const TabButtons = ({ buttons, selectedTab, setSelectedTab }: TabButtonsProps) =
       ></Animated.View>
       <View onLayout={onTabbarLayout} style={{ flexDirection: 'row' }}>
         {buttons.map((button, index) => (
-          <Pressable key={index} style={[styles.button]} onPress={() => onTabPress(index)}>
+          <Pressable key={index} style={[styles.button]} onPress={() => handlePress(index)}>
             <Text
               style={[
                 styles.buttonText,

@@ -8,8 +8,7 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 const ICON_SIZE = 28
 
 const Page = () => {
-  const { t, currentLanguage, changeLanguage } = useLocale()
-  console.log(currentLanguage)
+  const { t, languageCode, changeLanguage } = useLocale()
   return (
     <View style={styles.container}>
       {/* <Text>Page</Text> */}
@@ -24,9 +23,9 @@ const Page = () => {
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.english')}
             </ThemedText>
-            {currentLanguage === 'en' && (
+            {languageCode === 'en' && (
               <View style={styles.right}>
-                <Image source={require('@/src/assets/icons/checked.jpg')} />
+                <Image source={require('@/src/assets/icons/checked.png')} />
               </View>
             )}
           </TouchableOpacity>
@@ -35,9 +34,9 @@ const Page = () => {
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.vietnamese')}
             </ThemedText>
-            {currentLanguage === 'vi' && (
+            {languageCode === 'vi' && (
               <View style={styles.right}>
-                <Image source={require('@/src/assets/icons/checked.jpg')} />
+                <Image source={require('@/src/assets/icons/checked.png')} />
               </View>
             )}
           </TouchableOpacity>

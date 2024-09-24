@@ -3,49 +3,66 @@ import { BackgroundColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TextType } from '@/src/types/text'
 import { DefaultTheme } from '@react-navigation/native'
-import { FlatList, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  FlatList,
+  Image,
+  ImageSourcePropType,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { currencies } from '@/src/constants/Currency'
 import { useCallback } from 'react'
-import { useCurrency } from '@/src/hooks/useCurrency'
 const ICON_SIZE = 28
 
 type CurrencyItemProps = {
   icon: string
   name: string
   code: string
-  
+  symbol: string
 }
 
+const Item = ({ icon, name, symbol, code }: CurrencyItemProps) => {
+  const { currencyCode, changeCurrency } = useLocale()
 
-const Item = ({ icon, name, code }: CurrencyItemProps) => {
-  const { currentCurrency, changeCurrency } = useCurrency()
-  
   return (
     <TouchableOpacity style={styles.item} onPress={() => changeCurrency(code)}>
       <Image source={icon as ImageSourcePropType} style={styles.imageIcon} />
-      <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-        {name}
-      </ThemedText>
-      {currentCurrency === code ? (
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          flex: 1,
+          paddingRight: 24,
+        }}
+      >
+        <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+          {`${name} - ${symbol}`}
+        </ThemedText>
+      </View>
+      {currencyCode === code ? (
         <View style={styles.right}>
-          <Image source={require('@/src/assets/icons/checked.jpg')} />
+          <Image source={require('@/src/assets/icons/checked.png')} />
         </View>
       ) : null}
     </TouchableOpacity>
   )
 }
 
-
-
 const Page = () => {
-  const { t, currentLanguage, changeLanguage } = useLocale()
 
   return (
     <View style={styles.container}>
       <FlatList
         data={currencies}
-        renderItem={({ item }) => <Item icon={item.icon} code={item.code} name={item.name} />}
+        renderItem={({ item }) => (
+          <Item icon={item.icon} code={item.code} name={item.name} symbol={item.symbol} />
+        )}
         keyExtractor={(item) => item.code}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   )

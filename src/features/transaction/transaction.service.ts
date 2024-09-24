@@ -1,6 +1,5 @@
-import { AuthResponse, AuthState, Category, Response, Transaction } from '@/src/types/enum'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { walletApi } from '@/src/features/wallet/wallet.service'
+import { Response, Transaction } from '@/src/types/enum'
+import { appApi } from '@/src/features/api.service'
 
 interface ScanImageReceiptsResponse {
   img_url: string
@@ -10,8 +9,44 @@ interface ScanImageReceiptsResponse {
   total: number
 }
 
-export const transactionApi = walletApi.injectEndpoints({
+interface ListResponse<T> {
+  offset: number // id of the last item in the previous page
+  limit: number // number of items in the current page
+  sort: string // sort order desc or asc
+  period: string // period of the transactions 'day' | 'week' | 'month' | 'year'
+  last: string // 'day' | 'week' | 'month' | 'year'
+  data: T[]
+}
+
+
+export const transactionApi = appApi.injectEndpoints({
   endpoints: (builder) => ({
+    getAllTransactions: builder.query<
+      Transaction[],
+      {
+        walletId: string
+        query: {
+          filter?: string
+          sort?: string
+          type?: string
+          limit?: string
+          offset?: string
+        }
+      }
+    >({
+      query: (data) => ({
+        url: `/transactions/${data.walletId}?${new URLSearchParams(data.query).toString()}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: Response<Transaction[]>) => response.metadata,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'Transaction' as const, id: _id })),
+              { type: 'Transaction', id: 'PARTIAL-LIST' },
+            ]
+          : [{ type: 'Transaction', id: 'PARTIAL-LIST' }],
+    }),
     createTransaction: builder.mutation<
       Response<Transaction>,
       {
@@ -25,18 +60,30 @@ export const transactionApi = walletApi.injectEndpoints({
         body: body.transaction,
       }),
 
-      invalidatesTags: (result, error, body) => [
-        { type: 'Wallet', id: 'LIST' },
-        { type: 'Plan', id: 'LIST' },
-      ],
+      invalidatesTags: (result, error) =>
+        error
+          ? []
+          : [
+              { type: 'Transaction', id: 'LIST' },
+              { type: 'Wallet', id: 'LIST' },
+              { type: 'Plan', id: 'LIST' },
+              { type: 'Plan', id: 'id' },
+            ],
     }),
 
-    getTransactionById: builder.query<Response<Transaction>, { id: string; walletId: string }>({
+    getTransactionById: builder.query<Transaction, { transactionId: string; walletId: string }>({
       query: (data) => ({
-        url: `/transactions/${data.walletId}/${data.id}`,
+        url: `/transactions/${data.walletId}/${data.transactionId}`,
         method: 'GET',
       }),
-      providesTags: (result, error, data) => [{ type: 'Transaction', id: data.id }],
+      transformResponse: (response: { metadata: Transaction }) => response.metadata,
+      providesTags: (result, error, data) =>
+        result
+          ? [
+              { type: 'Transaction', id: result._id },
+              { type: 'Transaction', id: 'PARTIAL-LIST' },
+            ]
+          : [{ type: 'Transaction', id: 'LIST' }],
     }),
     updateTransaction: builder.mutation<
       Response<Transaction>,
@@ -48,11 +95,12 @@ export const transactionApi = walletApi.injectEndpoints({
     >({
       query: (data) => ({
         url: `/transactions/${data.walletId}/${data.id}`,
-        method: 'POST',
+        method: 'PATCH',
         body: data.updatedTransaction,
       }),
       invalidatesTags: (result, error, data) => [
         { type: 'Transaction', id: data.id },
+        { type: 'Transaction', id: 'PARTIAL-LIST' },
         { type: 'Wallet', id: 'LIST' },
         { type: 'Plan', id: 'LIST' },
       ],
@@ -71,6 +119,7 @@ export const transactionApi = walletApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, data) => [
         { type: 'Transaction', id: data.id },
+        { type: 'Transaction', id: 'PARTIAL-LIST' },
         { type: 'Wallet', id: 'LIST' },
         { type: 'Plan', id: 'LIST' },
       ],
@@ -91,4 +140,11 @@ export const transactionApi = walletApi.injectEndpoints({
   overrideExisting: true,
 })
 
-export const { useCreateTransactionMutation, useDeleteTransactionMutation, useUpdateTransactionMutation, useGetTransactionByIdQuery, useScanImageReceiptsMutation } = transactionApi
+export const {
+  useCreateTransactionMutation,
+  useDeleteTransactionMutation,
+  useUpdateTransactionMutation,
+  useGetTransactionByIdQuery,
+  useScanImageReceiptsMutation,
+  useGetAllTransactionsQuery
+} = transactionApi

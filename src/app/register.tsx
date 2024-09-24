@@ -1,51 +1,77 @@
 import { useSignupMutation } from '@/src/features/auth/auth.service'
 import { setAuth } from '@/src/features/auth/authSlice'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { BrandColor, NeutralColor, TextColor } from '../constants/Colors'
-import { ThemedText } from '../components/ThemedText'
-import { useLocale } from '../hooks/useLocale'
-import { TextType } from '../types/text'
-import Input from '../components/Input'
-import { useEffect, useState } from 'react'
-import { EmailRegExp, PasswordRegExp } from '../utils/RegExp'
+import { useAppDispatch } from '@/src/hooks/hooks'
+import {  Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { ThemedText } from '@/src/components/ThemedText'
+import { useLocale } from '@/src/hooks/useLocale'
+import { TextType } from '@/src/types/text'
+import Input from '@/src/components/Input'
+import { useEffect, useMemo, useState } from 'react'
+import { EmailRegExp, PasswordRegExp } from '@/src/utils/RegExp'
 import Button from '@/src/components/buttons/Button'
 import { Ionicons } from '@expo/vector-icons'
 import { Eye, EyeOff } from 'react-native-feather'
 import { useRouter } from 'expo-router'
+import { isEntityError } from '@/src/utils/helpers'
+
+interface FormData {
+  email: string
+  password: string
+}
+
+const initialState: FormData = {
+  email: '',
+  password: '',
+}
+
+type FormError =
+  | {
+      [key in keyof typeof initialState]: string
+    }
+  | null
 
 const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
   const [isSecure, setIsSecure] = useState(true)
+  const [form, setForm] = useState<FormData>(initialState)
   const [state, setState] = useState<'normal' | 'focused' | 'typing' | 'error'>('normal')
   const [isValidated, setIsValidated] = useState({
     email: false,
     password: false,
   })
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
 
-
-    const [register, { data, isSuccess, isError, error, isLoading }] = useSignupMutation()
-    const dispatch = useAppDispatch()
+  const [register, signUpResult] = useSignupMutation()
+  const dispatch = useAppDispatch()
+  const errorForm: FormError = useMemo(() => {
+    const errorResult = signUpResult.error
+    if (isEntityError(errorResult)) {
+      console.log(errorResult.data)
+      return errorResult?.data.error as FormError
+    }
+    return null
+  }, [signUpResult])
+  useEffect(() => {
+    if (signUpResult.data) {
+      dispatch(
+        setAuth({
+          tokens: signUpResult.data.tokens,
+          user: signUpResult.data.user,
+          isAuthenticated: true,
+          walletId: '',
+        })
+      )
+    }
+  }, [signUpResult])
 
   const handleRegister = async () => {
-    await register({ email, password })
+    try {
+      await register(form).unwrap()
+    } catch (error) {
+      console.log('🚀 ~ handleRegister ~ error:', error)
+    }
   }
-
-    useEffect(() => {
-      if (isSuccess) {
-        dispatch(
-          setAuth({
-            tokens: data?.tokens,
-            user: data?.user,
-            isAuthenticated: true,
-            walletId: '',
-          })
-        )
-      }
-    }, [isSuccess])
 
   const toggleSecure = () => {
     setIsSecure((prev) => !prev)
@@ -70,8 +96,8 @@ const Page = () => {
       </View>
       <View style={styles.form}>
         <Input
-          value={email}
-          onChangeText={setEmail}
+          value={form.email}
+          onChangeText={(text) => setForm({ ...form, email: text })}
           placeholder={t('signup.email')}
           buttonLeft={() => (
             <Image
@@ -87,10 +113,12 @@ const Page = () => {
           validate={(isValid: boolean) => {
             setIsValidated((prev) => ({ ...prev, email: isValid }))
           }}
+          error={!!errorForm?.email}
+          errorMessage={errorForm?.email}
         />
         <Input
-          value={password}
-          onChangeText={setPassword}
+          value={form.password}
+          onChangeText={(text) => setForm({ ...form, password: text })}
           placeholder={t('signup.password')}
           buttonLeft={() => <Image source={require('@/src/assets/icons/lock-outline.png')} />}
           buttonRight={() => (
@@ -104,7 +132,10 @@ const Page = () => {
           )}
           isSecure={isSecure}
           validationOptions={{
-            pattern: [PasswordRegExp, 'Invalid password'],
+            pattern: [
+              PasswordRegExp,
+              'Password must contain at least one number and one uppercase and lowercase letter',
+            ],
             minLength: [6, 'Password must be at least 6 characters'],
           }}
           validate={(isValid: boolean) => {
@@ -121,6 +152,7 @@ const Page = () => {
           onPress={handleRegister}
           textColor={NeutralColor.White[50]}
           type='primary'
+          isLoading={signUpResult.isLoading}
         />
       </View>
       <View style={styles.signUpRedirect}>
@@ -209,7 +241,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signIn: {
-    marginTop: 24,
+    marginTop: 48,
     paddingHorizontal: 24,
   },
   signUpRedirect: {

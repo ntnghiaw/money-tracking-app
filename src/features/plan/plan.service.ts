@@ -1,7 +1,12 @@
 import { walletApi } from '@/src/features/wallet/wallet.service'
-import { Amount, FinancialPlan, Goal } from '@/src/types/enum'
+import { Amount, Budget, FinancialPlan, Goal } from '@/src/types/enum'
+import { appApi } from '@/src/features/api.service';
 
-export const planApi = walletApi.injectEndpoints({
+
+type PlanRequest = Omit<FinancialPlan, '_id'>
+ 
+
+export const planApi = appApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllPlans: builder.query<FinancialPlan[], { walletId: string; type: string }>({
       query: (data) => ({
@@ -26,10 +31,7 @@ export const planApi = walletApi.injectEndpoints({
       providesTags: (result, error, data) => [{ type: 'Plan', id: data.planId }],
     }),
 
-    createPlan: builder.mutation<
-      FinancialPlan,
-      { walletId: string; body: Omit<FinancialPlan, '_id'> }
-    >({
+    createPlan: builder.mutation<FinancialPlan, { walletId: string; body: PlanRequest }>({
       query: (data) => ({
         url: `/financialPlans/${data.walletId}`,
         method: 'POST',
@@ -50,7 +52,7 @@ export const planApi = walletApi.injectEndpoints({
     >({
       query: (data) => ({
         url: `/financialPlans/${data.walletId}/${data.planId}?type=${data.type}`,
-        method: 'POST',
+        method: 'PATCH',
         body: data.body,
       }),
       transformResponse: (response: { metadata: FinancialPlan }) => response.metadata,
@@ -70,7 +72,7 @@ export const planApi = walletApi.injectEndpoints({
       }),
       transformResponse: (response: { metadata: FinancialPlan }) => response.metadata,
 
-      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: result?._id }],
+      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: 'LIST' }],
     }),
 
     addAmountToGoal: builder.mutation<
@@ -99,12 +101,33 @@ export const planApi = walletApi.injectEndpoints({
     >({
       query: (data) => ({
         url: `/financialPlans/${data.walletId}/${data.planId}/records/${data.recordId}`,
-        method: 'POST',
+        method: 'PATCH',
         body: data.record,
       }),
       transformResponse: (response: { metadata: FinancialPlan }) => response.metadata,
+      invalidatesTags: (result, error, data) => [
+        { type: 'Plan', id: result?._id },
+        { type: 'Plan', id: 'LIST' },
+      ],
+    }),
 
-      invalidatesTags: (result, error, data) => [{ type: 'Plan', id: result?._id }, { type: 'Plan', id: 'LIST' }],
+    deleteAmountGoal: builder.mutation<
+      FinancialPlan,
+      {
+        walletId: string
+        planId: string
+        recordId: string
+      }
+    >({
+      query: (data) => ({
+        url: `/financialPlans/${data.walletId}/${data.planId}/records/${data.recordId}`,
+        method: 'DELETE',
+      }),
+      transformResponse: (response: { metadata: FinancialPlan }) => response.metadata,
+      invalidatesTags: (result, error, data) => [
+        { type: 'Plan', id: data?.planId },
+        { type: 'Plan', id: 'LIST' },
+      ],
     }),
   }),
   overrideExisting: true,
@@ -117,5 +140,6 @@ export const {
   useUpdatePlanMutation,
   useDeletePlanMutation,
   useAddAmountToGoalMutation,
-  useUpdateAmountToGoalMutation
+  useUpdateAmountToGoalMutation,
+  useDeleteAmountGoalMutation,
 } = planApi

@@ -7,7 +7,15 @@ export type ThemedTextProps = TextProps & {
 }
 
 export function ThemedText({ style, color, type = TextType.Default, ...rest }: ThemedTextProps) {
-  return <Text style={[{ color }, { letterSpacing: 0.5, flexWrap:'nowrap' }, styles[type], style]} {...rest} />
+  return (
+    <Text
+      style={[{ color }, { letterSpacing: 0.5, flexWrap: 'nowrap' }, styles[type], style]}
+      numberOfLines={1}
+      {...rest}
+      ellipsizeMode='tail'
+      adjustsFontSizeToFit={true}
+    />
+  )
 }
 
 /* 

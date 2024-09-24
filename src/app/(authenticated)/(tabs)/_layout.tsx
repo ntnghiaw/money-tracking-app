@@ -1,28 +1,12 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
-import { Link, router, Tabs, useRouter } from 'expo-router'
-import {
-  User,
-  BarChart2,
-  List,
-  PlusCircle,
-  Home,
-  ChevronLeft,
-  PlusSquare,
-} from 'react-native-feather'
-import { BrandColor, Colors, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { AntDesign, Ionicons } from '@expo/vector-icons'
+import { Tabs, useRouter, useSegments } from 'expo-router'
 import { Image } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import TabBar from '@/src/components/navigation/TabBar'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
 import { useLocale } from '@/src/hooks/useLocale'
-import BottomSheet from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheet'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const Layout = () => {
   const router = useRouter()
-  const { bottom } = useSafeAreaInsets()
+  const segment = useSegments()
   const {t} = useLocale()
   return (
     <BottomSheetModalProvider>
@@ -42,6 +26,7 @@ const Layout = () => {
               return <Image source={require('@/src/assets/icons/home.jpg')} />
             },
             tabBarHideOnKeyboard: true,
+            tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
           }}
         />
         <Tabs.Screen
@@ -56,6 +41,7 @@ const Layout = () => {
               }
               return <Image source={require('@/src/assets/icons/analytics.jpg')} />
             },
+            tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
           }}
         />
         <Tabs.Screen
@@ -71,14 +57,15 @@ const Layout = () => {
               )
             },
             headerTitle: t('transaction.newtransaction'),
-            headerShown: false,
             tabBarHideOnKeyboard: true,
+            headerShown: false,
+            tabBarStyle: { display: segment[2]==='transaction' ? 'none' : 'flex' },
           }}
         />
         <Tabs.Screen
-          name='goal'
+          name='budget'
           options={{
-            tabBarLabel: t('tabLabel.goals'),
+            tabBarLabel: t('tabLabel.budgets'),
             headerTitleAlign: 'center',
             headerShown: false,
             title: 'Statistics',
@@ -89,6 +76,7 @@ const Layout = () => {
               return <Image source={require('@/src/assets/icons/goals.jpg')} />
             },
             tabBarHideOnKeyboard: true,
+            tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
           }}
         />
         <Tabs.Screen
@@ -103,6 +91,7 @@ const Layout = () => {
               return <Image source={require('@/src/assets/icons/settings.jpg')} />
             },
             tabBarHideOnKeyboard: true,
+            tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
           }}
         />
       </Tabs>

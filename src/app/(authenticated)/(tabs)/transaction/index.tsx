@@ -1,14 +1,12 @@
 import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { CustomTab } from '@/src/app/(authenticated)/(tabs)/analytics/index'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocale } from '@/src/hooks/useLocale'
-import { useCurrency } from '@/src/hooks/useCurrency'
 import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
 import Input from '@/src/components/Input'
-import MaskInput from 'react-native-mask-input'
 import { formatter } from '@/src/utils/formatAmount'
 import formatDate from '@/src/utils/formatDate'
 import { SafeAreaView } from 'react-native'
@@ -26,48 +24,57 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Category, Transaction } from '@/src/types/enum'
 import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
 
-
-
 import {
   useCreateTransactionMutation,
-  useGetTransactionByIdQuery,
-  useUpdateTransactionMutation,
+
 } from '@/src/features/transaction/transaction.service'
 
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import { editTransaction } from '@/src/features/transaction/transactionSlice'
-import * as MediaLibrary from 'expo-media-library'
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
+
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Toast from 'react-native-toast-message'
+import CurrencyInput from 'react-native-currency-input-fields'
+import categoriesDefault from '@/src/constants/Categories'
+
 
 type AndroidMode = 'date' | 'time'
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-const initialTransaction = {
-  _id: '',
-  amount: '0',
+const initialTransaction: Omit<Transaction, '_id'> = {
+  amount: 0,
   title: '',
-  category: {
-    _id: '',
-    name: 'Select your category',
-    icon: 'crown',
-    type: 'expense',
-  } as Category,
+  category: {} as Category,
   createdAt: new Date().toString(),
-  description: '',
   type: 'expense',
 }
 
 const Page = () => {
-  const { user, tokens, isAuthenticated, walletId } = useAppSelector((state) => state.auth)
+  const { walletId } = useAppSelector((state) => state.auth)
+  const dispatch = useAppDispatch()
+  const navigation = useNavigation()
+  const { currencyCode, languageCode, languageTag } = useLocale()
+  const { img_url, title, createdAt, total } = useLocalSearchParams() as {
+    img_url: string
+    total: string
+    title: string
+    createdAt: string
+  }
+  const { categoryId, icon, name, type, transactionId } = useLocalSearchParams() as {
+    categoryId: string
+    icon: string
+    name: string
+    type: string
+    transactionId: string
+  }
   const { bottom } = useSafeAreaInsets()
   const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
   const [transaction, setTransaction] = useState(initialTransaction)
   const [mode, setMode] = useState<AndroidMode>('date')
   const [show, setShow] = useState(false)
   const { t } = useLocale()
-  const { currentCurrency } = useCurrency()
+  const router = useRouter()
   const buttons: TabButtonType[] = [
     { title: t('transaction.expense') },
     { title: t('transaction.income') },
@@ -75,12 +82,13 @@ const Page = () => {
   const bottomSheetCategoryModalRef = useRef<BottomSheetModal>(null)
   const snapPointsCategory = useMemo(() => ['85%'], [])
 
+  const [createTransaction, createdTransactionResult] = useCreateTransactionMutation()
   const { data: categoriesRes } = useGetAllCategoriesQuery()
-  console.log("🚀 ~ Page ~ categoriesRes:", categoriesRes)
+
   const categoriesFilteredByType = useMemo(
     () =>
       categoriesRes?.filter((category) =>
-        selectedTab === 0 ? category.type === 'income' : category.type === 'expense'
+        selectedTab === 1 ? category.type === 'income' : category.type === 'expense'
       ),
     [categoriesRes, selectedTab]
   )
@@ -133,49 +141,23 @@ const Page = () => {
     showMode('time')
   }
 
-  const router = useRouter()
-  const { img_url, total, title, createdAt } = useLocalSearchParams()
-  const distpatch = useAppDispatch()
-  const { _id } = useAppSelector((state) => state.transaction)
-  const {
-    data: resData,
-    isFetching: isFetchingData,
-    isError: isErrorEdit,
-  } = useGetTransactionByIdQuery(
-    {
-      id: _id,
-      walletId,
-    },
-    { skip: !_id }
-  )
-  const [createTransaction, { data, isLoading, isError, isSuccess, error }] =
-    useCreateTransactionMutation()
-  const [
-    updateTransaction,
-    {
-      data: updateData,
-      isLoading: updateLoading,
-      isError: isUpdateError,
-      isSuccess: isUpdateSuccess,
-      error: updateError,
-    },
-  ] = useUpdateTransactionMutation()
-  const { data: categories } = useGetAllCategoriesQuery()
+  useEffect(() => {
+    if (createdTransactionResult.isSuccess) {
+      setTransaction(initialTransaction)
+      router.back()
+    }
+  }, [createdTransactionResult])
 
   useEffect(() => {
-    if (img_url && total && title && createdAt) {
+    if (img_url && title && createdAt && total) {
       setTransaction((pre) => ({
         ...pre,
-        amount: total.toString(),
-        title: title.toString(),
-        createdAt: createdAt.toString(),
+        amount: Number(total),
+        title: title,
+        createdAt: createdAt,
       }))
     }
-    if (data && isSuccess) {
-      Alert.alert('Success', 'Transaction has been created successfully')
-      setTransaction(initialTransaction)
-    }
-  }, [isSuccess, img_url, total, title, createdAt])
+  }, [img_url, title, createdAt, total])
 
   const validateTransactionInfo = (transaction: Omit<Transaction, '_id'>) => {
     if (!transaction.amount) return { isValid: false, message: 'Amount is required' }
@@ -185,51 +167,37 @@ const Page = () => {
     if (transaction.amount <= 0) return { isValid: false, message: 'Amount must be greater than 0' }
     return { isValid: true, message: '' }
   }
-
   const handleSubmit = async () => {
     const { isValid, message } = validateTransactionInfo({
-      amount: parseInt(transaction.amount.replace(/\D/g, '')),
+      amount: parseInt(transaction.amount.toString()),
       title: transaction.title,
       category: {
         _id: transaction.category._id,
         name: transaction.category.name,
         icon: transaction.category.icon,
-        type: selectedTab === 0 ? 'income' : 'expense',
+        type: selectedTab === 1 ? 'income' : 'expense',
       },
       createdAt: transaction.createdAt.toString(),
       description: transaction.description,
-      type: selectedTab === 0 ? 'income' : 'expense',
+      type: selectedTab === 1 ? 'income' : 'expense',
     })
-    if (!isValid) return Alert.alert('Error', message)
-    if (_id) {
-      await updateTransaction({
-        id: _id,
-        updatedTransaction: {
-          amount: parseInt(transaction.amount.replace(/\D/g, '')),
-          title: transaction.title,
-          category: transaction.category,
-          createdAt: transaction.createdAt.toString(),
-          description: transaction.description,
-          type: selectedTab === 0 ? 'income' : 'expense',
-        },
-        walletId,
-      }).unwrap()
-    } else {
+    if (!isValid) return Toast.show({ type: 'error', text1: message })
+
+    try {
       await createTransaction({
         transaction: {
-          amount: parseInt(transaction.amount.replace(/\D/g, '')),
+          amount: transaction.amount,
           title: transaction.title,
           category: transaction.category,
           createdAt: transaction.createdAt.toString(),
           description: transaction.description,
-          type: selectedTab === 0 ? 'income' : 'expense',
+          type: selectedTab === 1 ? 'income' : 'expense',
         },
         walletId,
       }).unwrap()
+    } catch (error) {
+      console.log('🚀 ~ handleSubmit ~ error:', error)
     }
-    distpatch(editTransaction({ _id: '' }))
-    setTransaction(initialTransaction)
-    router.back()
   }
 
   return (
@@ -243,7 +211,9 @@ const Page = () => {
               headerLeft={() => (
                 <HeaderButton
                   type='btn'
-                  onPress={() => router.back()}
+                  onPress={() => {
+                    router.replace('/(authenticated)/(tabs)/home')
+                  }}
                   button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
                 />
               )}
@@ -262,30 +232,19 @@ const Page = () => {
         <View style={{ paddingVertical: 32, gap: 24 }}>
           <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         </View>
-        <View>
+        <View style={{ gap: 14 }}>
           <View style={{ marginVertical: 12, marginBottom: 30 }}>
-            <MaskInput
-              value={transaction.amount}
-              style={[
-                {
-                  fontSize: 46,
-                  fontWeight: '700',
-                  lineHeight: 41,
-                  letterSpacing: -0.4,
-                  color: TextColor.Primary,
-                  textAlign: 'center',
-                },
-              ]}
-              keyboardType='numeric'
-              autoFocus={false}
-              placeholder={formatter(0, currentCurrency)}
-              placeholderTextColor={TextColor.Placeholder}
-              maskAutoComplete={true}
-              onChangeText={(masked, unmasked) => {
-                setTransaction((pre) => {
-                  return { ...pre, amount: masked }
-                }) // you can use the unmasked value as well
+            <CurrencyInput
+              placeholder='0'
+              value={transaction.amount ? transaction.amount.toString() : ''}
+              intlConfig={{ locale: 'de-DE', currency: currencyCode }}
+              onValueChange={(text, values) => {
+                setTransaction((prev) => ({
+                  ...prev,
+                  amount: Number(text),
+                }))
               }}
+              style={styles.currencyInput}
             />
           </View>
 
@@ -297,6 +256,9 @@ const Page = () => {
               setTransaction((pre) => {
                 return { ...pre, title: text }
               })
+            }}
+            validationOptions={{
+              required: [true, 'Title is required'],
             }}
           />
           <Pressable onPress={showCategoryModal} style={styles.button}>
@@ -355,14 +317,14 @@ const Page = () => {
           </SafeAreaView>
         </View>
       </SafeAreaView>
-      <View style={{ marginBottom: bottom + 100 }}>
+      <View style={{ marginBottom: bottom + 24 }}>
         <Button
           type={'primary'}
-          text={t('transaction.create')}
+          text={t('actions.create')}
           size={'large'}
           state={'normal'}
           onPress={handleSubmit}
-          isLoading={isLoading || updateLoading}
+          isLoading={createdTransactionResult.isLoading}
         />
       </View>
 
@@ -389,20 +351,28 @@ const Page = () => {
                 borderColor: BrandColor.Gray[100],
               }}
             >
-              {categoriesFilteredByType?.map((category) => (
-                <TouchableOpacity
-                  key={category._id}
-                  style={styles.item}
-                  onPress={() => chooseCategoryHandler(category)}
-                >
-                  <View style={styles.iconCover}>
-                    <Image source={getImg(category.icon)} style={styles.iconCategory} />
-                  </View>
-                  <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-                    {category.name}
-                  </ThemedText>
-                </TouchableOpacity>
-              ))}
+              {categoriesFilteredByType?.map((category) => {
+           
+                 return (
+                   <TouchableOpacity
+                     key={category._id}
+                     style={styles.item}
+                     onPress={() => chooseCategoryHandler(category)}
+                   >
+                     <View style={styles.iconCover}>
+                       <Image source={getImg(category.icon)} style={styles.iconCategory} />
+                     </View>
+                     <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+                       {categoriesDefault.includes(category.name)
+                         ? t(`categories.${category.name}`)
+                         : category.name}
+                     </ThemedText>
+                     {/* { transaction.category._id === category._id && (  <View style={{position: 'absolute', right: 12}}>
+                      <Image source={require('@/src/assets/icons/checked.png')} style={{width: 18, height: 18}} />
+                    </View>)} */}
+                   </TouchableOpacity>
+                 )
+              })}
             </ScrollView>
           </View>
         </BottomSheetScrollView>
@@ -483,5 +453,12 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
+  },
+  currencyInput: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: TextColor.Primary,
+    alignSelf: 'center',
+    height: 60,
   },
 })

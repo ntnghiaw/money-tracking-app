@@ -18,7 +18,7 @@ const resources = {
 
 i18next.use(initReactI18next).init({
   resources,
-  lng: getLanguage() ?? 'vi',
+  lng: getLanguage(),
   fallbackLng: 'en',
   // compabilityJSON: 'v3',
   interpolation: {
