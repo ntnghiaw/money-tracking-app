@@ -171,7 +171,7 @@ export interface User {
   email: string
   avatar_url: string
   dob?: string
-  gender?: 'male' | 'female'
+  gender?: 'male' | 'female' | 'other'
   phone?: string
   categories: string[]
   wallets: string[]

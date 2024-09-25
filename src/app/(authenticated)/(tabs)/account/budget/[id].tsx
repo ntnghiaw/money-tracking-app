@@ -78,7 +78,7 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='text'
-                  onPress={() => router.push(`/(authenticated)/(tabs)/budget/edit-budget?id=${id}`)}
+                  onPress={() => router.push(`/(authenticated)/(tabs)/account/budget/edit-budget?id=${id}`)}
                   text={t('actions.edit')}
                 />
               )}

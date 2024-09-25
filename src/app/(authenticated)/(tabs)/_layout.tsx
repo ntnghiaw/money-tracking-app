@@ -63,17 +63,22 @@ const Layout = () => {
           }}
         />
         <Tabs.Screen
-          name='budget'
+          name='wallet'
           options={{
-            tabBarLabel: t('tabLabel.budgets'),
+            tabBarLabel: t('tabLabel.wallets'),
             headerTitleAlign: 'center',
             headerShown: false,
             title: 'Statistics',
             tabBarIcon: ({ size, focused, color }) => {
               if (focused) {
-                return <Image source={require('@/src/assets/icons/goals-active.jpg')} />
+                return <Image source={require('@/src/assets/icons/wallet-active.png')} style={{width : size, height: size, resizeMode: 'contain'}}/>
               }
-              return <Image source={require('@/src/assets/icons/goals.jpg')} />
+              return (
+                <Image
+                  source={require('@/src/assets/icons/wallet.png')}
+                  style={{width : size, height: size, resizeMode: 'contain'}}
+                />
+              )
             },
             tabBarHideOnKeyboard: true,
             tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
@@ -82,7 +87,7 @@ const Layout = () => {
         <Tabs.Screen
           name='account'
           options={{
-            tabBarLabel: t('tabLabel.settings'),
+            tabBarLabel: t('tabLabel.account'),
             headerShown: false,
             tabBarIcon: ({ size, focused, color }) => {
               if (focused) {

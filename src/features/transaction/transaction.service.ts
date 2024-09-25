@@ -5,7 +5,7 @@ interface ScanImageReceiptsResponse {
   img_url: string
   title: string
   currency_code: string
-  date: string
+  createdAt: string
   total: number
 }
 
@@ -26,7 +26,7 @@ export const transactionApi = appApi.injectEndpoints({
       {
         walletId: string
         query: {
-          filter?: string
+          period?: string
           sort?: string
           type?: string
           limit?: string
@@ -125,7 +125,7 @@ export const transactionApi = appApi.injectEndpoints({
       ],
     }),
 
-    scanImageReceipts: builder.mutation<ScanImageReceiptsResponse, { image: any }>({
+    scanImageReceipts: builder.mutation<ScanImageReceiptsResponse, {image: any}>({
       query: (body) => {
         const formData = new FormData()
         formData.append('file', body.image)
@@ -135,6 +135,7 @@ export const transactionApi = appApi.injectEndpoints({
           body: formData,
         }
       },
+      transformResponse: (response: Response<ScanImageReceiptsResponse>) => response.metadata,
     }),
   }),
   overrideExisting: true,

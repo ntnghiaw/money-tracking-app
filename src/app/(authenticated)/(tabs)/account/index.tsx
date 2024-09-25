@@ -224,7 +224,10 @@ const Page = () => {
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => router.navigate('/(authenticated)/(tabs)/account/change-password')}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/change-password')}
+          >
             <Image style={styles.imageIcon} source={require('@/src/assets/icons/lock.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.resetpassword')}
@@ -247,9 +250,24 @@ const Page = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.item}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/account/goal')}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/budget')}
           >
             <Image style={styles.imageIcon} source={require('@/src/assets/icons/parts.jpg')} />
+            <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+              {t('settings.budgets')}
+            </ThemedText>
+            <View style={styles.right}>
+              <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.navigate('/(authenticated)/(tabs)/account/goal')}
+          >
+            <Image
+              style={styles.imageIcon}
+              source={require('@/src/assets/icons/goals-active.jpg')}
+            />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.goals')}
             </ThemedText>
@@ -304,24 +322,6 @@ const Page = () => {
             </TouchableOpacity>
           </Link>
         </View>
-        {/* <View style={styles.form}>
-          <TouchableOpacity style={styles.item}>
-            <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-              {t('settings.helpandsupport')}
-            </ThemedText>
-            <View style={styles.right}>
-              <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-              {t('settings.termsandconditions')}
-            </ThemedText>
-            <View style={styles.right}>
-              <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
-            </View>
-          </TouchableOpacity>
-        </View> */}
         <View>
           <Button
             text={t('settings.logout')}
@@ -333,7 +333,7 @@ const Page = () => {
             style={{ backgroundColor: BrandColor.Red[400], marginTop: 32 }}
           />
         </View>
-        <View style={{height: 120}}></View>
+        <View style={{ height: 120 }}></View>
       </ScrollView>
     </View>
   )

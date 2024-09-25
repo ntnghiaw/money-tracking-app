@@ -1,6 +1,5 @@
 export const icons = [
   { name: 'bonuses', image: require('@/src/assets/categories/bonuses.png') },
-
   { name: 'business', image: require('@/src/assets/categories/business.png') },
   { name: 'dividends', image: require('@/src/assets/categories/dividends.png') },
   { name: 'freelance', image: require('@/src/assets/categories/freelance.png') },
@@ -20,5 +19,6 @@ export const icons = [
   { name: 'rent', image: require('@/src/assets/categories/rent.png') },
   { name: 'transportation', image: require('@/src/assets/categories/transportation.png') },
   { name: 'utilities', image: require('@/src/assets/categories/utilities.png') },
+  { name: 'credit-card', image: require('@/src/assets/icons/credit-card.png') }
 ]
   

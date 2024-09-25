@@ -23,7 +23,11 @@ const history = () => {
   const { currencyCode: currency } = useLocale()
   const { isLoading, data, isError } = useGetAllTransactionsQuery({
     walletId,
-    query: {}
+    query: {
+      sort: 'desc',
+      limit: '12',
+      period: 'all'
+    }
   })
   const transactions = data ?? []
   return (

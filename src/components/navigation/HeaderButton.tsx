@@ -16,6 +16,7 @@ type Button = {
 type Text = {
   type: 'text'
   text: string,
+  textColor?: string,
   onPress: () => void
 }
 
@@ -24,16 +25,22 @@ type HeaderButtonProps = Button | Text
 
 const HeaderButton = (props: HeaderButtonProps) => {
   return (
-    <TouchableOpacity onPress={props.onPress} style={[styles.headerBtn, props.type === 'btn' ? styles.circleBtn : undefined]}>
-      {
-       props.type==='btn' ? (
+    <TouchableOpacity
+      onPress={props.onPress}
+      style={[styles.headerBtn, props.type === 'btn' ? styles.circleBtn : undefined]}
+    >
+      {props.type === 'btn' ? (
         props.button()
-       ) : (
-        <ThemedText type={TextType.HeadlineBold} color={BrandColor.PrimaryColor[400]} style={{textTransform: 'capitalize'}} >
-       {props.text}
+      ) : (
+        <ThemedText
+          type={TextType.HeadlineBold}
+          color={props.textColor ? props.textColor : BrandColor.PrimaryColor[400]}
+
+          style={{ textTransform: 'capitalize', alignSelf: 'flex-start' }}
+        >
+          {props.text}
         </ThemedText>
-       )
-      }
+      )}
     </TouchableOpacity>
   )
 }

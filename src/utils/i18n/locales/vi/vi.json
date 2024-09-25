@@ -6,7 +6,7 @@
     "signup": "Đăng ký",
     "firstwallet": "Chào mừng! Tạo ví đầu tiên của bạn để bắt đầu theo dõi tài chính dễ dàng",
     "yourfirstwallet": "Tạo Ví Đầu tiên của bạn",
-    "brand": "FundFlex"
+    "brand": "WalletPal"
   },
   "login": {
     "title": "Chào mừng trở lại!",
@@ -149,7 +149,6 @@
     "dob": "Ngày sinh",
     "gender": "Giới tính",
     "email": "Email",
-    "newpassword": "Mật khẩu mới",
     "confirmpassword": "Nhập lại mật khẩu mới",
     "changepassword": "Thay đổi mật khẩu",
     "save": "Lưu",
@@ -166,15 +165,22 @@
     "notifications": "Thông báo",
     "createcategory": "Tạo Danh mục Mới",
     "deletecategorymessage": "Bạn có chắc chắn muốn xóa danh mục này không?",
-    "oldpassword": "Nhập mật khẩu cũ",
-    "newpassword": "Nhập mật khẩu mới"
+    "newpassword": "Mật khẩu mới",
+    "oldpassword": "Mật khẩu cũ",
+    "enteroldpassword": "Nhập mật khẩu cũ",
+    "enternewpassword": "Nhập mật khẩu mới",
+    "selectgender": "Chọn giới tính của bạn",
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác",
+    "invaliddob": "Ngày sinh không hợp lệ!"
   },
   "tabLabel": {
     "home": "Nhà",
     "goals": "Mục tiêu",
     "analytics": "Phân tích",
-    "settings": "Cài đặt",
-    "budgets": "Ngân sách"
+    "account": "Tài khoản",
+    "wallets": "Ví"
   },
   "home": {
     "totalbalance": "Tổng số dư",
@@ -182,7 +188,7 @@
     "walletdescription": "Quản lý tất cả các ví của bạn tại đây",
     "income": "Thu nhập",
     "expense": "Chi phí",
-    "history": "Lịch sử",
+    "history": "Các giao dịch gần đây",
     "seeall": "Tất cả",
     "lessthan": "Ít hơn so với thu nhập trung bình của bạn",
     "morethan": "Nhiều hơn so với thu nhập trung bình của bạn",
@@ -217,6 +223,7 @@
     "no": "Không",
     "create": "Tạo mới",
     "update": "Cập nhật",
+    "close": "Đóng",
     "deletemessage": "Bạn có chắc chắn muốn xóa mục này không?"
   },
   "categories": {
@@ -241,5 +248,17 @@
     "Transportation": "Di chuyển",
     "Donations": "Quyên góp",
     "Utilities (Electricity, Water, Gas)": "Tiện ích"
+  },
+  "validation": {
+    "required": "Trường {{field}}này không được để trống"
+  },
+  "wallets": {
+    "balance": "Số dư",
+    "header": "Ví của bạn",
+    "addwallet": "Thêm ví",
+    "name": "Tên ví",
+    "type": "Loại ví",
+    "editwallets": "Chỉnh sửa ví",
+    "editwallet": "Chỉnh sửa ví"
   }
 }

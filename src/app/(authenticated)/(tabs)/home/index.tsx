@@ -44,7 +44,9 @@ const Home = () => {
   const { data: transactions, isLoading: isFetchingTransaction } = useGetAllTransactionsQuery({
     walletId: walletId,
     query: {
-      type
+      limit: '6',
+      sort: 'desc',
+      period: 'all',
     },
   })
 
@@ -132,7 +134,7 @@ const Home = () => {
                 <Plus width={20} height={20} color={BrandColor.PrimaryColor[400]} />
               )}
               description={t('home.walletdescription')}
-              onPress={() => router.navigate('/(authenticated)/(tabs)/home/wallets')}
+              onPress={() => router.navigate('/(authenticated)/(tabs)/wallet')}
             />
           </View>
         </View>
@@ -182,14 +184,7 @@ const Home = () => {
             ))}
           </View>
         </View>
-        <Button 
-          type='primary'
-          size='large'
-          state='normal'
-          text='Set Type'
-          onPress={() => setType((prev) => (prev === 'expense' ? 'income' : 'expense'))}
-        
-        />
+      
       </ScrollView>
     </SafeAreaView>
   )

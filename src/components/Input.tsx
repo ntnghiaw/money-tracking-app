@@ -118,7 +118,7 @@ const Input = ({
   }
 
   const onFocusHandler = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    setState((prev) => (prev !== 'error' ? 'focused' : 'error'))
+    setState((prev) => (prev !== 'error' ? rest?.editable ? 'focused' : 'normal' : 'error'))
   }
 
   const onChangeTextHandler = (text: string) => {
@@ -198,9 +198,9 @@ const styles = StyleSheet.create({
   },
   label: {
     position: 'absolute',
-    top: -20,
+    top: -22,
     width: '100%',
-    left: 12,
+    left: 0,
   },
   errorMsg: {
     color: BrandColor.Red[400],

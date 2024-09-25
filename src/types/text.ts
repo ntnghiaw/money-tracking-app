@@ -20,6 +20,7 @@ export enum TextType {
   CalloutSemiboldItalic = 'calloutSemiboldItalic',
   CalloutItalic = 'calloutItalic',
   SubheadlineSemibold = 'subheadlineSemibold',
+  SubheadlineBold = 'subheadlineSemibold',
   SubheadlineRegular = 'subheadlineRegular',
   SubheadlineSemiboldItalic = 'subheadlineSemiboldItalic',
   SubheadlineItalic = 'subheadlineItalic',

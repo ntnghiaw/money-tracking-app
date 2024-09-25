@@ -1,3 +1,4 @@
+import BottomContainer from '@/src/components/BottomContainer'
 import Button from '@/src/components/buttons/Button'
 import Input from '@/src/components/Input'
 import Header from '@/src/components/navigation/Header'
@@ -97,9 +98,10 @@ useEffect(() => {
           ),
         }}
       />
-      <View style={{ marginTop: 28, gap: 22 }}>
+      <View style={{ marginTop: 40, gap: 32 }}>
         <Input
-          placeholder={t('settings.oldpassword')}
+          label={t('settings.oldpassword')}
+          placeholder={t('settings.enteroldpassword')}
           value={password.oldPassword}
           onChangeText={(text) => setPassword({ ...password, oldPassword: text })}
           validationOptions={{
@@ -113,7 +115,8 @@ useEffect(() => {
           isSecure={true}
         />
         <Input
-          placeholder={t('settings.newpassword')}
+          label={t('settings.newpassword')}
+          placeholder={t('settings.enternewpassword')}
           value={password.newPassword}
           onChangeText={(text) => setPassword({ ...password, newPassword: text })}
           validationOptions={{
@@ -127,17 +130,17 @@ useEffect(() => {
           isSecure={true}
         />
       </View>
-      <View style={{ marginTop: 48 }}>
-        <Button
-          type='primary'
-          text={t('actions.save')}
-          size='large'
-          state={isValidated.oldPassword && isValidated.newPassword ? 'normal' : 'disabled'}
-          onPress={handleChangePassword}
-          disabled={!isValidated.oldPassword || !isValidated.newPassword}
-          isLoading={changePasswordResult.isLoading}
-        />
-      </View>
+        <BottomContainer>
+          <Button
+            type='primary'
+            text={t('actions.save')}
+            size='large'
+            state={isValidated.oldPassword && isValidated.newPassword ? 'normal' : 'disabled'}
+            onPress={handleChangePassword}
+            disabled={!isValidated.oldPassword || !isValidated.newPassword}
+            isLoading={changePasswordResult.isLoading}
+          />
+        </BottomContainer>
     </View>
   )
 }

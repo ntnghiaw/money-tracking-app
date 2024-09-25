@@ -9,7 +9,6 @@ import { appApi } from '@/src/features/api.service'
 
 interface WalletRequest {
   name: string
-  currency?: string
   type: 'shared' | 'private'
 }
 
@@ -29,12 +28,7 @@ export const walletApi = appApi.injectEndpoints({
       transformResponse: (response: { metadata: WalletResponse }) => response.metadata,
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
-    createNewWallet: builder.mutation<
-      Response<WalletResponse>,
-      {
-        wallet: WalletRequest
-      }
-    >({
+    createNewWallet: builder.mutation<Response<WalletResponse>, { wallet: WalletRequest }>({
       query: (body) => ({
         url: config.api.endpoints.wallets,
         method: 'POST',
@@ -44,18 +38,19 @@ export const walletApi = appApi.injectEndpoints({
     }),
 
     updateWallet: builder.mutation<
-      Response<WalletResponse>,
+      WalletResponse,
       {
         walletId: string
-        wallet: Pick<Wallet, 'name' | 'currency'>
+        wallet: Pick<Wallet, 'name' >
       }
     >({
       query: (body) => ({
         url: `${config.api.endpoints.wallets}/${body.walletId}`,
-        method: 'POST',
+        method: 'PATCH',
         body: body.wallet,
       }),
-      invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
+      transformResponse: (response: { metadata: WalletResponse }) => response.metadata,
+      invalidatesTags: (result, error, data) => [{ type: 'Wallet', id: data.walletId }],
     }),
 
     deleteWallet: builder.mutation<
@@ -71,35 +66,37 @@ export const walletApi = appApi.injectEndpoints({
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
 
-    getAllWallets: builder.query<Response<Wallet[]>, {}>({
-      query: (body) => ({
+    getAllWallets: builder.query<Wallet[], void>({
+      query: () => ({
         url: config.api.endpoints.wallets,
         method: 'GET',
       }),
+      transformResponse: (response: { metadata: Wallet[] }) => response.metadata,
       providesTags: (result) =>
-        result?.metadata
+        result
           ? [
-              ...result.metadata.map(({ _id }) => ({ type: 'Wallet' as const, id: _id })),
+              ...result.map(({ _id }) => ({ type: 'Wallet' as const, id: _id })),
               { type: 'Wallet', id: 'LIST' },
             ]
           : [{ type: 'Wallet' as const, id: 'LIST' }],
     }),
 
-    getWalletById: builder.query<Response<WalletResponse>, { walletId: string }>({
+    getWalletById: builder.query<Wallet, { walletId: string }>({
       query: (payload) => ({
         url: `${config.api.endpoints.wallets}/${payload.walletId}`,
         method: 'GET',
       }),
-
+      transformResponse: (response: { metadata: Wallet }) => response.metadata,
       providesTags: (result) =>
-        result?.metadata
+        result
           ? [
-              { type: 'Wallet', id: result.metadata._id },
+              { type: 'Wallet', id: result._id },
               { type: 'Wallet' as const, id: 'LIST' },
             ]
           : [{ type: 'Wallet', id: 'LIST' }],
     }),
   }),
+  overrideExisting: true,
 })
 
 export const {

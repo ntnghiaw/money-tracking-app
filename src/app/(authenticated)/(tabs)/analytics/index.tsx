@@ -46,11 +46,11 @@ const dataChart = [
 ]
 
 const filterOptions = [
-  { label: 'Daily', value: 'daily' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Monthly', value: 'monthly' },
-  { label: 'Quarterly', value: 'quarterly' },
-  { label: 'Yearly', value: 'yearly' },
+  { label: 'Daily', value: 'day' },
+  { label: 'Weekly', value: 'week' },
+  { label: 'Monthly', value: 'month' },
+  { label: 'Quarterly', value: 'quarter' },
+  { label: 'Yearly', value: 'year' },
   // { label: 'All', value: 'all' },
 ]
 
@@ -59,7 +59,7 @@ const Page = () => {
   const { bottom, top } = useSafeAreaInsets()
   const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
   const [selectedIndex, setSelectedIndex] = useState<number>()
-  const [filter, setFilter] = useState('daily')
+  const [filter, setFilter] = useState('day')
   const [isFocusFilter, setIsFocusFilter] = useState(false)
 
   const { t } = useLocale()
@@ -72,7 +72,10 @@ const Page = () => {
   const { walletId } = useAppSelector((state) => state.auth)
   const { isLoading, data, isError } = useGetAllTransactionsQuery({
     walletId: walletId!,
-    query: {},
+    query: {
+      period: filter,
+      sort: 'desc',
+    },
   })
 
   const transactions = useMemo(
@@ -84,106 +87,16 @@ const Page = () => {
       }),
     [data, selectedTab]
   )
-  const filteredTransactions = useMemo(() => {
-    if (filter === 'all') return transactions
-    const now = new Date()
-    const filterDate = new Date()
-    switch (filter) {
-      case 'daily':
-        filterDate.setDate(now.getDate() - 1)
-        break
-      case 'weekly':
-        filterDate.setDate(now.getDate() - 7)
-        break
-      case 'monthly':
-        filterDate.setMonth(now.getMonth() - 1)
-        break
-      case 'quarterly':
-        filterDate.setMonth(now.getMonth() - 3)
-        break
-      case 'yearly':
-        filterDate.setFullYear(now.getFullYear() - 1)
-        break
-    }
-    return transactions?.filter((transaction) => {
-      const date = new Date(transaction.createdAt)
-      return date >= filterDate
-    })
-  }, [transactions, filter])
+  console.log(transactions?.length)
 
-  const total = useMemo(() => {
-    return filteredTransactions?.reduce((acc, cur) => acc + Number(cur.amount), 0)
-  }, [filteredTransactions])
+  // const total = useMemo(() => {
+  //   return filteredTransactions?.reduce((acc, cur) => acc + Number(cur.amount), 0)
+  // }, [filteredTransactions])
 
-  const barChartData = useMemo(() => {
-    if (filter === 'daily') {
-      const result = []
-      const startDate = startOfDay(new Date())
-      for (let i = 0; i < 12; i++) {
-        const hours = new Date(startDate).setHours(i * 2)
-        const amount = filteredTransactions
-          ?.filter((transaction) => {
-            const date = new Date(transaction.createdAt)
-            return date >= new Date(hours) && date < new Date(hours + 2 * 1000 * 60 * 60)
-          })
-          .reduce((acc, cur) => acc + Number(cur.amount), 0)
-        result.push({ value: amount, label: `${i * 2}h`, frontColor: BrandColor.PrimaryColor[200] })
-      }
-      return result
-    } else if (filter === 'weekly') {
-      const result = []
-      const startDate = startOfWeek(new Date())
-      for (let i = 0; i < 7; i++) {
-        const currentDay = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth(),
-          startDate.getDate() + i
-        )
-        const labelString = format(new Date(currentDay), 'ccc')
-        const amount = filteredTransactions
-          ?.filter((transaction) => {
-            const date = new Date(transaction.createdAt)
-            return (
-              date >= new Date(currentDay) &&
-              date < new Date(currentDay.setDate(currentDay.getDate() + 1))
-            )
-          })
-          .reduce((acc, cur) => acc + Number(cur.amount), 0)
-
-        result.push({
-          value: amount,
-          label: labelString,
-          frontColor: BrandColor.PrimaryColor[200],
-        })
-      }
-      return result
-    } else if (filter === 'yearly') {
-      const result = []
-      const startDate = startOfYear(new Date())
-      for (let i = 0; i < 12; i++) {
-        const currentMonth = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1)
-
-        const labelString = format(new Date(currentMonth), 'MMM')
-
-        const amount = filteredTransactions
-          ?.filter((transaction) => {
-            const date = new Date(transaction.createdAt)
-            return (
-              date >= new Date(currentMonth) &&
-              date < new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-            )
-          })
-          .reduce((acc, cur) => acc + Number(cur.amount), 0)
-        result.push({
-          value: amount,
-          label: labelString,
-          frontColor: BrandColor.PrimaryColor[200],
-        })
-      }
-      return result
-    }
-  }, [filteredTransactions, filter])
-  const barWith = 150
+  // const barChartData = useMemo(() => {
+   
+  // }, [filteredTransactions, filter])
+  // const barWith = 150
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
   //   const bottomSheetChooseIconModalRef = useRef<BottomSheetModal>(null)
 
@@ -232,7 +145,7 @@ const Page = () => {
         <View style={styles.info}>
           <View>
             <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
-              {formatter(total ?? 0, currencyCode)}
+              {/* {formatter(total ?? 0, currencyCode)} */}
             </ThemedText>
           </View>
           <Dropdown
@@ -261,7 +174,7 @@ const Page = () => {
           />
         </View>
         <View style={[styles.chartSection]}>
-          <BarChart
+          {/* <BarChart
             barWidth={barChartData?.length <= 7 ? 22 : 16}
             noOfSections={3}
             barBorderRadius={4}
@@ -289,7 +202,7 @@ const Page = () => {
             renderTooltip={(item, index) => {
               setSelectedIndex(index)
             }}
-          />
+          /> */}
         </View>
         <View></View>
         <View style={styles.historySection}>
@@ -301,7 +214,7 @@ const Page = () => {
               <Text style={styles.link}>{t('home.seeall')}</Text>
             </Link>
           </View>
-          <View>
+          {/* <View>
             {filteredTransactions?.length === 0 && (
               <ThemedText
                 type={TextType.FootnoteRegular}
@@ -329,7 +242,7 @@ const Page = () => {
                 />
               </TouchableOpacity>
             ))}
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </View>

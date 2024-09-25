@@ -48,6 +48,7 @@ import { useActionSheet } from '@expo/react-native-action-sheet'
 import CurrencyInput from 'react-native-currency-input-fields'
 import { validations } from '@/src/utils/validations'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
+import BottomContainer from '@/src/components/BottomContainer'
 
 const initialGoal: Omit<FinancialPlan, '_id'> = {
   name: '',
@@ -235,7 +236,7 @@ const Page = () => {
           </SafeAreaView>
         </View>
       </SafeAreaView>
-      <View style={{ marginBottom: bottom + 24, flexDirection: 'row', gap: 12 }}>
+      <BottomContainer>
         <Button
           type={'tertiary'}
           text={t('actions.delete')}
@@ -254,7 +255,7 @@ const Page = () => {
           isLoading={updateAmountResult.isLoading}
           style={{ width: '48%' }}
         />
-      </View>
+      </BottomContainer>
     </View>
   )
 }

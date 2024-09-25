@@ -134,6 +134,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
   },
+  subheadlineBold: {
+    fontWeight: '700',
+    fontSize: 15,
+    lineHeight: 20,
+  },
   subheadlineRegular: {
     fontWeight: '400',
     fontSize: 15,

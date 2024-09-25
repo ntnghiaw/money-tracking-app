@@ -3,17 +3,14 @@ import HeaderButton from '@/src/components/navigation/HeaderButton'
 import { ThemedText } from '@/src/components/ThemedText'
 import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
-import { AntDesign, Fontisto } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { Stack, useRouter } from 'expo-router'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
   Dimensions,
   Image,
-  Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -21,19 +18,13 @@ import {
 import { useCreatePlanMutation, useGetAllPlansQuery } from '@/src/features/plan/plan.service'
 import { useAppSelector } from '@/src/hooks/hooks'
 import { TextType } from '@/src/types/text'
-import { use } from 'i18next'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
-import CustomizedModalView from '@/src/components/modals/CustomizedModalView'
-import Input from '@/src/components/Input'
+
 import { formatter } from '@/src/utils/formatAmount'
-import MaskInput from 'react-native-mask-input'
-import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
-import formatDate from '@/src/utils/formatDate'
-import { ChevronDown, MoreVertical, Sliders } from 'react-native-feather'
-import Slider from '@react-native-community/slider'
-import { FinancialPlan } from '@/src/types/enum'
-import ProgressBar from '@/src/components/charts/ProgressBar'
+import { DateTimePickerEvent } from '@react-native-community/datetimepicker'
+import { Sliders } from 'react-native-feather'
+
 import Button from '@/src/components/buttons/Button'
 import { getImg } from '@/src/utils/getImgFromUri'
 import Loading from '@/src/components/Loading'
@@ -166,6 +157,13 @@ const Page = () => {
                   )}
                 />
               )}
+              headerLeft={() => (
+                <HeaderButton
+                  onPress={() => router.back()}
+                  type='btn'
+                  button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
+                />
+              )}
             />
           ),
         }}
@@ -197,7 +195,7 @@ const Page = () => {
           </ThemedText>
         </View>
       )}
-      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 24 }} showsVerticalScrollIndicator={false}>
         <View style={styles.scrollView}>
           {budgets?.map((budget: any, index: number) => {
             const { attributes } = budget
@@ -208,7 +206,7 @@ const Page = () => {
                 style={styles.item}
                 onPress={() =>
                   router.push({
-                    pathname: '/(authenticated)/(tabs)/budget/[id]',
+                    pathname: '/(authenticated)/(tabs)/account/budget/[id]',
                     params: { id: budget._id },
                   })
                 }
@@ -290,16 +288,19 @@ const Page = () => {
             )
           })}
         </View>
+
+        <View style={{ height: 100 }}></View>
+      </ScrollView>
+      <View style={styles.bottom}>
         <Button
           style={{ marginTop: 24 }}
-          onPress={() => router.push('/(authenticated)/(tabs)/budget/create-budget')}
+          onPress={() => router.push('/(authenticated)/(tabs)/account/budget/create-budget')}
           text={t('budgets.createbudget')}
           type='primary'
           state='normal'
           size='large'
         />
-        <View style={{ height: 100 }}></View>
-      </ScrollView>
+      </View>
     </View>
   )
 }
@@ -308,7 +309,6 @@ const styles = StyleSheet.create({
   container: {
     // backgroundColor: BackgroundColor.LightTheme.Primary,
     flex: 1,
-    paddingHorizontal: 24,
   },
   totalBalance: {
     minWidth: 102,
@@ -400,4 +400,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  bottom: {
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 16,
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+  }
 })

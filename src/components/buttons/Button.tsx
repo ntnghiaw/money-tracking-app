@@ -5,10 +5,12 @@ import {
   Dimensions,
   type TouchableOpacityProps,
   type ViewProps,
+  ViewStyle,
+  DimensionValue,
 } from 'react-native'
 import { ThemedText } from '@/src/components/ThemedText'
 import { TextType } from '@/src/types/text'
-import { type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { BrandColor, NeutralColor } from '@/src/constants/Colors'
 import { hexToRgb } from '@/src/utils/convert'
 import { ActivityIndicator } from 'react-native'
@@ -57,8 +59,12 @@ const Button = ({
   ...rest
 }: ButtonProps) => {
 
+  const btnWidth = useMemo(() => {
+    if (style) {
+      return `${parseFloat(style['width']) / 100}` as DimensionValue
+    }
+  }, [style])
   
-
 
   return (
     <TouchableOpacity
@@ -84,7 +90,7 @@ const Button = ({
       ]}
       {...rest}
     >
-      {isLoading && <ActivityIndicator style={styles.indicator} />}
+      {isLoading && <ActivityIndicator style={[styles.indicator, btnWidth ? {left: btnWidth }: undefined]} />}
 
       {rest.buttonLeft && rest.buttonLeft()}
       <ThemedText

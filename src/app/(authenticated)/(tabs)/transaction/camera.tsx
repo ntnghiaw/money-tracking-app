@@ -6,7 +6,7 @@ import * as MediaLibrary from 'expo-media-library'
 import { Image } from 'react-native'
 import Button from '@/src/components/buttons/Button'
 import * as ImagePicker from 'expo-image-picker'
-import { BackgroundColor,  TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { Stack, useRouter } from 'expo-router'
 import Header from '@/src/components/navigation/Header'
@@ -22,21 +22,20 @@ import Loading from '@/src/components/Loading'
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
+
 const Page = () => {
-  const [image, setImage] = useState(null)
+  const router = useRouter()
+  const { t } = useLocale()
+  const [image, setImage] = useState <ImagePicker.ImagePickerAsset | undefined>()
   const { user, tokens } = useAppSelector((state) => state.auth)
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions()
-  const { t } = useLocale()
-  const router = useRouter()
-  const [scanImageReceipts, { data, isSuccess, isError, status, error }] =
-    useScanImageReceiptsMutation()
   const [loading, setLoading] = useState(false)
+  const [scanReceipt, { data, isLoading, isSuccess  }] = useScanImageReceiptsMutation()
   const getImageFromLibrary = async () => {
     if (permissionResponse?.status !== 'granted') {
       await requestPermission()
       return
     }
-
     try {
       await ImagePicker.requestMediaLibraryPermissionsAsync()
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -44,14 +43,26 @@ const Page = () => {
         aspect: [1, 1],
         quality: 1,
       })
-      if(result) {
+      if (result && result.assets) {
         setImage(result?.assets[0])
       }
     } catch (error) {
       console.log('Error fetching media library assets', error)
     }
   }
-
+ 
+  useEffect(() => {
+    if(isSuccess) {
+      router.navigate({
+        pathname: '/(authenticated)/(tabs)/transaction',
+        params: {
+          img_url: data?.img_url,
+          total: data?.total,
+          createdAt: data?.createdAt,
+          title: data?.title,
+        }})
+    }
+  }, [isSuccess])
   const handleScanImage = async () => {
     setLoading(true)
     if (!image) {
@@ -59,33 +70,13 @@ const Page = () => {
       return
     }
     const newImageUri = 'file:///' + image.uri.split('file:/').join('')
-    const formData = new FormData()
-    formData.append('file', {
-      uri: newImageUri,
-      type: mime.getType(newImageUri),
-      name: newImageUri.split('/').pop(),
-    })
-
     try {
-      const res = await fetch(`http://192.168.1.10:5000/v1/api/transactions/scanReceipt`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: tokens.accessToken,
-          'x-client-id': user._id,
-        },
-        body: formData,
-      })
-      const data = await res.json()
-      console.log(data)
-      setLoading(false)
-      router.navigate({
-        pathname: '/(authenticated)/(tabs)/transaction',
-        params: {
-          img_url: data?.metadata?.img_url,
-          total: data?.metadata?.total,
-          createdAt: data?.metadata?.createdAt,
-          title: data?.metadata?.title,
+
+      await scanReceipt({
+        image: {
+          uri: newImageUri,
+          type: mime.getType(newImageUri),
+          name: newImageUri.split('/').pop(),
         },
       })
     } catch (error) {
@@ -102,7 +93,7 @@ const Page = () => {
         paddingHorizontal: 24,
       }}
     >
-      <Loading isLoading={loading}  text='Loading..'/>
+      <Loading isLoading={isLoading} text='Loading..' />
       <Stack.Screen
         options={{
           headerTitle: t('transaction.chooseimage'),
@@ -129,7 +120,11 @@ const Page = () => {
       />
       <View style={styles.imgContainer}>
         {image?.uri ? (
-          <Image source={{ uri: image?.uri }} style={{ width: 300, height: 300 }} />
+          <Image
+            source={{ uri: image?.uri }}
+            style={{ width: 300, height: 300 }}
+            resizeMode='contain'
+          />
         ) : (
           <Text>No image selected</Text>
         )}

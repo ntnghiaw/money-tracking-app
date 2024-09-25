@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Money Tracking",
+    "name": "WalletPal",
     "slug": "mobile-tracking",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/ic_launcher_foreground.png",
+        "foregroundImage": "./src/assets/images/AppIcons/playstore.png",
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan",

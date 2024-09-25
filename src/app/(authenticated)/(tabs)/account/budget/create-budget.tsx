@@ -149,7 +149,7 @@ const Page = () => {
         [startYear, endYear],
       ],
     }
-  }, []) || ['This week', 'This month', 'This quarter', 'This year']
+  }, []) || ['This week', 'This month', 'This quarter', 'This year', 'Cancel']
 
   const renderBackdropCategoryModal = useCallback(
     (props: any) => (
@@ -211,6 +211,7 @@ const Page = () => {
         title: t('budgets.selecttimerange'),
       },
       (selectedIndex: any) => {
+        if(selectedIndex >= options.length) return 
         setIndexOptions(selectedIndex)
       }
     )
@@ -401,21 +402,7 @@ const Page = () => {
               {t('transaction.categories')}
             </ThemedText>
           </View>
-          {/* <InfoButton
-            title={t('analytics.addnewcategories')}
-            icon={() => <Image source={require('@/src/assets/icons/grid.png')} />}
-            buttonRight={() => <Plus width={20} height={20} color={BrandColor.PrimaryColor[400]} />}
-            description={t('analytics.descriptioncategories')}
-            onPress={() => {
-              bottomSheetCategoryModalRef.current?.dismiss()
-              router.navigate({
-                pathname: '/(authenticated)/(tabs)/transaction/categories' as Href,
-                params: {
-                  id,
-                },
-              })
-            }}
-          /> */}
+    
           <View style={{ borderRadius: 14, marginTop: 24, overflow: 'hidden' }}>
             <ScrollView
               style={{

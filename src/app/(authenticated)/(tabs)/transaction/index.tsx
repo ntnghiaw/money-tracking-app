@@ -263,12 +263,8 @@ const Page = () => {
           />
           <Pressable onPress={showCategoryModal} style={styles.button}>
             <Image
-              source={
-                transaction.category._id
-                  ? getImg(transaction.category.icon)
-                  : require('@/src/assets/icons/grid2.png')
-              }
-              style={styles.iconCategory}
+              source={require('@/src/assets/icons/categories.png')}
+              style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
             <View style={{ flex: 8 }}>
               <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
@@ -288,14 +284,21 @@ const Page = () => {
               }}
             >
               <Pressable onPress={showDatepicker} style={[styles.button, { width: '49%' }]}>
-                <Fontisto name='date' size={20} color={BrandColor.PrimaryColor[400]} />
+                <Image
+                  source={require('@/src/assets/icons/calendar.png')}
+                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                />
+
                 <View style={{ flex: 3 }}>
                   <Text>{formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}</Text>
                 </View>
                 <ChevronDown width={24} height={24} color={TextColor.Placeholder} />
               </Pressable>
               <TouchableOpacity style={[styles.button, { width: '49%' }]} onPress={showTimepicker}>
-                <Entypo name='clock' size={22} color={BrandColor.PrimaryColor[400]} />
+                <Image
+                  source={require('@/src/assets/icons/clock.png')}
+                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                />
                 <View style={{ flex: 3 }}>
                   <Text>{formatDate(new Date(transaction.createdAt), 'hh/mm')}</Text>
                 </View>
@@ -352,26 +355,25 @@ const Page = () => {
               }}
             >
               {categoriesFilteredByType?.map((category) => {
-           
-                 return (
-                   <TouchableOpacity
-                     key={category._id}
-                     style={styles.item}
-                     onPress={() => chooseCategoryHandler(category)}
-                   >
-                     <View style={styles.iconCover}>
-                       <Image source={getImg(category.icon)} style={styles.iconCategory} />
-                     </View>
-                     <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-                       {categoriesDefault.includes(category.name)
-                         ? t(`categories.${category.name}`)
-                         : category.name}
-                     </ThemedText>
-                     {/* { transaction.category._id === category._id && (  <View style={{position: 'absolute', right: 12}}>
+                return (
+                  <TouchableOpacity
+                    key={category._id}
+                    style={styles.item}
+                    onPress={() => chooseCategoryHandler(category)}
+                  >
+                    <View style={styles.iconCover}>
+                      <Image source={getImg(category.icon)} style={styles.iconCategory} />
+                    </View>
+                    <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+                      {categoriesDefault.includes(category.name)
+                        ? t(`categories.${category.name}`)
+                        : category.name}
+                    </ThemedText>
+                    {/* { transaction.category._id === category._id && (  <View style={{position: 'absolute', right: 12}}>
                       <Image source={require('@/src/assets/icons/checked.png')} style={{width: 18, height: 18}} />
                     </View>)} */}
-                   </TouchableOpacity>
-                 )
+                  </TouchableOpacity>
+                )
               })}
             </ScrollView>
           </View>

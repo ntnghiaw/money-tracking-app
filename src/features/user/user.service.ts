@@ -1,5 +1,5 @@
 import { Category, Response, User, UserProfile } from '@/src/types/enum'
-import { createApi, fetchBaseQuery, } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseQuery } from '@/src/features'
 import categories from '@/src/constants/Categories'
 
@@ -15,22 +15,22 @@ interface UpdateProfileRequest {
   avatar_url?: string
 }
 
-
 export const userApi = createApi({
   reducerPath: 'userApi',
   tagTypes: ['User', 'Category'],
   baseQuery,
   endpoints: (builder) => ({
-    updateProfile: builder.mutation<
-      Response<UserProfile>,
-      { userId: string; auth: HeaderRequest; body: UpdateProfileRequest }
-    >({
-      query: (data) => ({
-        url: `/users/${data.userId}`,
-        method: 'POST',
-        body: data.body,
-      }),
-      invalidatesTags: (result) => [{ type: 'User', id: result?.metadata._id }],
+    updateProfile: builder.mutation<UserProfile, FormData>({
+      query: (body) => {
+        return {
+          url: '/users',
+          method: 'PATCH',
+          body,
+        }
+      },
+      transformResponse: (response: { metadata: UserProfile }) => response.metadata,
+
+      invalidatesTags: (result) => [{ type: 'User', id: result?._id }],
     }),
     getProfile: builder.query<UserProfile, void>({
       query: () => ({
@@ -40,8 +40,6 @@ export const userApi = createApi({
       transformResponse: (response: { metadata: UserProfile }) => response.metadata,
       providesTags: (result) => [{ type: 'User', id: result?._id }],
     }),
-
-    
   }),
 })
 
