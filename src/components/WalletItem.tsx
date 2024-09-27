@@ -17,12 +17,12 @@ const WalletItem = ({ name, balance, icon, isDefault }: WalletItemProps) => {
   const { t } = useLocale()
   const { currencyCode } = useLocale()
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDefault && {borderColor: BrandColor.PrimaryColor[400]}]}>
       <View style={styles.icon}>
         <Image source={getImg(icon)} style={styles.image} />
       </View>
       <View style={styles.info}>
-        <ThemedText type={TextType.SubheadlineBold} color={TextColor.Primary}>
+        <ThemedText type={TextType.HeadlineBold} color={TextColor.Primary}>
           {name}
         </ThemedText>
         <ThemedText type={TextType.SubheadlineBold} color={TextColor.Secondary}>
@@ -38,7 +38,7 @@ const WalletItem = ({ name, balance, icon, isDefault }: WalletItemProps) => {
       <View style={styles.check}>
         {isDefault && (
           <Image
-            source={require('@/src/assets/icons/checked-wallet.png')}
+            source={require('@/src/assets/icons/checked.png')}
             style={styles.checkedIcon}
           />
         )}
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     borderColor: BrandColor.Gray[100],
     flexDirection: 'row',
     borderWidth: 1,
+    
   },
   icon: {
     height: 52,

@@ -5,7 +5,6 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 
 const Page = () => {
   const router = useRouter()
-  console.log(router)
   const onChooseIcon = (name:string) => {
    router.navigate({
      pathname: `/(authenticated)/(tabs)/analytics/create-category`,

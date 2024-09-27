@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TextType } from '@/src/types/text'
 import { formatter } from '@/src/utils/formatAmount'
-import formatDate from '@/src/utils/formatDate'
+import {format} from 'date-fns'
 import { getImg } from '@/src/utils/getImgFromUri'
 import { AntDesign } from '@expo/vector-icons'
 import { skipToken } from '@reduxjs/toolkit/query'
@@ -23,15 +23,15 @@ import { setEdit } from '@/src/features/transaction/transactionSlice'
 import categoriesDefault from '@/src/constants/Categories'
 
 const Page = () => {
-  const { transaction: id } = useLocalSearchParams() as { transaction: string }
+  const {  id } = useLocalSearchParams() as { id: string }
   const { currencyCode } = useLocale()
   const { walletId } = useAppSelector((state) => state.auth)
   const dispatch = useAppDispatch()
   const { t } = useLocale()
   const router = useRouter()
-  const { data, isLoading } = useGetTransactionByIdQuery({
+  const { data, isLoading, isFetching } = useGetTransactionByIdQuery({
     walletId,
-    transactionId: id ?? skipToken,
+    transactionId: id.toString() ?? skipToken,
   })
 
   const [deleteTransaction, deleteResult] = useDeleteTransactionMutation()
@@ -95,120 +95,131 @@ const Page = () => {
           ),
         }}
       />
-      {<Loading isLoading={isLoading} text='Loading...' />}
-      <View style={styles.details}>
-        <View style={styles.amount}>
-          <View style={styles.label}>
-            <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-              {t('transaction.amount')}
-            </ThemedText>
-          </View>
-          <View style={[styles.value]}>
-            <ThemedText
-              type={TextType.HeadlineSemibold}
-              color={data?.type === 'income' ? BrandColor.PrimaryColor[400] : BrandColor.Red[300]}
-            >
-              {formatter(data?.amount ?? 0, currencyCode)}
-            </ThemedText>
-          </View>
-        </View>
-        <View style={styles.info}>
-          <View style={styles.item}>
+      {isFetching ? (
+        <Loading isLoading={isFetching} text='Loading...' />
+      ) : (
+        <View style={styles.details}>
+          <View style={styles.amount}>
             <View style={styles.label}>
               <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                {t('transaction.title')}
+                {t('transaction.amount')}
               </ThemedText>
             </View>
-            <View style={styles.value}>
+            <View style={[styles.value]}>
               <ThemedText
-                type={TextType.FootnoteSemibold}
-                color={TextColor.Primary}
-                adjustsFontSizeToFit={false}
+                type={TextType.HeadlineSemibold}
+                color={data?.type === 'income' ? BrandColor.PrimaryColor[400] : BrandColor.Red[300]}
               >
-                {data?.title}
+                {formatter(data?.amount ?? 0, currencyCode)}
               </ThemedText>
             </View>
           </View>
-          <View style={styles.item}>
-            <View style={styles.label}>
+          <View style={styles.info}>
+            <View style={styles.item}>
               <View style={styles.label}>
                 <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                  {t('transaction.categories')}
+                  {t('transaction.title')}
+                </ThemedText>
+              </View>
+              <View style={styles.value}>
+                <ThemedText
+                  type={TextType.FootnoteSemibold}
+                  color={TextColor.Primary}
+                  adjustsFontSizeToFit={false}
+                >
+                  {data?.title}
                 </ThemedText>
               </View>
             </View>
-            <View
-              style={[
-                styles.value,
-                { flexDirection: 'row', gap: 4, justifyContent: 'flex-end', alignItems: 'center' },
-              ]}
-            >
-              <View style={styles.icon}>
-                {data?.category && (
-                  <Image source={getImg(data.category.icon)} style={styles.iconImg} />
-                )}
+            <View style={styles.item}>
+              <View style={styles.label}>
+                <View style={styles.label}>
+                  <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
+                    {t('transaction.categories')}
+                  </ThemedText>
+                </View>
               </View>
-              <ThemedText
-                type={TextType.FootnoteSemibold}
-                color={TextColor.Primary}
-                adjustsFontSizeToFit={false}
+              <View
+                style={[
+                  styles.value,
+                  {
+                    flexDirection: 'row',
+                    gap: 4,
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                  },
+                ]}
               >
-                {categoriesDefault.includes(data?.category?.name)
-                  ? t(`categories.${data?.category?.name}`)
-                  : data?.category?.name}
-              </ThemedText>
+                <View style={styles.icon}>
+                  {data?.category && (
+                    <Image source={getImg(data.category.icon)} style={styles.iconImg} />
+                  )}
+                </View>
+                <ThemedText
+                  type={TextType.FootnoteSemibold}
+                  color={TextColor.Primary}
+                  adjustsFontSizeToFit={false}
+                >
+                  {categoriesDefault.includes(data?.category?.name!)
+                    ? t(`categories.${data?.category?.name}`)
+                    : data?.category?.name}
+                </ThemedText>
+              </View>
             </View>
-          </View>
 
-          <View style={[styles.item]}>
-            <View style={styles.label}>
-              <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                {t('transaction.typetransaction')}
-              </ThemedText>
+            <View style={[styles.item]}>
+              <View style={styles.label}>
+                <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
+                  {t('transaction.typetransaction')}
+                </ThemedText>
+              </View>
+              <View style={styles.value}>
+                <ThemedText
+                  type={TextType.FootnoteSemibold}
+                  color={TextColor.Primary}
+                  adjustsFontSizeToFit={false}
+                >
+                  {data?.type === 'income' ? t('home.income') : t('home.expense')}
+                </ThemedText>
+              </View>
             </View>
-            <View style={styles.value}>
-              <ThemedText
-                type={TextType.FootnoteSemibold}
-                color={TextColor.Primary}
-                adjustsFontSizeToFit={false}
-              >
-                {data?.type === 'income' ? t('home.income') : t('home.expense')}
-              </ThemedText>
+            <View style={[styles.item, { borderBottomWidth: 0 }]}>
+              <View style={styles.label}>
+                <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
+                  {t('transaction.createdAt')}
+                </ThemedText>
+              </View>
+              <View style={styles.value}>
+                <ThemedText
+                  type={TextType.FootnoteSemibold}
+                  color={TextColor.Primary}
+                  adjustsFontSizeToFit={false}
+                  style={{ textTransform: 'capitalize' }}
+                >
+                  {format(data?.createdAt ? new Date(data?.createdAt) : new Date(), "dd/MM/yyyy', 'p")}
+                </ThemedText>
+              </View>
             </View>
           </View>
-          <View style={[styles.item, { borderBottomWidth: 0 }]}>
-            <View style={styles.label}>
-              <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                {t('transaction.createdAt')}
-              </ThemedText>
+          {data?.img_url && (
+            <View style={[styles.document, { marginTop: 12 }]}>
+              <View style={styles.label}>
+                <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
+                  {t('transaction.document')}
+                </ThemedText>
+              </View>
+              {data?.img_url ? (
+                <Image source={{ uri: data.img_url }} style={styles.img} />
+              ) : (
+                <Image
+                  source={require('@/src/assets/icons/no-image-icon.png')}
+                  style={styles.img}
+                />
+              )}
             </View>
-            <View style={styles.value}>
-              <ThemedText
-                type={TextType.FootnoteSemibold}
-                color={TextColor.Primary}
-                adjustsFontSizeToFit={false}
-                style={{ textTransform: 'capitalize' }}
-              >
-                {formatDate(data?.createdAt ? new Date(data.createdAt) : new Date(), 'dd/mm/yy')}
-              </ThemedText>
-            </View>
-          </View>
+          )}
         </View>
-        {data?.img_url && (
-          <View style={[styles.document, { marginTop: 12 }]}>
-            <View style={styles.label}>
-              <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                {t('transaction.document')}
-              </ThemedText>
-            </View>
-            {data?.img_url ? (
-              <Image source={{ uri: data.img_url }} style={styles.img} />
-            ) : (
-              <Image source={require('@/src/assets/icons/no-image-icon.png')} style={styles.img} />
-            )}
-          </View>
-        )}
-      </View>
+      )}
       <View style={styles.bottom}>
         <Button
           text={t('goals.delete')}

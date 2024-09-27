@@ -11,7 +11,7 @@ export type InfoButtonProps = {
   title: string
   description: string
   icon: () => React.ReactElement
-  buttonRight: () => React.ReactElement
+  buttonRight?: () => React.ReactElement
   onPress: () => void
 }
 
@@ -27,9 +27,9 @@ const InfoButton = ({ title, description, icon, buttonRight, onPress }: InfoButt
           {description}
         </ThemedText>
       </View>
-      <TouchableOpacity style={styles.rightBtn} onPress={onPress}>
-        {buttonRight()}
-      </TouchableOpacity>
+      {buttonRight && <TouchableOpacity style={styles.rightBtn} onPress={onPress}>
+        {  buttonRight()}
+      </TouchableOpacity>}
     </View>
   )
 }

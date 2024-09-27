@@ -80,6 +80,7 @@ const Layout = () => {
       <Stack.Screen name='goal' options={{ headerShown: false }} />
       <Stack.Screen name='category' options={{ headerShown: false }} />
       <Stack.Screen name='budget' options={{ headerShown: false }} />
+      <Stack.Screen name='setting' options={{ headerShown: false }} />
     </Stack>
   )
 }

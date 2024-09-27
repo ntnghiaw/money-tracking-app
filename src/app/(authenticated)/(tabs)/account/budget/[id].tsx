@@ -22,19 +22,25 @@ import TransactionItem from '@/src/components/TransactionItem'
 import { ScrollView } from 'react-native-gesture-handler'
 import { formatValue } from 'react-native-currency-input-fields'
 import categoriesDefault from '@/src/constants/Categories'
+import { usePrefetchImmediately } from '@/src/hooks/usePrefetchImmediately'
 
 const Page = () => {
   const { t } = useLocale()
   const router = useRouter()
   const { id } = useLocalSearchParams() as { id: string }
   const { currencyCode } = useLocale()
+
   const { walletId } = useAppSelector((state) => state.auth)
-  const { data, isLoading } = useGetPlanByIdQuery(
+  console.log({
+    walletId,
+    planId: id,
+  })
+  const { data, isFetching } = useGetPlanByIdQuery(
     {
       walletId,
       planId: id,
     },
-    { refetchOnFocus: true, refetchOnReconnect: true }
+    { refetchOnMountOrArgChange: true, skip: false }
   )
   const [deletePlan, deleteResult] = useDeletePlanMutation()
   const deleteTransactionHandler = async () => {
@@ -78,7 +84,9 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='text'
-                  onPress={() => router.push(`/(authenticated)/(tabs)/account/budget/edit-budget?id=${id}`)}
+                  onPress={() =>
+                    router.push(`/(authenticated)/(tabs)/account/budget/edit-budget?id=${id}`)
+                  }
                   text={t('actions.edit')}
                 />
               )}
@@ -86,7 +94,7 @@ const Page = () => {
           ),
         }}
       />
-      {<Loading isLoading={isLoading} text='Loading...' />}
+      {<Loading isLoading={isFetching} text='Loading...' />}
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={styles.details}>
           <View style={styles.amount}>
@@ -267,10 +275,7 @@ const Page = () => {
                     type={item.type}
                     icon={item.category.icon}
                     date={
-                      formatDate(
-                        item?.createdAt ? new Date(item?.createdAt) : new Date(),
-                        'dd/mm/yy'
-                      )!
+                     item?.createdAt
                     }
                   />
                 </TouchableOpacity>

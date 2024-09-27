@@ -1,3 +1,4 @@
+import Button from '@/src/components/buttons/Button'
 import Loading from '@/src/components/Loading'
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
@@ -34,15 +35,15 @@ const Page = () => {
                   button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
                 />
               )}
-              headerRight={() => (
-                <HeaderButton
-                  type='text'
-                  onPress={() =>
-                    router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)
-                  }
-                  text={t('actions.add')}
-                />
-              )}
+              // headerRight={() => (
+              //   <HeaderButton
+              //     type='text'
+              //     onPress={() =>
+              //       router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)
+              //     }
+              //     text={t('actions.add')}
+              //   />
+              // )}
             />
           ),
         }}
@@ -54,8 +55,8 @@ const Page = () => {
             key={wallet._id}
             onPress={() =>
               router.navigate({
-                pathname: '/(authenticated)/(tabs)/wallet/edit-wallet' as Href,
-                params: {id: wallet._id},
+                pathname: '/(authenticated)/(tabs)/wallet/edit-wallet',
+                params: { id: wallet._id },
               })
             }
           >
@@ -68,6 +69,15 @@ const Page = () => {
             />
           </TouchableOpacity>
         ))}
+      </View>
+      <View style={{ position: 'absolute', bottom: 100, alignSelf: 'center' }}>
+        <Button
+          state='normal'
+          size='large'
+          text={t('actions.add')}
+          onPress={() => router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)}
+          type='primary'
+        />
       </View>
     </View>
   )

@@ -50,12 +50,10 @@ const Layout = () => {
           // headerShown: false,
         }}
       />
-
       <Stack.Screen
-        name='icons'
+        name='type-analytics'
         options={{
-          headerTitle: t('home.chooseicon'),
-
+          headerTitle: t('analytics.header'),
           header: (props) => (
             <Header
               {...props}
@@ -68,10 +66,9 @@ const Layout = () => {
               )}
             />
           ),
-
-          // headerShown: false,
         }}
       />
+      
     </Stack>
   )
 }

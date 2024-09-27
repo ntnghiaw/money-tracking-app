@@ -22,6 +22,7 @@ import { TouchableOpacity } from 'react-native'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import { compareAsc, format } from 'date-fns'
 import Toast from 'react-native-toast-message'
+import Loading from '@/src/components/Loading'
 
 
 const screenWidth = Dimensions.get('window').width
@@ -44,9 +45,7 @@ const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
   const [profile, setProfile] = useState<ProfileForm>(initialProfile)
-  const [isValidFields, setIsValidFields] = useState({
-    name: false,
-  })
+
 
   const [isFocusGender, setIsFocusGender] = useState(false)
   const [mode, setMode] = useState<AndroidMode>('date')
@@ -74,15 +73,15 @@ const Page = () => {
     }
   }, [getProfile])
 
-  useEffect(() => {
-    if(updateProfileResult.isSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-      })
-    }
+  // useEffect(() => {
+  //   if(updateProfileResult.isSuccess) {
+  //     Toast.show({
+  //       type: 'success',
+  //       text1: 'Success',
+  //     })
+  //   }
 
-  }, [updateProfileResult])
+  // }, [updateProfileResult])
 
 
 
@@ -142,13 +141,13 @@ const Page = () => {
           ),
         }}
       />
+      <Loading isLoading={getProfile.isFetching} text='Loading...' />
       <View style={styles.form}>
         <Input
           label={t('settings.name')}
           value={profile.name}
           placeholder={t('settings.name')}
           onChangeText={(value) => setProfile((prev) => ({ ...prev, name: value }))}
-          validate={(isValid) => setIsValidFields({ ...isValidFields, name: isValid })}
         />
 
         <View>
@@ -241,8 +240,7 @@ const Page = () => {
           type='primary'
           text={t('actions.save')}
           size='large'
-          state={Object.values(isValidFields).every((value) => value) ? 'normal' : 'disabled'}
-          disabled={!Object.values(isValidFields).every((value) => value)}
+          state='normal'
           onPress={handleUpdateProfile}
           isLoading={updateProfileResult.isLoading}
         />

@@ -41,6 +41,7 @@ import { clearTransaction } from '@/src/features/transaction/transactionSlice'
 import Loading from '@/src/components/Loading'
 import { usePrefetchImmediately } from '@/src/hooks/usePrefetchImmediately'
 import { CommonActions, StackActions } from '@react-navigation/native'
+import categoriesDefault from '@/src/constants/Categories'
 
 type AndroidMode = 'date' | 'time'
 const screenWidth = Dimensions.get('window').width
@@ -219,12 +220,11 @@ const Page = () => {
     }
   }
 
-  console.log(id)
   return (
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          headerTitle: t('transaction.edittransaction') ,
+          headerTitle: t('transaction.edittransaction'),
           header: (props) => (
             <Header
               {...props}
@@ -253,7 +253,7 @@ const Page = () => {
         <View style={{ paddingVertical: 32, gap: 24 }}>
           <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         </View>
-        <View style={{ gap: 14 }}>
+        <View style={{ gap: 8 }}>
           <View style={{ marginVertical: 12, marginBottom: 30 }}>
             <CurrencyInput
               placeholder='0'
@@ -287,13 +287,17 @@ const Page = () => {
               source={
                 transaction.category._id
                   ? getImg(transaction.category.icon)
-                  : require('@/src/assets/icons/grid2.png')
+                  : require('@/src/assets/icons/categories.png')
               }
               style={styles.iconCategory}
             />
             <View style={{ flex: 8 }}>
               <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                {transaction.category._id ? transaction.category.name : t('transaction.categories')}
+                {transaction.category._id
+                  ? categoriesDefault.includes(transaction.category.name)
+                    ? t(`categories.${transaction.category.name}`)
+                    : transaction.category.name
+                  : t('transaction.categories')}
               </ThemedText>
             </View>
             <ChevronDown width={24} height={24} color={TextColor.Placeholder} />
@@ -308,15 +312,23 @@ const Page = () => {
                 alignItems: 'center',
               }}
             >
-              <Pressable onPress={showDatepicker} style={[styles.button, { width: '49%' }]}>
-                <Fontisto name='date' size={20} color={BrandColor.PrimaryColor[400]} />
+              <Pressable onPress={showDatepicker} style={[styles.button, { width: '48%' }]}>
+                <Image
+                  source={require('@/src/assets/icons/calendar.png')}
+                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                />
                 <View style={{ flex: 3 }}>
-                  <Text>{formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}</Text>
+                  <Text adjustsFontSizeToFit={true} numberOfLines={1}>
+                    {formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}
+                  </Text>
                 </View>
                 <ChevronDown width={24} height={24} color={TextColor.Placeholder} />
               </Pressable>
-              <TouchableOpacity style={[styles.button, { width: '49%' }]} onPress={showTimepicker}>
-                <Entypo name='clock' size={22} color={BrandColor.PrimaryColor[400]} />
+              <TouchableOpacity style={[styles.button, { width: '48%' }]} onPress={showTimepicker}>
+                <Image
+                  source={require('@/src/assets/icons/clock.png')}
+                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                />
                 <View style={{ flex: 3 }}>
                   <Text>{formatDate(new Date(transaction.createdAt), 'hh/mm')}</Text>
                 </View>
@@ -343,7 +355,8 @@ const Page = () => {
           type={'primary'}
           text={id ? t('actions.update') : t('actions.save')}
           size={'large'}
-          state={'normal'}
+          state={!transaction.title ? 'disabled' : 'normal'}
+          disabled={!transaction.title}
           onPress={handleSubmit}
           isLoading={updatedTransactionResult.isLoading}
         />
@@ -382,7 +395,9 @@ const Page = () => {
                     <Image source={getImg(category.icon)} style={styles.iconCategory} />
                   </View>
                   <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-                    {category.name}
+                    {categoriesDefault.includes(category.name)
+                      ? t(`categories.${category.name}`)
+                      : category.name}
                   </ThemedText>
                   {/* { transaction.category._id === category._id && (  <View style={{position: 'absolute', right: 12}}>
                       <Image source={require('@/src/assets/icons/checked.png')} style={{width: 18, height: 18}} />

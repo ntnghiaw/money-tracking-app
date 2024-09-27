@@ -46,7 +46,7 @@
     "resend": "Gửi lại liên kết"
   },
   "signup": {
-    "title": "Chào mừng đến với FundFlex",
+    "title": "Chào mừng đến với WalletPal",
     "description": "Nhập Email & Mật khẩu của bạn để Đăng ký",
     "email": "Email",
     "password": "Mật khẩu",
@@ -135,6 +135,7 @@
   },
   "settings": {
     "title": "Cài đặt",
+    "styleformoneylabel": "Thiết lập kiểu hiển thị tiền",
     "editaccount": "Chỉnh sửa tài khoản",
     "resetpassword": "Đặt lại mật khẩu",
     "changetheme": "Thay đổi chủ đề",
@@ -176,11 +177,10 @@
     "invaliddob": "Ngày sinh không hợp lệ!"
   },
   "tabLabel": {
-    "home": "Nhà",
-    "goals": "Mục tiêu",
+    "home": "Tổng quan",
+    "wallets": "Ví",
     "analytics": "Phân tích",
-    "account": "Tài khoản",
-    "wallets": "Ví"
+    "more": "Khác"
   },
   "home": {
     "totalbalance": "Tổng số dư",
@@ -188,7 +188,9 @@
     "walletdescription": "Quản lý tất cả các ví của bạn tại đây",
     "income": "Thu nhập",
     "expense": "Chi phí",
-    "history": "Các giao dịch gần đây",
+    "recents": "Các giao dịch gần đây",
+    "history": "Lịch sử giao dịch",
+    "alltransactions":  "Tất cả giao dịch",
     "seeall": "Tất cả",
     "lessthan": "Ít hơn so với thu nhập trung bình của bạn",
     "morethan": "Nhiều hơn so với thu nhập trung bình của bạn",
@@ -210,7 +212,11 @@
     "categoryname": "Tên danh mục",
     "descriptioncategories": "Tùy chỉnh các danh mục của bạn",
     "history": "Lịch sử",
-    "seeall": "Tất cả"
+    "seeall": "Tất cả",
+    "seereportbycategories": "Xem báo cáo theo danh mục",
+    "seereportbycategoriesdescription": "Xem báo cáo chi tiêu / thu nhập của bạn theo danh mục",
+    "seereportbyexpenseincome": "Xem báo cáo theo chi phí / thu nhập",
+    "seereportbyexpenseincomedescription": "Xem báo cáo chi phí / thu nhập của bạn theo thời gian"
   },
   "actions": {
     "add": "Thêm",
@@ -224,6 +230,7 @@
     "create": "Tạo mới",
     "update": "Cập nhật",
     "close": "Đóng",
+    "more": "Thêm",
     "deletemessage": "Bạn có chắc chắn muốn xóa mục này không?"
   },
   "categories": {
@@ -260,5 +267,15 @@
     "type": "Loại ví",
     "editwallets": "Chỉnh sửa ví",
     "editwallet": "Chỉnh sửa ví"
+  },
+  "period": {
+    "day": "Ngày",
+    "week": "Tuần",
+    "month": "Tháng",
+    "quarter": "Quý",
+    "year": "Năm",
+    "all": "Tất cả",
+    "yesterday": "Hôm qua",
+    "today": "Hôm nay"
   }
 }

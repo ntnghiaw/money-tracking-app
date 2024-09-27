@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
-const settings = () => {
+const Page = () => {
   return (
     <View>
-      <Text>settings</Text>
+      <Text>Page</Text>
     </View>
   )
 }
-export default settings
+export default Page
 const styles = StyleSheet.create({})

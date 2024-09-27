@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ViewProps } from 'react-native'
+import { StyleSheet, Text, Touchable, View, ViewProps } from 'react-native'
 import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import React from 'react'
 import { Image } from 'react-native'
@@ -8,7 +8,9 @@ import { formatter } from '@/src/utils/formatAmount'
 import { useLocale } from '@/src/hooks/useLocale'
 import categoriesDefault from '@/src/constants/Categories'
 import { getImg } from '../utils/getImgFromUri'
-
+import { format } from 'date-fns'
+import { memo } from 'react'
+import { TouchableOpacity } from 'react-native'
 
 export type TransactionItemProps = ViewProps & {
   title: string
@@ -18,9 +20,10 @@ export type TransactionItemProps = ViewProps & {
   // img: () => React.ReactElement
   date: string
   type: 'income' | 'expense'
+  onPress?: () => void
 }
 
-const TransactionItem = ({ title, category, amount, icon, type, date, style }: TransactionItemProps) => {
+const TransactionItem = ({ title, category, amount, icon, type, date, style, onPress }: TransactionItemProps) => {
   const { currencyCode, t } = useLocale()
   return (
     <View style={[styles.item, style]}>
@@ -46,13 +49,13 @@ const TransactionItem = ({ title, category, amount, icon, type, date, style }: T
           {formatter(amount, currencyCode)}
         </ThemedText>
         <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
-          {date}
+          {format(new Date(date), "dd/MM/yyyy', 'p")}
         </ThemedText>
       </View>
     </View>
   )
 }
-export default TransactionItem
+export default memo(TransactionItem)
 const styles = StyleSheet.create({
   item: {
     minHeight: 64,

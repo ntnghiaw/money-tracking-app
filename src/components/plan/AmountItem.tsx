@@ -19,7 +19,7 @@ const AmountItem = ({ title, amount, date }: AmountItemProps) => {
   return (
     <View style={styles.item}>
       <View style={styles.amount}>
-        <ThemedText type={TextType.HeadlineSemibold} color={BrandColor.Red[300]}>
+        <ThemedText type={TextType.Title22Bold} color={BrandColor.Red[300]}>
           {formatter(amount, currencyCode)}
         </ThemedText>
       </View>

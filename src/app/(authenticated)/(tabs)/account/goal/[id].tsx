@@ -228,7 +228,7 @@ const Page = () => {
               {t('home.history')}
             </ThemedText>
             <Link
-              href={`/(authenticated)/(tabs)/account/goal/amount-history?id=${goal?._id}`}
+              href={`/(authenticated)/(tabs)/account/goal/amount-history`}
               asChild
             >
               <Text style={styles.link}>{t('home.seeall')}</Text>

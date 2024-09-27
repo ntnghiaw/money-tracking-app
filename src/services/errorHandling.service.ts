@@ -1,4 +1,10 @@
-import { isRejected, isRejectedWithValue, Middleware, MiddlewareAPI, UnknownAction } from '@reduxjs/toolkit'
+import {
+  isRejected,
+  isRejectedWithValue,
+  Middleware,
+  MiddlewareAPI,
+  UnknownAction,
+} from '@reduxjs/toolkit'
 import Toast from 'react-native-toast-message'
 function isPayloadErrorMessage(
   payload: unknown
@@ -15,15 +21,14 @@ function isPayloadErrorMessage(
 
 export const rtkQueryErrorLogger: Middleware =
   (api: MiddlewareAPI) => (next) => (action: unknown) => {
-
     // if(isRejectedWithValue(action) ) {
     //   if(action.error.name === 'CustomError') {
     //     console.log(action.error.message)
     //   }
     // }
-    // console.log('action', action)
-    if(isRejectedWithValue(action) ) {
-      if(isPayloadErrorMessage(action.payload)) {
+    // useLocale('action', action)
+    if (isRejectedWithValue(action)) {
+      if (isPayloadErrorMessage(action.payload)) {
         console.log(action.payload.data.error)
         Toast.show({
           type: 'error',
@@ -35,9 +40,9 @@ export const rtkQueryErrorLogger: Middleware =
     return next(action)
   }
 
-  export class CustomError extends Error {
-    constructor(message: string) {
-      super(message)
-      this.name = 'CustomError'
-    }
+export class CustomError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'CustomError'
   }
+}

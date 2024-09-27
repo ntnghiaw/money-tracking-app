@@ -263,12 +263,20 @@ const Page = () => {
           />
           <Pressable onPress={showCategoryModal} style={styles.button}>
             <Image
-              source={require('@/src/assets/icons/categories.png')}
+              source={
+                transaction.category._id
+                  ? getImg(transaction.category.icon)
+                  : require('@/src/assets/icons/categories.png')
+              }
               style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
             <View style={{ flex: 8 }}>
               <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                {transaction.category._id ? transaction.category.name : t('transaction.categories')}
+                {transaction.category._id
+                  ? categoriesDefault.includes(transaction.category.name)
+                    ? t(`categories.${transaction.category.name}`)
+                    : transaction.category.name
+                  : t('transaction.categories')}
               </ThemedText>
             </View>
             <ChevronDown width={24} height={24} color={TextColor.Placeholder} />

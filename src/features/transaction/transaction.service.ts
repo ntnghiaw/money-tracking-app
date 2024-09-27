@@ -64,7 +64,7 @@ export const transactionApi = appApi.injectEndpoints({
         error
           ? []
           : [
-              { type: 'Transaction', id: 'LIST' },
+              { type: 'Transaction', id: 'PARTIAL-LIST' },
               { type: 'Wallet', id: 'LIST' },
               { type: 'Plan', id: 'LIST' },
               { type: 'Plan', id: 'id' },
@@ -81,7 +81,6 @@ export const transactionApi = appApi.injectEndpoints({
         result
           ? [
               { type: 'Transaction', id: result._id },
-              { type: 'Transaction', id: 'PARTIAL-LIST' },
             ]
           : [{ type: 'Transaction', id: 'LIST' }],
     }),
@@ -125,7 +124,7 @@ export const transactionApi = appApi.injectEndpoints({
       ],
     }),
 
-    scanImageReceipts: builder.mutation<ScanImageReceiptsResponse, {image: any}>({
+    scanImageReceipts: builder.mutation<ScanImageReceiptsResponse, { image: any }>({
       query: (body) => {
         const formData = new FormData()
         formData.append('file', body.image)

@@ -1,5 +1,7 @@
 import { Transaction } from '@/src/types/enum'
 
+
+const LIMIT = 5
 export const handleStatistic = (
   transactions: Transaction[]
 ): {
@@ -41,10 +43,10 @@ export const handleStatistic = (
   }))
 
   // limit to 4 categories
-  if (result.length > 4) {
+  if (result.length >= LIMIT) {
     // sort by percentage -> descending
-    const mainCates = result.sort((a, b) => b.percentage - a.percentage).slice(0, 3)
-    const othersCategory = result.sort((a, b) => b.percentage - a.percentage).slice(3)
+    const mainCates = result.sort((a, b) => b.percentage - a.percentage).slice(0, LIMIT-1)
+    const othersCategory = result.sort((a, b) => b.percentage - a.percentage).slice(LIMIT - 1)
     mainCates.push({
       name: 'Others',
       amount: othersCategory.reduce((pre, cur) => pre + cur.amount, 0),

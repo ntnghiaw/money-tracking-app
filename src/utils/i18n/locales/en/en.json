@@ -46,7 +46,7 @@
     "resend": "Resend link"
   },
   "signup": {
-    "title": "Welcome to FundFlex",
+    "title": "Welcome to WalletPal",
     "description": "Enter your Email & Password to Sign up",
     "email": "Email",
     "password": "Password",
@@ -135,6 +135,7 @@
   },
   "settings": {
     "title": "Settings",
+    "styleformoneylabel": "Set Money Display Style",
     "editaccount": "Edit account",
     "resetpassword": "Reset password",
     "changetheme": "Change Theme",
@@ -177,10 +178,9 @@
   },
   "tabLabel": {
     "home": "Home",
+    "wallets": "Wallets",
     "analytics": "Analytics",
-    "goals": "Goals",
-    "account": "Account",
-    "wallets": "Wallets"
+    "more": "More"
   },
   "home": {
     "totalbalance": "Total Balance",
@@ -188,7 +188,9 @@
     "walletdescription": "Add wallets to start tracking your finances",
     "income": "Income",
     "expense": "Expense",
-    "history": "Recent Transaction",
+    "recents": "Recent Transactions",
+    "history": "History",
+    "alltransactions": "All Transactions",
     "seeall": "See all",
     "lessthan": "Less than your average income",
     "morethan": "More than your average income",
@@ -210,7 +212,11 @@
     "categoryname": "Category Name",
     "descriptioncategories": "Organize your finances by custom categories",
     "history": "History",
-    "seeall": "See all"
+    "seeall": "See all",
+    "seereportbycategories": "See report by categories",
+    "seereportbycategoriesdescription": "View your expenses/income report by categories",
+    "seereportbyexpenseincome": "See report by expense/income",
+    "seereportbyexpenseincomedescription": "View your expenses/income report by time"
   },
   "actions": {
     "cancel": "Cancel",
@@ -223,6 +229,7 @@
     "create": "Create",
     "update": "Update",
     "close": "Close",
+    "more": "More",
     "deletemessage": "Are you sure you want to delete this item?"
   },
   "categories": {
@@ -259,5 +266,15 @@
     "type": "Type",
     "editwallets": "Edit Wallets",
     "editwallet": "Edit Wallet"
+  },
+  "period": {
+    "day": "Daily",
+    "week": "Weekly",
+    "month": "Monthly",
+    "quarter": "Quarterly",
+    "year": "Yearly",
+    "all": "All",
+    "yesterday": "Yesterday",
+    "today": "Today"
   }
 }

@@ -91,12 +91,11 @@ const Page = () => {
               {...props}
               headerLeft={() => (
                 <HeaderButton
-                  type='text'
+                  type='btn'
                   onPress={() => {
                     router.back()
                   }}
-                  textColor={TextColor.Secondary}
-                  text={t('actions.close')}
+                  button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
                 />
               )}
             />

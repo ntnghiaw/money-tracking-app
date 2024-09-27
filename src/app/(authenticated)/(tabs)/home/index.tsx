@@ -37,11 +37,11 @@ const Home = () => {
   const dispatch = useAppDispatch()
   const [type, setType] = useState('expense')
   const { walletId } = useAppSelector((state) => state.auth)
-  const { data } = useGetWalletByIdQuery({
+  const { data, isFetching: isFetchingWallet } = useGetWalletByIdQuery({
     walletId: walletId,
   })
 
-  const { data: transactions, isLoading: isFetchingTransaction } = useGetAllTransactionsQuery({
+  const { data: transactions, isLoading: isLoadingTransactions, isFetching } = useGetAllTransactionsQuery({
     walletId: walletId,
     query: {
       limit: '6',
@@ -50,11 +50,8 @@ const Home = () => {
     },
   })
 
-  const wallet = data?.metadata
-  const recentTransactions =
-    useMemo(() => {
-      return transactions?.slice(0, MAX_RECENT_TRANSACTIONS)
-    }, [transactions]) || [] // get 6 recent transactions
+ 
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -77,7 +74,7 @@ const Home = () => {
           ),
         }}
       />
-      {<Loading isLoading={isFetchingTransaction} text='Loading..' />}
+      {<Loading isLoading={isFetching || isFetchingWallet} text='Loading..' />}
 
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.balanceSection}>
@@ -87,7 +84,7 @@ const Home = () => {
             </ThemedText>
           </View>
           <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
-            {formatter(wallet?.balance ?? 0, currencyCode)}
+            {formatter(data?.balance ?? 0, currencyCode)}
           </ThemedText>
           {/* <View style={styles.summary}>
             <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />
@@ -98,7 +95,7 @@ const Home = () => {
               {t('home.morethan')}
             </ThemedText>
           </View> */}
-          <View style={styles.summary}>
+          {/* <View style={styles.summary}>
             <Entypo name='triangle-down' size={16} color={BrandColor.Red[500]} />
             <ThemedText color={BrandColor.Red[500]} type={TextType.CaptionSemibold}>
               {`25% `}
@@ -106,10 +103,18 @@ const Home = () => {
             <ThemedText color={BrandColor.Gray[600]} type={TextType.Caption11Regular}>
               {t('home.lessthan')}
             </ThemedText>
-          </View>
+          </View> */}
         </View>
         <View style={styles.operationSection}>
-          <TouchableOpacity style={[styles.btn50, { backgroundColor: BrandColor.Red[50] }]}>
+          <TouchableOpacity
+            style={[styles.btn50, { backgroundColor: BrandColor.Red[50] }]}
+            onPress={() =>
+              router.navigate({
+                pathname: '/(authenticated)/(tabs)/home/categories-analytics',
+                params: { type: 'expense' },
+              })
+            }
+          >
             <View style={[styles.icon, { backgroundColor: BrandColor.Red[500] }]}>
               <Ionicons name='chevron-down' size={12} color={BrandColor.Red[500]} />
             </View>
@@ -118,7 +123,15 @@ const Home = () => {
               {t('home.expense')}
             </ThemedText>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btn50, { backgroundColor: BrandColor.Blue[50] }]}>
+          <TouchableOpacity
+            style={[styles.btn50, { backgroundColor: BrandColor.Blue[50] }]}
+            onPress={() =>
+              router.navigate({
+                pathname: '/(authenticated)/(tabs)/home/categories-analytics',
+                params: { type: 'income' },
+              })
+            }
+          >
             <View style={[styles.icon, { backgroundColor: BrandColor.PrimaryColor[400] }]}>
               <Ionicons name='chevron-up' size={12} color={BrandColor.PrimaryColor[400]} />
             </View>
@@ -141,14 +154,14 @@ const Home = () => {
         <View style={styles.historySection}>
           <View style={styles.headerSection}>
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
-              {t('home.history')}
+              {t('home.recents')}
             </ThemedText>
             <Link href='/(authenticated)/(tabs)/home/history' asChild>
               <Text style={styles.link}>{t('home.seeall')}</Text>
             </Link>
           </View>
           <View>
-            {recentTransactions?.length === 0 && (
+            {transactions?.length === 0 && (
               <ThemedText
                 type={TextType.FootnoteRegular}
                 color={TextColor.Secondary}
@@ -157,13 +170,13 @@ const Home = () => {
                 {t(`home.notransactions`)}
               </ThemedText>
             )}
-            {recentTransactions?.map((item, index) => (
+            {transactions?.slice(0, MAX_RECENT_TRANSACTIONS)?.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() =>
                   router.push({
-                    pathname: `/(authenticated)/(tabs)/home/[transaction]`,
-                    params: { transaction: item._id },
+                    pathname: `/(authenticated)/(tabs)/home/[id]`,
+                    params: { id: item._id },
                   })
                 }
               >
@@ -172,19 +185,13 @@ const Home = () => {
                   category={item.category.name}
                   amount={item.amount}
                   type={item.type}
-                  icon= {item.category.icon}
-                  date={
-                    formatDate(
-                      item?.createdAt ? new Date(item?.createdAt) : new Date(),
-                      'dd/mm/yy'
-                    )!
-                  }
+                  icon={item.category.icon}
+                  date={item?.createdAt}
                 />
               </TouchableOpacity>
             ))}
           </View>
         </View>
-      
       </ScrollView>
     </SafeAreaView>
   )
@@ -276,12 +283,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btn100: {
-    marginTop: 18,
+    marginTop: 32,
     width: '100%',
   },
 
   historySection: {
-    marginTop: 18,
+    marginTop: 36,
     gap: 6,
   },
   headerSection: {

@@ -402,7 +402,7 @@ const Page = () => {
               {t('transaction.categories')}
             </ThemedText>
           </View>
-    
+
           <View style={{ borderRadius: 14, marginTop: 24, overflow: 'hidden' }}>
             <ScrollView
               style={{
@@ -414,7 +414,7 @@ const Page = () => {
                 <TouchableOpacity
                   key={category._id}
                   style={styles.item}
-                  onPress={() => chooseCategoryHandler(category)}
+                  onPress={() => selectCategory(category)}
                 >
                   <View style={styles.iconCover}>
                     <Image source={getImg(category.icon)} style={styles.iconCategory} />

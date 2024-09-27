@@ -4,7 +4,6 @@ import TransactionItem from '@/src/components/TransactionItem'
 import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TextType } from '@/src/types/text'
-import { formatter } from '@/src/utils/formatAmount'
 import { Href, Link, Stack } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useCallback, useMemo, useRef, useState } from 'react'
@@ -15,30 +14,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Dropdown } from 'react-native-element-dropdown'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import formatDate from '@/src/utils/formatDate'
-import { getImg } from '@/src/utils/getImgFromUri'
-import { BarChart } from 'react-native-gifted-charts'
+
 import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
-import {
-  format,
-  startOfDay,
-  startOfMonth,
-  startOfTomorrow,
-  startOfWeek,
-  startOfYear,
-} from 'date-fns'
+
 import Loading from '@/src/components/Loading'
 import { formatValue } from 'react-native-currency-input-fields'
-import { formartGroupedBarChart } from '@/src/utils/analytics'
+import { formatBarChart } from '@/src/utils/analytics'
 import { Transaction } from '@/src/types/enum'
 import Bar from '@/src/components/charts/Bar'
-import InfoButton from '@/src/components/buttons/InfoButton'
-import { Ionicons } from '@expo/vector-icons'
-import { Plus } from 'react-native-feather'
-import { DefaultTheme } from '@react-navigation/native'
-import GroupedBars from '@/src/components/charts/GroupedBars'
 
-const screenWidth = Dimensions.get('window').width
 
 export enum CustomTab {
   Tab1,
@@ -55,44 +39,56 @@ const dataChart = [
   { value: 300, label: 'Sun' },
 ]
 
-
 const Page = () => {
   const router = useRouter()
   const { bottom, top } = useSafeAreaInsets()
-  const [period, setPeriod] = useState('month')
+  const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
+  const [selectedIndex, setSelectedIndex] = useState<number>()
+  const [period, setPeriod] = useState('week')
   const [isFocusPeriod, setIsFocusPeriod] = useState(false)
 
   const { t } = useLocale()
   const { currencyCode } = useLocale()
-
+  const buttons: TabButtonType[] = [
+    { title: t('analytics.expense') },
+    { title: t('analytics.income') },
+  ]
   const dispatch = useAppDispatch()
   const { walletId } = useAppSelector((state) => state.auth)
-const periodOptions = [
-  { label: t('period.month'), value: 'month' },
-  { label: t('period.quarter'), value: 'quarter' },
-  { label: t('period.year'), value: 'year' },
-  { label: t('period.all'), value: 'all' },
-]
+  const periodOptions = [
+    { label: t('period.week'), value: 'week' },
+    { label: t('period.month'), value: 'month' },
+    { label: t('period.quarter'), value: 'quarter' },
+    { label: t('period.year'), value: 'year' },
+    { label: t('period.all'), value: 'all' },
+  ]
 
   const { isLoading, data, isError, isFetching } = useGetAllTransactionsQuery({
     walletId: walletId!,
     query: {
       period,
       sort: 'desc',
+      type: selectedTab === CustomTab.Tab1 ? 'expense' : 'income',
     },
   })
 
   const balanceTotal = useMemo(() => {
-    return data?.reduce((acc, item) => {
-      return item.type === 'expense' ? acc - item.amount : acc + item.amount
-    }, 0)
+    return data?.reduce((acc, item) => acc + item.amount, 0)
   }, [data])
-  const dataChart = useMemo(() => formartGroupedBarChart(data as Transaction[], period), [data])
+  const dataChart = useMemo(() => formatBarChart(data as Transaction[], period), [data])
 
   return (
     <SafeAreaView style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerTitle: 'Analytics',
+        }}
+      />
       <Loading isLoading={isFetching} text='Loading...' />
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+        <View style={{ marginTop: 14 }}>
+          <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+        </View>
         <View style={styles.info}>
           <View>
             <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
@@ -131,11 +127,11 @@ const periodOptions = [
           />
         </View>
         <View style={[styles.chartSection]}>
-          <GroupedBars data={dataChart} />
+          <Bar data={dataChart} />
         </View>
-        <View style={styles.btn100}>
+        {/* <View style={styles.btn100}>
           <InfoButton
-            title={t('analytics.seereportbyexpenseincome')}
+            title={t('analytics.seereportbycategories')}
             icon={() => (
               <Image
                 source={require('@/src/assets/icons/circle-chart.png')}
@@ -148,10 +144,12 @@ const periodOptions = [
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
             )}
-            description={t('analytics.seereportbyexpenseincomedescription')}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/analytics/type-analytics')}
+            description={t('analytics.seereportbycategoriesdescription')}
+            onPress={() =>
+              router.navigate('/(authenticated)/(tabs)/analytics/categories-analytics')
+            }
           />
-        </View>
+        </View> */}
         <View style={styles.historySection}>
           <View style={styles.headerSection}>
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
@@ -193,25 +191,27 @@ const periodOptions = [
             ))}
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.linkBtn}
-          onPress={() =>
-            router.navigate({
-              pathname: '/(authenticated)/(tabs)/home/history',
-              params: {
-                period,
-              },
-            })
-          }
-        >
-          <Image
-            source={require('@/src/assets/icons/arrow-down-blue.png')}
-            style={{ width: 24, height: 24, resizeMode: 'contain' }}
-          />
-          <ThemedText type={TextType.FootnoteRegular} color={BrandColor.Blue[600]}>
-            {t('actions.more')}
-          </ThemedText>
-        </TouchableOpacity>
+        {data?.length! > 5 && (
+          <TouchableOpacity
+            style={styles.linkBtn}
+            onPress={() =>
+              router.navigate({
+                pathname: '/(authenticated)/(tabs)/home/history',
+                params: {
+                  period,
+                },
+              })
+            }
+          >
+            <Image
+              source={require('@/src/assets/icons/arrow-down-blue.png')}
+              style={{ width: 24, height: 24, resizeMode: 'contain' }}
+            />
+            <ThemedText type={TextType.FootnoteRegular} color={BrandColor.Blue[600]}>
+              {t('actions.more')}
+            </ThemedText>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </SafeAreaView>
   )
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   chartSection: {
     width: '100%',
     minHeight: 270,
-    marginVertical: 10,
+    marginVertical: 20,
   },
   historySection: {
     marginTop: 18,
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
   },
   btn100: {
     width: '100%',
+    marginTop: 20,
   },
   linkBtn: {
     paddingBottom: 90,
