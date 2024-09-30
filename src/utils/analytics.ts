@@ -395,7 +395,8 @@ const formatPieChart = (rawData: Transaction[]): DataPieChart[] => {
       value: item.percentage,
       color: colors[index],
       gradientCenterColor: gradientCenterColors[index],
-      text: item.name
+      text: item.name,
+      id: item.id
     }
   })
   return result

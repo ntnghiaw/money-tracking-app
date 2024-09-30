@@ -8,6 +8,7 @@ export const handleStatistic = (
   total: number
   data: {
     name: string
+    id: string
     amount: number
     percentage: number
   }[]
@@ -22,6 +23,7 @@ export const handleStatistic = (
   const setOfCategories = [...new Set(categories)]
   const filterCategories = setOfCategories.map((category) => ({
     name: JSON.parse(category).name,
+    id: JSON.parse(category)._id,
     amount: 0,
   }))
 
@@ -39,6 +41,7 @@ export const handleStatistic = (
   const result = filterCategories.map((category) => ({
     name: category.name,
     amount: category.amount,
+    id: category.id,
     percentage: Number(((category.amount / total) * 100).toFixed(1)),
   }))
 
@@ -53,6 +56,7 @@ export const handleStatistic = (
       percentage: Number(
         (100 - mainCates.reduce((pre, cur) => pre + cur.percentage, 0)).toFixed(1)
       ),
+      id: 'all' // ids for others category
     })
     return {
       total,

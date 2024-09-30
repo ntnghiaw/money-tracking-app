@@ -165,7 +165,7 @@ const Page = () => {
           </ThemedText>
         </TouchableOpacity>
       </View>
-      <View style={styles.oauth}>
+      {/* <View style={styles.oauth}>
         <View
           style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
         >
@@ -192,7 +192,7 @@ const Page = () => {
           textColor={TextColor.Primary}
           type='tertiary'
         />
-      </View>
+      </View> */}
     </View>
   )
 }

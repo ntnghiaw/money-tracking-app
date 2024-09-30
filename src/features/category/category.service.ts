@@ -24,7 +24,7 @@ export const categoryApi = appApi.injectEndpoints({
         method: 'GET',
       }),
       transformResponse: (response: { metadata: Category[] }) => response.metadata, // merge with default categories
-      providesTags: (result) =>
+      providesTags: (result) => 
         result
           ? [
               ...result.map(({ _id }) => ({ type: 'Category' as const, id: _id })),

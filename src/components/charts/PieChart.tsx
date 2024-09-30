@@ -1,17 +1,19 @@
 import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { View, StyleSheet, Text } from 'react-native'
-import { PieChart } from 'react-native-gifted-charts'
+import { PieChart, pieDataItem } from 'react-native-gifted-charts'
 import { ThemedText } from '../ThemedText'
 import { TextType } from '@/src/types/text'
 import { useLocale } from '@/src/hooks/useLocale'
 import { isDefaultCategory } from '@/src/utils/isDefaultCategory'
+import { Alert } from 'react-native'
 
 interface PieData {
   value: number
   color: string
   gradientCenterColor: string
   focused?: boolean
-  text?: string
+  text?: string,
+  id?: string,
 }
 
 interface CustomPieChartProps {
@@ -20,7 +22,7 @@ interface CustomPieChartProps {
 
 const CustomPieChart = ({ data }: CustomPieChartProps) => {
   const {t} = useLocale()
-  const renderDot = (color: string) => {
+  const renderDot = (color?: string) => {
     return (
       <View
         style={{
@@ -52,6 +54,7 @@ const CustomPieChart = ({ data }: CustomPieChartProps) => {
                   alignItems: 'center',
                   width: 120,
                 }}
+                key={index}
               >
                 {renderDot(item.color)}
                 <ThemedText
@@ -89,6 +92,10 @@ const CustomPieChart = ({ data }: CustomPieChartProps) => {
           sectionAutoFocus
           radius={90}
           innerRadius={60}
+          onPress={(item: PieData, index:number) => {
+            console.log(item)
+          }
+          }
           innerCircleColor={BackgroundColor.LightTheme.Primary}
           centerLabelComponent={() => {
             return (
@@ -102,7 +109,9 @@ const CustomPieChart = ({ data }: CustomPieChartProps) => {
                   adjustsFontSizeToFit={true}
                   numberOfLines={1}
                 >
-                  {isDefaultCategory(data[0].text!) ? t(`categories.${data[0].text}`) : data[0].text}
+                  {isDefaultCategory(data[0].text!)
+                    ? t(`categories.${data[0].text}`)
+                    : data[0].text}
                 </ThemedText>
               </View>
             )

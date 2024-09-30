@@ -25,6 +25,7 @@ import { AntDesign } from '@expo/vector-icons'
 import ListHeader from '@/src/components/ListHeader'
 import { Dropdown } from 'react-native-element-dropdown'
 import { formatValue } from 'react-native-currency-input-fields'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 const DEFAULT_LIMIT = 20
 
@@ -43,7 +44,8 @@ interface SectionItem {
 const history = () => {
   const router = useRouter()
   const { t } = useLocale()
-  const {period: periodParam} = useLocalSearchParams() as {period: string}
+  const {period: periodParam, categoryId} = useLocalSearchParams() as {period: string, categoryId: string}
+  
   const { height } = Dimensions.get('window')
   const { bottom } = useSafeAreaInsets()
   const dispatch = useAppDispatch()

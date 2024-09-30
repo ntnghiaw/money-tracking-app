@@ -31,6 +31,7 @@ export const transactionApi = appApi.injectEndpoints({
           type?: string
           limit?: string
           offset?: string
+          category?: string
         }
       }
     >({
