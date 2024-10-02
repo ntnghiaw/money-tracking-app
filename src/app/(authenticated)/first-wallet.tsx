@@ -101,7 +101,7 @@ const Page = () => {
   const handleCreateWallet = async () => {
     try {
       await createFirstWallet({
-        wallet: { name: form.name, type: 'private' },
+        wallet: { icon: 'wallet', name: form.name, type: 'private' },
       }).unwrap()
     } catch (error) {
       console.log('🚀 ~ handleCreateWal ~ error:', error)
