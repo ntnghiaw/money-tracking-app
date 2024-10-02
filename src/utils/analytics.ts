@@ -271,7 +271,7 @@ const formartGroupedBarChart = (
         rawData.forEach((item) => {
           if (
             new Date(item.createdAt) >= quarter &&
-            new Date(item.createdAt) < endOfQuarter(quarter)
+            new Date(item.createdAt) < endOfMonth(quarter)
           ) {
             if (item.type === 'expense') {
               totalExpense += item.amount
