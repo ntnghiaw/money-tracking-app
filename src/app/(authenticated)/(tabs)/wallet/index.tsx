@@ -60,14 +60,14 @@ const Page = () => {
           ),
         }}
       />
-      <Loading isLoading={getAllWallets.isLoading} text='Loading...' />
+      <Loading isLoading={getAllWallets.isFetching} text='Loading...' />
       <View style={{ marginTop: 40, gap: 20 }}>
         {getAllWallets.data?.map((wallet) => (
           <TouchableOpacity key={wallet._id} onPress={() => handleSelectWallet(wallet._id)}>
             <WalletItem
               name={wallet.name}
               balance={wallet.balance}
-              icon='credit-card'
+              icon={wallet.icon}
               key={wallet._id}
               isDefault={walletId === wallet._id}
             />

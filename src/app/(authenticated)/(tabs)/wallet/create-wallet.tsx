@@ -9,10 +9,13 @@ import { useCreateNewWalletMutation } from '@/src/features/wallet/wallet.service
 import { useLocale } from '@/src/hooks/useLocale'
 import { Wallet } from '@/src/types/enum'
 import { TextType } from '@/src/types/text'
+import { getImg, getWaleltImg } from '@/src/utils/getImgFromUri'
 import { isEntityError } from '@/src/utils/helpers'
 import { AntDesign } from '@expo/vector-icons'
-import { Href, Stack, useRouter } from 'expo-router'
+import { Href, Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
+import { TouchableOpacity } from 'react-native'
+import { Image } from 'react-native'
 import { SafeAreaView } from 'react-native'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
@@ -47,6 +50,7 @@ const types = [
 const Page = () => {
  const router = useRouter()
  const {t} = useLocale()
+ const {icon} = useLocalSearchParams() as {icon: string}
  const [wallet, setWallet] = useState<typeof initWallet>(initWallet)
  const [isFocusType, setIsFocusType] = useState(false)
   const [isValidFields, setIsValidFields] = useState({
@@ -74,7 +78,8 @@ const Page = () => {
 
   const handleCreateWallet = async() => {
     try {
-      await createWallet({wallet}).unwrap()
+      console.log('wallet::', { ...wallet, icon: icon.toString() })
+      await createWallet({...wallet, icon: icon.toString()}).unwrap()
     } catch (error) {
       console.log("🚀 ~ handleCreateWal ~ error:", error)
     }
@@ -104,6 +109,15 @@ const Page = () => {
       />
 
       <View style={styles.form}>
+        <TouchableOpacity
+          style={[styles.iconSmile, { alignSelf: 'center' }]}
+          onPress={() => router.push('/(authenticated)/(tabs)/wallet/icons' as Href)}
+        >
+          <Image
+            source={icon ? getWaleltImg(icon.toString()) : require('@/src/assets/icons/smile.png')}
+            style={styles.img}
+          />
+        </TouchableOpacity>
         <Input
           label={t('wallets.name')}
           value={wallet.name}
@@ -218,5 +232,20 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: BrandColor.Gray[300],
+  },
+  iconSmile: {
+    width: 138,
+    height: 138,
+    borderRadius: 26,
+    backgroundColor: BrandColor.PrimaryColor[50],
+    borderColor: BrandColor.PrimaryColor[400],
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  img: {
+    width: 54,
+    height: 54,
+    resizeMode: 'contain',
   },
 })

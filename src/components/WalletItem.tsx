@@ -2,9 +2,11 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { ThemedText } from './ThemedText'
 import { TextType } from '@/src/types/text'
-import { getImg } from '@/src/utils/getImgFromUri'
+import { getImg, getWaleltImg } from '@/src/utils/getImgFromUri'
 import { useLocale } from '@/src/hooks/useLocale'
 import { formatValue } from 'react-native-currency-input-fields'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { useSettings } from '@/src/hooks/useSetting'
 
 interface WalletItemProps {
   name: string
@@ -16,10 +18,11 @@ interface WalletItemProps {
 const WalletItem = ({ name, balance, icon, isDefault }: WalletItemProps) => {
   const { t } = useLocale()
   const { currencyCode } = useLocale()
+  const { styleMoneyLabel: { decimalSeparator, groupSeparator, showCurrency, disableDecimal } } = useSettings()
   return (
-    <View style={[styles.container, isDefault && {borderColor: BrandColor.PrimaryColor[400]}]}>
+    <View style={[styles.container, isDefault && { borderColor: BrandColor.PrimaryColor[400] }]}>
       <View style={styles.icon}>
-        <Image source={getImg(icon)} style={styles.image} />
+        <Image source={getWaleltImg(icon)} style={styles.image} />
       </View>
       <View style={styles.info}>
         <ThemedText type={TextType.HeadlineBold} color={TextColor.Primary}>
@@ -27,20 +30,17 @@ const WalletItem = ({ name, balance, icon, isDefault }: WalletItemProps) => {
         </ThemedText>
         <ThemedText type={TextType.SubheadlineBold} color={TextColor.Secondary}>
           {`${t('wallets.balance')}: ${formatValue({
-            value: balance.toString(),
-            intlConfig: {
-              locale: 'de-DE',
-              currency: currencyCode,
-            },
+            value: String(balance),
+            decimalSeparator: decimalSeparator,
+            groupSeparator: groupSeparator,
+            suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+            decimalScale: disableDecimal ? 0 : 2,
           })}`}
         </ThemedText>
       </View>
       <View style={styles.check}>
         {isDefault && (
-          <Image
-            source={require('@/src/assets/icons/checked.png')}
-            style={styles.checkedIcon}
-          />
+          <Image source={require('@/src/assets/icons/checked.png')} style={styles.checkedIcon} />
         )}
       </View>
     </View>

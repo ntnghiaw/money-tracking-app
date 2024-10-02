@@ -1,6 +1,7 @@
 import BottomContainer from '@/src/components/BottomContainer'
 import Button from '@/src/components/buttons/Button'
 import Input from '@/src/components/Input'
+import Loading from '@/src/components/Loading'
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
 import { ThemedText } from '@/src/components/ThemedText'
@@ -10,11 +11,14 @@ import { useAppSelector } from '@/src/hooks/hooks'
 import { useLocale } from '@/src/hooks/useLocale'
 import { Wallet } from '@/src/types/enum'
 import { TextType } from '@/src/types/text'
+import { getWaleltImg } from '@/src/utils/getImgFromUri'
 import { isEntityError } from '@/src/utils/helpers'
 import { AntDesign } from '@expo/vector-icons'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { Href, Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
+import { TouchableOpacity } from 'react-native'
+import { Image } from 'react-native'
 import { SafeAreaView } from 'react-native'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
@@ -25,6 +29,7 @@ const screenHeight = Dimensions.get('window').height
 const initWallet = {
   name: '',
   type: 'private' as 'private' | 'shared',
+  icon: '',
 }
 
 type FormError =
@@ -41,7 +46,7 @@ const types = [
 const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
-  const {id} = useLocalSearchParams() as {id: string}
+  const {id, icon} = useLocalSearchParams() as {id: string, icon: string}
   const [wallet, setWallet] = useState<typeof initWallet>(initWallet)
   const {walletId} = useAppSelector((state) => state.auth)
   const [isFocusType, setIsFocusType] = useState(false)
@@ -52,6 +57,7 @@ const Page = () => {
   const fetchedWallet = useGetWalletByIdQuery({
    walletId: id ?? skipToken
   })
+
 
   useEffect(() => {
     if(fetchedWallet.isSuccess){
@@ -80,7 +86,13 @@ const Page = () => {
 
   const handleCreateWallet = async () => {
     try {
-      await updateWallet({ walletId: id, wallet }).unwrap()
+      await updateWallet({
+        walletId: id,
+        wallet: {
+          ...wallet,
+          icon: icon?.toString() ?? wallet.icon,
+        },
+      }).unwrap()
     } catch (error) {
       console.log('🚀 ~ handleCreateWal ~ error:', error)
     }
@@ -116,7 +128,16 @@ const Page = () => {
         }}
       />
 
+        <Loading isLoading={fetchedWallet.isLoading} text='Loading...' />
       <View style={styles.form}>
+        <TouchableOpacity
+          style={[styles.iconSmile, { alignSelf: 'center' }]}
+          onPress={() => router.push('/(authenticated)/(tabs)/wallet/icons' as Href)}
+        >
+         {
+          wallet.icon ? <Image source={getWaleltImg(wallet.icon) } style={styles.img} /> : icon ? <Image source={ getWaleltImg(icon)} style={styles.img} /> : <Image source={require('@/src/assets/icons/smile.png')} style={{width: 24, height: 24, resizeMode: 'contain'}}/>
+         }
+        </TouchableOpacity>
         <Input
           label={t('wallets.name')}
           value={wallet.name}
@@ -242,5 +263,20 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: BrandColor.Gray[300],
+  },
+  iconSmile: {
+    width: 138,
+    height: 138,
+    borderRadius: 26,
+    backgroundColor: BrandColor.PrimaryColor[50],
+    borderColor: BrandColor.PrimaryColor[400],
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  img: {
+    width: 54,
+    height: 54,
+    resizeMode: 'contain',
   },
 })

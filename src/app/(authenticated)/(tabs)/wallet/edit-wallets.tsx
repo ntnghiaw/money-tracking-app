@@ -63,7 +63,7 @@ const Page = () => {
             <WalletItem
               name={wallet.name}
               balance={wallet.balance}
-              icon='credit-card'
+              icon={wallet.icon}
               key={wallet._id}
               isDefault={false}
             />

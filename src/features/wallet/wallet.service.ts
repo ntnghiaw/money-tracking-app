@@ -9,7 +9,8 @@ import { appApi } from '@/src/features/api.service'
 
 interface WalletRequest {
   name: string
-  type: 'shared' | 'private'
+  type: 'shared' | 'private',
+  icon: string
 }
 
 export const walletApi = appApi.injectEndpoints({
@@ -28,11 +29,11 @@ export const walletApi = appApi.injectEndpoints({
       transformResponse: (response: { metadata: WalletResponse }) => response.metadata,
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
-    createNewWallet: builder.mutation<Response<WalletResponse>, { wallet: WalletRequest }>({
+    createNewWallet: builder.mutation<Response<WalletResponse>, WalletRequest >({
       query: (body) => ({
         url: config.api.endpoints.wallets,
         method: 'POST',
-        body: body.wallet,
+        body,
       }),
       invalidatesTags: [{ type: 'Wallet', id: 'LIST' }],
     }),
