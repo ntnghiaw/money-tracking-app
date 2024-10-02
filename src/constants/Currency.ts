@@ -1040,9 +1040,17 @@ export const countries = [
   'zambia',
 ]
 
-
-
 export const currencies = [
+  {
+    symbol: '₫',
+    name: 'Vietnamese Dong',
+    symbol_native: '₫',
+    decimal_digits: 0,
+    rounding: 0,
+    code: 'VND',
+    name_plural: 'Vietnamese dong',
+    icon: require('@/src/assets/flags/vietnam.png'),
+  },
   {
     symbol: '$',
     name: 'US Dollar',
@@ -1093,16 +1101,7 @@ export const currencies = [
     name_plural: 'Chinese yuan',
     icon: require('@/src/assets/flags/china.png'),
   },
-  {
-    symbol: '₫',
-    name: 'Vietnamese Dong',
-    symbol_native: '₫',
-    decimal_digits: 0,
-    rounding: 0,
-    code: 'VND',
-    name_plural: 'Vietnamese dong',
-    icon: require('@/src/assets/flags/vietnam.png'),
-  },
+
   {
     symbol: '฿',
     name: 'Thai Baht',

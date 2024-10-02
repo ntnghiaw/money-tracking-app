@@ -268,7 +268,7 @@ const Page = () => {
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          headerTitle: t('budgets.editbudget'),
+          headerTitle: t('budgets.newbudget'),
           header: (props) => (
             <Header
               {...props}
@@ -339,7 +339,7 @@ const Page = () => {
               source={
                 budget.attributes.categories?.length > 0
                   ? getImg(budget.attributes.categories[0].icon)
-                  : require('@/src/assets/icons/grid2.png')
+                  : require('@/src/assets/icons/categories.png')
               }
               style={styles.iconCategory}
             />
@@ -365,7 +365,7 @@ const Page = () => {
               }}
             >
               <Pressable onPress={openActionSheet} style={[styles.button, { width: '100%' }]}>
-                <Fontisto name='date' size={20} color={BrandColor.PrimaryColor[400]} />
+                <Image source={require('@/src/assets/icons/calendar.png') } style={{width: 24, height:24 , resizeMode: 'contain'}}/>
                 <View style={{ flex: 3 }}>
                   <Text>{options[indexOptions]}</Text>
                 </View>

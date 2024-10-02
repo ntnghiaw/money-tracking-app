@@ -1,16 +1,42 @@
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
 import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TextType } from '@/src/types/text'
 import { AntDesign, Entypo } from '@expo/vector-icons'
-import { Link } from 'expo-router'
-import { Href, Stack, useRouter } from 'expo-router'
+import { Link, router } from 'expo-router'
+import { Href, Stack } from 'expo-router'
+import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { abbrValue, formatValue } from 'react-native-currency-input-fields'
+import { Switch } from 'react-native-ui-lib'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+
+interface SettingProperties {
+  shorten: boolean
+  showCurrency: boolean
+  showDecimal: boolean
+  separator:  {
+    decimal: '.' | ',',
+    group: '.' | ','
+  }
+}
+
+const initState: SettingProperties = {
+  shorten: false,
+  showCurrency: true,
+  showDecimal: true,
+  separator: {
+    decimal: '.',
+    group: ',',
+  },
+}
+
+
 const Page = () => {
-  const { t } = useLocale()
-  const router = useRouter()
+  const { t, currencyCode } = useLocale()
+  const [setting, setSetting] = useState<SettingProperties>(initState)
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -30,17 +56,53 @@ const Page = () => {
           ),
         }}
       />
+      <View style={[styles.output]}>
+        <ThemedText type={TextType.Title20Semibold} color={TextColor.Primary}>
+          {setting.shorten
+            ? `${abbrValue(10000000)} ${getCurrencySymbol(currencyCode)}`
+            : formatValue({
+                value: String(10000000),
+                intlConfig: {
+                  locale: 'de-DE',
+                  currency: currencyCode,
+                },
+                decimalSeparator: '.',
+                groupSeparator: ',',
+                suffix: '',
+              })}
+        </ThemedText>
+      </View>
       <View style={styles.form}>
-        <Link href={'/(authenticated)/(tabs)/account/setting/money-label' as Href} asChild>
-          <TouchableOpacity style={styles.item}>
-            <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-              {t('settings.styleformoneylabel')}
-            </ThemedText>
-            <View style={styles.right}>
-              <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
-            </View>
-          </TouchableOpacity>
-        </Link>
+        <View style={styles.item}>
+          <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+            {t('settings.shortenamount')}
+          </ThemedText>
+          <View style={styles.right}>
+            <Switch
+              value={setting.shorten}
+              onValueChange={(value: boolean) =>
+                setSetting((prev) => ({ ...prev, shorten: value }))
+              }
+              onColor={BrandColor.PrimaryColor[400]}
+              offColor={BrandColor.Gray[100]}
+            />
+          </View>
+        </View>
+        <View style={styles.item}>
+          <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
+            {t('settings.showcurrency')}
+          </ThemedText>
+          <View style={styles.right}>
+            <Switch
+              value={setting.shorten}
+              onValueChange={(value: boolean) =>
+                setSetting((prev) => ({ ...prev, shorten: value }))
+              }
+              onColor={BrandColor.PrimaryColor[400]}
+              offColor={BrandColor.Gray[100]}
+            />
+          </View>
+        </View>
       </View>
     </View>
   )
@@ -48,8 +110,17 @@ const Page = () => {
 export default Page
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   backgroundColor: BackgroundColor.LightTheme.Primary,
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  output: {
+    marginTop: 12,
+    height: 90,
+    borderRadius: 12,
+    width: '100%',
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   form: {
     marginTop: 12,

@@ -27,6 +27,7 @@ import { formatter } from '@/src/utils/formatAmount'
 
 import { endOfMonth, formatDate } from 'date-fns'
 import { Amount, FinancialPlan } from '@/src/types/enum'
+import Loading from '@/src/components/Loading'
 
 type AndroidMode = 'date' | 'time'
 
@@ -51,7 +52,7 @@ const Page = () => {
   const { t } = useLocale()
   const { walletId } = useAppSelector((state) => state.auth)
 
-  const { data: goals, isLoading } = useGetAllPlansQuery({
+  const { data: goals, isFetching } = useGetAllPlansQuery({
     walletId,
     type: 'goal',
   })
@@ -73,12 +74,19 @@ const Page = () => {
                 />
               )}
               headerRight={() => (
-                <HeaderButton type='text' text={t('actions.add')} onPress={() => router.navigate('/(authenticated)/(tabs)/account/goal/create-goal')} />
+                <HeaderButton
+                  type='text'
+                  text={t('actions.add')}
+                  onPress={() =>
+                    router.navigate('/(authenticated)/(tabs)/account/goal/create-goal')
+                  }
+                />
               )}
             />
           ),
         }}
       />
+      <Loading isLoading={isFetching} text='Loading...' />
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={styles.scrollView}>
           {goals?.length === 0 && (
@@ -147,7 +155,6 @@ const Page = () => {
         </View>
         <View style={{ height: 100 }}></View>
       </ScrollView>
- 
     </View>
   )
 }

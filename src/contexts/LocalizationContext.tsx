@@ -13,14 +13,14 @@ export const LocalizationContext = createContext({
   changeLanguage: (_lng: string) => {},
   currencyCode: getCurrencies()[0],
   changeCurrency: (_currency: string) => {},
-  languageTag: getLocales()[0].languageTag,
-  changeLanguageTag: (_locale: string) => {},
+  // languageTag: getLocales()[0].languageTag,
+  // changeLanguageTag: (_locale: string) => {},
 })
 
 export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [languageCode, setLanguageCode] = useState<string>(i18next.language)
-  const [currencyCode, setCurrencyCode] = useState<string>( getCurrencies()[0])
-  const [languageTag, setLanguageTag] = useState<string>(getLocales()[0].languageTag)
+  const [currencyCode, setCurrencyCode] = useState<string>( 'VND' || getCurrencies()[0])
+  // const [languageTag, setLanguageTag] = useState<string>(getLocales()[0].languageTag)
 
 
   const changeLanguage = async (lng: string) => {
@@ -34,10 +34,10 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     await StorageService.setItem(USER_CURRENCY_KEY, currency)
   }
 
-  const changeLanguageTag = async (languageTag: string) => {
-    setLanguageTag(languageTag)
-    await StorageService.setItem(USER_LANGUAGE_TAG_KEY, languageTag)
-  }
+  // const changeLanguageTag = async (languageTag: string) => {
+  //   setLanguageTag(languageTag)
+  //   await StorageService.setItem(USER_LANGUAGE_TAG_KEY, languageTag)
+  // }
 
   useEffect(() => {
     const getUserLocale = async () => {
@@ -54,9 +54,9 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         if(userLocale[1]) {
           setCurrencyCode(userLocale[1])
         }
-        if(userLocale[2]) {
-          setLanguageTag(userLocale[2])
-        }
+        // if(userLocale[2]) {
+        //   setLanguageTag(userLocale[2])
+        // }
         i18next.changeLanguage(userLocale[0])
       }
     }
@@ -68,10 +68,10 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       value={{
         languageCode,
         currencyCode,
-        languageTag,
         changeCurrency,
         changeLanguage,
-        changeLanguageTag
+        // languageTag,
+        // changeLanguageTag
       }}
     >
       {children}

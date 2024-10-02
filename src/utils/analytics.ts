@@ -245,16 +245,16 @@ const formartGroupedBarChart = (
         })
         return [
           {
-            value: totalIncome,
+            value: totalExpense,
             label: format(week, 'dd/MM'),
             spacing: 2,
             labelWidth: 36,
             labelTextStyle: { color: BrandColor.Gray[600], fontSize: 13, textAlign: 'center' },
-            frontColor: BrandColor.PrimaryColor[400],
+            frontColor: BrandColor.Red[300],
           },
           {
-            value: totalExpense,
-            frontColor: BrandColor.Red[300],
+            value: totalIncome,
+            frontColor:BrandColor.PrimaryColor[400] ,
           },
         ]
       })
@@ -263,8 +263,8 @@ const formartGroupedBarChart = (
 
     case 'quarter': {
       const result = eachQuarterOfInterval({
-        start: startOfYear(new Date()),
-        end: endOfYear(new Date()),
+        start: startOfQuarter(new Date()),
+        end: endOfQuarter(new Date()),
       }).map((quarter) => {
         let totalExpense = 0
         let totalIncome = 0
@@ -282,16 +282,16 @@ const formartGroupedBarChart = (
         })
         return [
           {
-            value: totalIncome,
+            value: totalExpense,
             label: format(quarter, 'MMMM'),
             spacing: 2,
             labelWidth: 50,
             labelTextStyle: { color: BrandColor.Gray[600], fontSize: 12 },
-            frontColor: BrandColor.PrimaryColor[400],
+            frontColor: BrandColor.Red[300],
           },
           {
-            value: totalExpense,
-            frontColor: BrandColor.Red[300],
+            value: totalIncome,
+            frontColor: BrandColor.PrimaryColor[400],
           },
         ]
       })
@@ -316,16 +316,16 @@ const formartGroupedBarChart = (
         })
         return [
           {
-            value: totalIncome,
+            value: totalExpense,
             label: format(month, 'LLL'),
             spacing: 2,
             labelWidth: 36,
             labelTextStyle: { color: BrandColor.Gray[600], fontSize: 12 },
-            frontColor: BrandColor.PrimaryColor[400],
+            frontColor: BrandColor.Red[300],
           },
           {
-            value: totalExpense,
-            frontColor: BrandColor.Red[300],
+            value: totalIncome,
+            frontColor: BrandColor.PrimaryColor[400],
           },
         ]
       })
@@ -351,16 +351,16 @@ const formartGroupedBarChart = (
         })
         return [
           {
-            value: totalIncome,
+            value: totalExpense,
             label: format(year, 'yyyy'),
             spacing: 2,
             labelWidth: 30,
             labelTextStyle: { color: BrandColor.Gray[600], fontSize: 12 },
-            frontColor: BrandColor.PrimaryColor[400],
+            frontColor: BrandColor.Red[300],
           },
           {
-            value: totalExpense,
-            frontColor: BrandColor.Red[300],
+            value: totalIncome,
+            frontColor: BrandColor.PrimaryColor[400],
           },
         ]
       })

@@ -174,7 +174,7 @@ const Page = () => {
         {/* <Input label={t('wallets.balance')} value={wallet.balance?.toString()} editable={false} /> */}
       </View>
       <BottomContainer>
-        <Button
+        {/* <Button
           type={'tertiary'}
           text={t('actions.delete')}
           size={'large'}
@@ -183,7 +183,7 @@ const Page = () => {
           isLoading={deleteWalletResult.isLoading}
           disabled={ walletId === id}
           style={{ width: '48%' }}
-        />
+        /> */}
         <Button
           type='primary'
           text={t('actions.save')}
@@ -192,7 +192,7 @@ const Page = () => {
           disabled={!Object.values(isValidFields).every((value) => value)}
           onPress={handleCreateWallet}
           isLoading={updateWalletResult.isLoading}
-          style={{ width: '48%' }}
+          style={{ width: '100%' }}
         />
       </BottomContainer>
     </View>

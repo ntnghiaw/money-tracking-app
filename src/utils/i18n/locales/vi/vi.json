@@ -95,7 +95,7 @@
     "runningbudgets": "Ngân sách",
     "createbudget": "Tạo mới ngân sách",
     "description": "Bắt đầu tiết kiệm tiền bằng cách lập ngân sách và chúng tôi sẽ giúp bạn tuân thủ ngân sách đó",
-    "targetamount": "Mục tiêu tiết kiệm",
+    "targetamount": "Số tiền",
     "selectcategory": "Chọn danh mục",
     "newbudget": "Ngân sách mới",
     "selecttimerange": "Chọn khoảng thời gian",
@@ -134,8 +134,12 @@
     "delete": "Xóa"
   },
   "settings": {
-    "title": "Cài đặt",
+    "title": "Khác",
     "styleformoneylabel": "Thiết lập kiểu hiển thị tiền",
+    "shortenamount": "Rút gọn số tiền",
+    "showcurrency": "Hiển thị đơn vị tiền tệ",
+    "alwaysshowdecimal": "Luôn hiển thị số thập phân",
+    "decimalseparator": "Dấu phân cách thập phân",
     "editaccount": "Chỉnh sửa tài khoản",
     "resetpassword": "Đặt lại mật khẩu",
     "changetheme": "Thay đổi chủ đề",
@@ -190,7 +194,7 @@
     "expense": "Chi phí",
     "recents": "Các giao dịch gần đây",
     "history": "Lịch sử giao dịch",
-    "alltransactions":  "Tất cả giao dịch",
+    "alltransactions": "Tất cả giao dịch",
     "seeall": "Tất cả",
     "lessthan": "Ít hơn so với thu nhập trung bình của bạn",
     "morethan": "Nhiều hơn so với thu nhập trung bình của bạn",
@@ -214,9 +218,9 @@
     "history": "Lịch sử",
     "seeall": "Tất cả",
     "seereportbycategories": "Xem báo cáo theo danh mục",
-    "seereportbycategoriesdescription": "Xem báo cáo chi tiêu / thu nhập của bạn theo danh mục",
-    "seereportbyexpenseincome": "Xem báo cáo theo chi phí / thu nhập",
-    "seereportbyexpenseincomedescription": "Xem báo cáo chi phí / thu nhập của bạn theo thời gian"
+    "seereportbycategoriesdescription": "Xem báo cáo thu/chi theo danh mục",
+    "seereportbyexpenseincome": "Xem báo cáo theo loại giao dịch",
+    "seereportbyexpenseincomedescription": "Xem báo cáo thu/chi theo thời gian"
   },
   "actions": {
     "add": "Thêm",

@@ -44,7 +44,7 @@ const Page = () => {
   const [desiredDate, setDesiredDate] = useState(new Date().toString())
   const [mode, setMode] = useState<AndroidMode>('date')
   const [show, setShow] = useState(false)
-  const { data: budgets, isLoading } = useGetAllPlansQuery({
+  const { data: budgets, isFetching } = useGetAllPlansQuery({
     walletId,
     type: 'budget',
   })
@@ -115,7 +115,7 @@ const Page = () => {
     bottomSheetModalRef.current?.dismiss()
   }
   // const budgets = data?.metadata || []
-  if (isLoading)
+  if (isFetching)
     return (
       <View style={styles.container}>
         <Stack.Screen
@@ -137,7 +137,7 @@ const Page = () => {
             ),
           }}
         />
-        <Loading isLoading={isLoading} text='Loading..' />
+        <Loading isLoading={isFetching} text='Loading..' />
       </View>
     )
   return (

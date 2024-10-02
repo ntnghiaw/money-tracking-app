@@ -95,7 +95,7 @@
     "runningbudgets": "Running Budgets",
     "createbudget": "Create a Budget",
     "description": "Start saving money by creating a budgets and we will help you stick to it",
-    "targetamount": "Target Amount",
+    "targetamount": "Amount",
     "selectcategory": "Select Category",
     "newbudget": "New Budget",
     "selecttimerange": "Select Time Range",
@@ -134,8 +134,12 @@
     "delete": "Delete"
   },
   "settings": {
-    "title": "Settings",
+    "title": "More",
     "styleformoneylabel": "Set Money Display Style",
+    "shortenamount": "Shorten Amount",
+    "showcurrency": "Show Currency",
+    "alwaysshowdecimal": "Always Show Decimal",
+    "decimalseparator": "Decimal Separator",
     "editaccount": "Edit account",
     "resetpassword": "Reset password",
     "changetheme": "Change Theme",
@@ -214,9 +218,9 @@
     "history": "History",
     "seeall": "See all",
     "seereportbycategories": "See report by categories",
-    "seereportbycategoriesdescription": "View your expenses/income report by categories",
-    "seereportbyexpenseincome": "See report by expense/income",
-    "seereportbyexpenseincomedescription": "View your expenses/income report by time"
+    "seereportbycategoriesdescription": "View your incomes/expenses report by categories",
+    "seereportbyexpenseincome": "See report by type",
+    "seereportbyexpenseincomedescription": "View your incomes/expenses report by type"
   },
   "actions": {
     "cancel": "Cancel",

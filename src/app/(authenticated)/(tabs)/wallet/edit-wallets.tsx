@@ -70,7 +70,7 @@ const Page = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={{ position: 'absolute', bottom: 100, alignSelf: 'center' }}>
+      {/* <View style={{ position: 'absolute', bottom: 100, alignSelf: 'center' }}>
         <Button
           state='normal'
           size='large'
@@ -78,7 +78,7 @@ const Page = () => {
           onPress={() => router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)}
           type='primary'
         />
-      </View>
+      </View> */}
     </View>
   )
 }
