@@ -11,6 +11,9 @@ import { getImg } from '../utils/getImgFromUri'
 import { format } from 'date-fns'
 import { memo } from 'react'
 import { TouchableOpacity } from 'react-native'
+import { formatValue } from 'react-native-currency-input-fields'
+import { useSettings } from '@/src/hooks/useSetting'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 
 export type TransactionItemProps = ViewProps & {
   title: string
@@ -25,6 +28,7 @@ export type TransactionItemProps = ViewProps & {
 
 const TransactionItem = ({ title, category, amount, icon, type, date, style, onPress }: TransactionItemProps) => {
   const { currencyCode, t } = useLocale()
+  const { styleMoneyLabel: {decimalSeparator, groupSeparator, showCurrency, shortenAmount, disableDecimal} } = useSettings()
   return (
     <View style={[styles.item, style]}>
       <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -46,7 +50,13 @@ const TransactionItem = ({ title, category, amount, icon, type, date, style, onP
           type={TextType.CalloutSemibold}
           color={type === 'income' ? BrandColor.PrimaryColor[400] : BrandColor.Red[300]}
         >
-          {formatter(amount, currencyCode)}
+          {formatValue({
+            value: String(amount),
+            decimalSeparator: decimalSeparator,
+            groupSeparator: groupSeparator,
+            suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+            decimalScale: disableDecimal ? 0 : 2,
+          })}
         </ThemedText>
         <ThemedText type={TextType.Caption11Regular} color={NeutralColor.Black[300]}>
           {format(new Date(date), "dd/MM/yyyy', 'p")}

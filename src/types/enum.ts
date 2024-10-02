@@ -74,6 +74,7 @@ export interface Wallet {
   _id: string
   name: string
   balance: number
+  icon: string
   currency: string
   type: 'private' | 'shared'
   image_url?: string

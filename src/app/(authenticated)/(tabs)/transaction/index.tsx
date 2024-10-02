@@ -36,6 +36,7 @@ import HeaderButton from '@/src/components/navigation/HeaderButton'
 import Toast from 'react-native-toast-message'
 import CurrencyInput from 'react-native-currency-input-fields'
 import categoriesDefault from '@/src/constants/Categories'
+import { useSettings } from '@/src/hooks/useSetting'
 
 
 type AndroidMode = 'date' | 'time'
@@ -54,6 +55,7 @@ const Page = () => {
   const { walletId } = useAppSelector((state) => state.auth)
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
+  const { decimalSeparator, groupSeparator } = useSettings().styleMoneyLabel
   const { currencyCode, languageCode, languageTag } = useLocale()
   const { img_url, title, createdAt, total } = useLocalSearchParams() as {
     img_url: string
@@ -238,6 +240,8 @@ const Page = () => {
               placeholder='0'
               value={transaction.amount ? transaction.amount.toString() : ''}
               intlConfig={{ locale: 'de-DE', currency: currencyCode }}
+              decimalSeparator={decimalSeparator}
+              groupSeparator={groupSeparator}
               onValueChange={(text, values) => {
                 setTransaction((prev) => ({
                   ...prev,

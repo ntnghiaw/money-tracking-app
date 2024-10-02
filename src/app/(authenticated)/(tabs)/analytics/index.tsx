@@ -37,6 +37,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { Plus } from 'react-native-feather'
 import { DefaultTheme } from '@react-navigation/native'
 import GroupedBars from '@/src/components/charts/GroupedBars'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { useSettings } from '@/src/hooks/useSetting'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -57,6 +59,9 @@ const dataChart = [
 
 
 const Page = () => {
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency } =
+    useSettings().styleMoneyLabel
+
   const router = useRouter()
   const { bottom, top } = useSafeAreaInsets()
   const [period, setPeriod] = useState('month')
@@ -97,11 +102,11 @@ const periodOptions = [
           <View>
             <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
               {formatValue({
-                value: balanceTotal?.toString() || '0',
-                intlConfig: {
-                  locale: 'de-DE',
-                  currency: currencyCode,
-                },
+                value: String(balanceTotal ?? 0),
+                decimalSeparator: decimalSeparator,
+                groupSeparator: groupSeparator,
+                suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                decimalScale: disableDecimal ? 0 : 2,
               })}
             </ThemedText>
           </View>

@@ -150,7 +150,6 @@ const history = () => {
       },
     ]
   }, [data])
-  console.log(data)
   return (
     <View
       style={{

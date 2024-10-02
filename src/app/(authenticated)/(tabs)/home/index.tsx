@@ -26,6 +26,9 @@ import formatDate from '@/src/utils/formatDate'
 import Loading from '@/src/components/Loading'
 import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
 import Button from '@/src/components/buttons/Button'
+import { formatValue } from 'react-native-currency-input-fields'
+import { useSettings } from '@/src/hooks/useSetting'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 
 const MAX_RECENT_TRANSACTIONS = 5
 
@@ -35,6 +38,7 @@ const Home = () => {
   const { t } = useLocale()
   const { currencyCode } = useLocale()
   const dispatch = useAppDispatch()
+  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal } = useSettings().styleMoneyLabel
   const [type, setType] = useState('expense')
   const { walletId } = useAppSelector((state) => state.auth)
   const { data, isFetching: isFetchingWallet } = useGetWalletByIdQuery({
@@ -84,7 +88,13 @@ const Home = () => {
             </ThemedText>
           </View>
           <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
-            {formatter(data?.balance ?? 0, currencyCode)}
+            {formatValue({
+              value: String(data?.balance),
+              decimalSeparator: decimalSeparator,
+              groupSeparator: groupSeparator,
+              suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+              decimalScale: disableDecimal ? 0 : 2,
+            })}
           </ThemedText>
           {/* <View style={styles.summary}>
             <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />

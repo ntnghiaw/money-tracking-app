@@ -21,11 +21,15 @@ import { Alert, Image } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { setEdit } from '@/src/features/transaction/transactionSlice'
 import categoriesDefault from '@/src/constants/Categories'
+import { formatValue } from 'react-native-currency-input-fields'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { useSettings } from '@/src/hooks/useSetting'
 
 const Page = () => {
   const {  id } = useLocalSearchParams() as { id: string }
   const { currencyCode } = useLocale()
   const { walletId } = useAppSelector((state) => state.auth)
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency} = useSettings().styleMoneyLabel
   const dispatch = useAppDispatch()
   const { t } = useLocale()
   const router = useRouter()
@@ -110,7 +114,13 @@ const Page = () => {
                 type={TextType.HeadlineSemibold}
                 color={data?.type === 'income' ? BrandColor.PrimaryColor[400] : BrandColor.Red[300]}
               >
-                {formatter(data?.amount ?? 0, currencyCode)}
+                {formatValue({
+                  value: String(data?.amount),
+                  decimalSeparator: decimalSeparator,
+                  groupSeparator: groupSeparator,
+                  suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                  decimalScale: disableDecimal ? 0 : 2,
+                })}
               </ThemedText>
             </View>
           </View>
@@ -196,7 +206,10 @@ const Page = () => {
                   adjustsFontSizeToFit={false}
                   style={{ textTransform: 'capitalize' }}
                 >
-                  {format(data?.createdAt ? new Date(data?.createdAt) : new Date(), "dd/MM/yyyy', 'p")}
+                  {format(
+                    data?.createdAt ? new Date(data?.createdAt) : new Date(),
+                    "dd/MM/yyyy', 'p"
+                  )}
                 </ThemedText>
               </View>
             </View>

@@ -19,6 +19,23 @@ export const icons = [
   { name: 'rent', image: require('@/src/assets/categories/rent.png') },
   { name: 'transportation', image: require('@/src/assets/categories/transportation.png') },
   { name: 'utilities', image: require('@/src/assets/categories/utilities.png') },
-  { name: 'credit-card', image: require('@/src/assets/icons/credit-card.png') }
 ]
-  
+
+export const walletIcons = [
+  { name: 'credit-card', image: require('@/src/assets/icons/credit-card.png') },
+  { name: 'business', image: require('@/src/assets/wallets/business.png') },
+  { name: 'camera', image: require('@/src/assets/wallets/camera.png') },
+  { name: 'camera2', image: require('@/src/assets/wallets/camera2.png') },
+  { name: 'cart', image: require('@/src/assets/wallets/cart.png') },
+  { name: 'chart', image: require('@/src/assets/wallets/chart.png') },
+  { name: 'folder', image: require('@/src/assets/wallets/folder.png') },
+  { name: 'graph', image: require('@/src/assets/wallets/graph.png') },
+  { name: 'health', image: require('@/src/assets/wallets/health.png') },
+  { name: 'key', image: require('@/src/assets/wallets/key.png') },
+  { name: 'phone', image: require('@/src/assets/wallets/phone.png') },
+  { name: 'shopping', image: require('@/src/assets/wallets/shopping.png') },
+  { name: 'star', image: require('@/src/assets/wallets/star.png') },
+  { name: 'ticket-star', image: require('@/src/assets/wallets/ticket-star.png') },
+  { name: 'wallet', image: require('@/src/assets/wallets/wallet.png') },
+  { name: 'wallet2', image: require('@/src/assets/wallets/wallet2.png') },
+]
