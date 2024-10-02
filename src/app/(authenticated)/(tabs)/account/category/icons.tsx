@@ -5,14 +5,13 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 
 const Page = () => {
   const router = useRouter()
-  const params  = useLocalSearchParams()
-  const onChooseIcon = (name:string) => {
-   router.back()
-   router.setParams({ icon: name })
+  const params = useLocalSearchParams()
+  const onChooseIcon = (name: string) => {
+    router.back()
+    router.setParams({ icon: name })
   }
   return (
     <View style={styles.container}>
-      
       <ScrollView style={{ flex: 1, marginTop: 40 }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
           {icons.map((item, index) => (
@@ -33,7 +32,6 @@ export default Page
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     paddingHorizontal: 24,
     backgroundColor: BackgroundColor.LightTheme.Primary,
   },

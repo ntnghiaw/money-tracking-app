@@ -42,6 +42,7 @@ import { Amount } from '@/src/types/enum'
 import { Pressable } from 'react-native'
 import { format } from 'date-fns'
 import CurrencyInput from 'react-native-currency-input-fields'
+import CustomPieChart2 from '@/src/components/charts/PieChart2'
 
 
 type AndroidMode = 'date' | 'time'
@@ -179,7 +180,7 @@ const Page = () => {
       {<Loading isLoading={isLoading} text='Loading..' />}
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={[styles.chartSection]}>
-          <Pie
+          <CustomPieChart2
             data={pieChartData}
             innerRadius={90}
             centerComponent={() => (

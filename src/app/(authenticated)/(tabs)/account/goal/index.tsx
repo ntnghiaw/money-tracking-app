@@ -19,15 +19,19 @@ import {
 import { useGetAllPlansQuery } from '@/src/features/plan/plan.service'
 import { useAppSelector } from '@/src/hooks/hooks'
 import { TextType } from '@/src/types/text'
-import {  useState } from 'react'
+import { useState } from 'react'
 const { format } = require('date-fns')
 
 import { formatter } from '@/src/utils/formatAmount'
 
-
 import { endOfMonth, formatDate } from 'date-fns'
 import { Amount, FinancialPlan } from '@/src/types/enum'
 import Loading from '@/src/components/Loading'
+import BottomContainer from '@/src/components/BottomContainer'
+import Button from '@/src/components/buttons/Button'
+import { useSettings } from '@/src/hooks/useSetting'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { formatValue } from 'react-native-currency-input-fields'
 
 type AndroidMode = 'date' | 'time'
 
@@ -42,13 +46,16 @@ const initalGoal: Omit<FinancialPlan, '_id'> = {
     target_amount: 0,
     current_amount: 0,
     records: [] as Amount[],
-  }
+  },
 }
 
 const Page = () => {
   const router = useRouter()
   const { width } = useWindowDimensions()
   const { currencyCode } = useLocale()
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency } =
+    useSettings().styleMoneyLabel
+
   const { t } = useLocale()
   const { walletId } = useAppSelector((state) => state.auth)
 
@@ -73,15 +80,15 @@ const Page = () => {
                   button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
                 />
               )}
-              headerRight={() => (
-                <HeaderButton
-                  type='text'
-                  text={t('actions.add')}
-                  onPress={() =>
-                    router.navigate('/(authenticated)/(tabs)/account/goal/create-goal')
-                  }
-                />
-              )}
+              // headerRight={() => (
+              //   <HeaderButton
+              //     type='text'
+              //     text={t('actions.add')}
+              //     onPress={() =>
+              //       router.navigate('/(authenticated)/(tabs)/account/goal/create-goal')
+              //     }
+              //   />
+              // )}
             />
           ),
         }}
@@ -124,7 +131,13 @@ const Page = () => {
                   </ThemedText>
                 </View>
                 <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
-                  {formatter(goal.attributes.target_amount, currencyCode)}
+                  {formatValue({
+                    value: String(goal.attributes.target_amount),
+                    decimalSeparator: decimalSeparator,
+                    groupSeparator: groupSeparator,
+                    suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                    decimalScale: disableDecimal ? 0 : 2,
+                  })}
                 </ThemedText>
                 <View style={styles.outer}>
                   <View
@@ -155,6 +168,16 @@ const Page = () => {
         </View>
         <View style={{ height: 100 }}></View>
       </ScrollView>
+      <BottomContainer>
+        <Button
+          style={{ marginTop: 24 }}
+          onPress={() => router.push('/(authenticated)/(tabs)/account/goal/create-goal')}
+          text={t('actions.add')}
+          type='primary'
+          state='normal'
+          size='large'
+        />
+      </BottomContainer>
     </View>
   )
 }
@@ -194,7 +217,7 @@ const styles = StyleSheet.create({
     width: screenWidth - 48,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: screenWidth*0.03,
+    gap: screenWidth * 0.03,
   },
   item: {
     width: '48%',
