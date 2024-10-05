@@ -3,16 +3,22 @@ import Button from '@/src/components/buttons/Button'
 import Loading from '@/src/components/Loading'
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
+import { ThemedText } from '@/src/components/ThemedText'
 import WalletItem from '@/src/components/WalletItem'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { setDefaultWallet } from '@/src/features/auth/authSlice'
 import { useGetAllWalletsQuery } from '@/src/features/wallet/wallet.service'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import { useLocale } from '@/src/hooks/useLocale'
+import { useSettings } from '@/src/hooks/useSetting'
+import { TextType } from '@/src/types/text'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 import { AntDesign } from '@expo/vector-icons'
 import { Href } from 'expo-router'
 import { Stack, useRouter } from 'expo-router'
+import { useMemo } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { formatValue } from 'react-native-currency-input-fields'
 
 
 
@@ -21,6 +27,10 @@ const Page = () => {
   const {t} = useLocale()
   const dispatch  = useAppDispatch()
   const {walletId} = useAppSelector((state) => state.auth)
+  const {currencyCode} = useLocale()
+  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal } =
+  useSettings().styleMoneyLabel
+  
   const getAllWallets = useGetAllWalletsQuery()
 
   
@@ -30,6 +40,8 @@ const Page = () => {
     dispatch(setDefaultWallet(_id))
     router.back()
   }
+
+  const totalBalance = useMemo(() => (getAllWallets.data?.reduce((pre, cur) => pre + cur.balance, 0)), [getAllWallets.data])
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -61,7 +73,23 @@ const Page = () => {
         }}
       />
       <Loading isLoading={getAllWallets.isFetching} text='Loading...' />
-      <View style={{ marginTop: 40, gap: 20 }}>
+      <View style={{ marginTop: 20, gap: 20 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' , marginBottom: 20}}>
+          <View style={styles.totalBalance}>
+            <ThemedText color={TextColor.Primary} type={TextType.CalloutSemibold}>
+              {t('home.totalbalance')} {`:`}
+            </ThemedText>
+          </View>
+          <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
+            {formatValue({
+              value: String(totalBalance),
+              decimalSeparator: decimalSeparator,
+              groupSeparator: groupSeparator,
+              suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+              decimalScale: disableDecimal ? 0 : 2,
+            })}
+          </ThemedText>
+        </View>
         {getAllWallets.data?.map((wallet) => (
           <TouchableOpacity key={wallet._id} onPress={() => handleSelectWallet(wallet._id)}>
             <WalletItem
@@ -74,7 +102,7 @@ const Page = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={{position: 'absolute', bottom: 100, alignSelf: 'center'}}>
+      <View style={{ position: 'absolute', bottom: 100, alignSelf: 'center' }}>
         <Button
           state='normal'
           size='large'
@@ -89,9 +117,14 @@ const Page = () => {
 export default Page
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
     backgroundColor: BackgroundColor.LightTheme.Primary,
     paddingHorizontal: 24,
   },
-
+  totalBalance: {
+    minWidth: 102,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderColor: BrandColor.Gray[200],
+  },
 })
