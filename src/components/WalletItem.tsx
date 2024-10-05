@@ -28,7 +28,7 @@ const WalletItem = ({ name, balance, icon, isDefault }: WalletItemProps) => {
         <ThemedText type={TextType.HeadlineBold} color={TextColor.Primary}>
           {name}
         </ThemedText>
-        <ThemedText type={TextType.SubheadlineBold} color={TextColor.Secondary}>
+        <ThemedText type={TextType.SubheadlineBold} color={TextColor.Secondary} style={{lineHeight: 28}}>
           {`${t('wallets.balance')}: ${formatValue({
             value: String(balance),
             decimalSeparator: decimalSeparator,

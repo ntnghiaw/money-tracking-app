@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, useWindowDimensions } from 'react-native'
 
 import { Colors } from '@/src/constants/Colors'
 
@@ -8,10 +8,11 @@ interface LoadingProps {
 }
 
 const Loading = (props: LoadingProps) => {
+  const {height, width} = useWindowDimensions()
   return (
     <>
       {props.isLoading && (
-        <View style={[StyleSheet.absoluteFill, styles.loading]}>
+        <View style={[StyleSheet.absoluteFill, styles.loading, {width, height}]}>
           <ActivityIndicator size='large' color={Colors.primary} />
           <Text style={{ fontSize: 18, padding: 10 }}>{props.text}</Text>
         </View>

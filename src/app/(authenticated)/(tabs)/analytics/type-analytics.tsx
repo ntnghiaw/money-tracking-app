@@ -81,7 +81,7 @@ const Page = () => {
     <SafeAreaView style={styles.container}>
       <Stack.Screen
         options={{
-          headerTitle: 'Analytics',
+          headerTitle: t('analytics.header'),
         }}
       />
       <Loading isLoading={isFetching} text='Loading...' />

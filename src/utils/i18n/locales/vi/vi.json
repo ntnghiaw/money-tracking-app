@@ -106,7 +106,9 @@
     "budgetdetails": "Chi tiết ngân sách",
     "spentamount": "Số tiền đã chi",
     "title": "Tên",
-    "editbudget": "Chỉnh sửa ngân sách"
+    "editbudget": "Chỉnh sửa ngân sách",
+    "left": "Còn lại",
+    "overspent": "Vượt quá"
   },
   "goals": {
     "header": "Mục tiêu",

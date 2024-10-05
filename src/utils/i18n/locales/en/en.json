@@ -106,7 +106,9 @@
     "budgetdetails": "Budget Details",
     "spentamount": "Spent Amount",
     "title": "Title",
-    "editbudget": "Edit Budget"
+    "editbudget": "Edit Budget",
+    "left": "Left",
+    "overspent": "Overspent"
   },
   "goals": {
     "header": "Goals",

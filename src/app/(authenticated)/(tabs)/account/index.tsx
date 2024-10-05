@@ -121,7 +121,7 @@ const Page = () => {
         </View>
 
         <View style={styles.form}>
-          <Link href={'/(authenticated)/(tabs)/account/notifications' as Href} asChild>
+          {/* <Link href={'/(authenticated)/(tabs)/account/notifications' as Href} asChild> */}
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
                 {t('settings.notifications')}
@@ -130,7 +130,7 @@ const Page = () => {
                 <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
               </View>
             </TouchableOpacity>
-          </Link>
+          {/* </Link> */}
           <Link href={'/(authenticated)/(tabs)/account/setting' as Href} asChild>
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>

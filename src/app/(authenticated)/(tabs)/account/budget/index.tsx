@@ -124,15 +124,15 @@ const Page = () => {
             header: (props) => (
               <Header
                 {...props}
-                headerRight={() => (
-                  <HeaderButton
-                    type='btn'
-                    onPress={() => console.log('show action sheet')}
-                    button={() => (
-                      <Sliders width={24} height={24} color={BrandColor.PrimaryColor[400]} />
-                    )}
-                  />
-                )}
+                // headerRight={() => (
+                //   <HeaderButton
+                //     type='btn'
+                //     onPress={() => console.log('show action sheet')}
+                //     button={() => (
+                //       <Sliders width={24} height={24} color={BrandColor.PrimaryColor[400]} />
+                //     )}
+                //   />
+                // )}
               />
             ),
           }}
@@ -148,15 +148,15 @@ const Page = () => {
           header: (props) => (
             <Header
               {...props}
-              headerRight={() => (
-                <HeaderButton
-                  type='btn'
-                  onPress={() => console.log('show action sheet')}
-                  button={() => (
-                    <Sliders width={24} height={24} color={BrandColor.PrimaryColor[400]} />
-                  )}
-                />
-              )}
+              // headerRight={() => (
+              //   <HeaderButton
+              //     type='btn'
+              //     onPress={() => console.log('show action sheet')}
+              //     button={() => (
+              //       <Sliders width={24} height={24} color={BrandColor.PrimaryColor[400]} />
+              //     )}
+              //   />
+              // )}
               headerLeft={() => (
                 <HeaderButton
                   onPress={() => router.back()}
@@ -246,11 +246,11 @@ const Page = () => {
                     </ThemedText>
                     <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
                       {attributes.target_amount - attributes.spent_amount > 0
-                        ? `Left ${formatter(
+                        ? `${t('budgets.left')} ${formatter(
                             attributes.target_amount - attributes.spent_amount,
                             currencyCode
                           )}`
-                        : `Overspent ${formatter(
+                        : `${t('budgets.overspent')} ${formatter(
                             attributes.spent_amount - attributes.target_amount,
                             currencyCode
                           )}`}
@@ -282,7 +282,7 @@ const Page = () => {
                   />
                 </View>
                 <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                  {`${formatDistanceToNowStrict(new Date(budget.end_date))} left`}
+                  {`${formatDistanceToNowStrict(new Date(budget.end_date))} left `}
                 </ThemedText>
               </TouchableOpacity>
             )

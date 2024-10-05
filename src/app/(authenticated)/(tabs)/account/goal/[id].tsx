@@ -228,12 +228,12 @@ const Page = () => {
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
               {t('home.history')}
             </ThemedText>
-            <Link
+            {/* <Link
               href={`/(authenticated)/(tabs)/account/goal/amount-history`}
               asChild
             >
               <Text style={styles.link}>{t('home.seeall')}</Text>
-            </Link>
+            </Link> */}
           </View>
           <View style={{ gap: 12 }}>
             {transactions?.length === 0 && (

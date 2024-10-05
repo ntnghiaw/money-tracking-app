@@ -139,11 +139,11 @@ const Page = () => {
       </View>
       <View style={styles.forgotPassword}>
         <View></View>
-        <TouchableOpacity onPress={() => router.navigate('/reset-password')}>
+        {/* <TouchableOpacity onPress={() => router.navigate('/reset-password')}>
           <ThemedText type={TextType.Caption12Regular} color={BrandColor.Blue[600]}>
             {t('login.forgot')}
           </ThemedText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={styles.signIn}>
         <Button
