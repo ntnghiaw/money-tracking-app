@@ -30,7 +30,7 @@ import { formatValue } from 'react-native-currency-input-fields'
 import { useSettings } from '@/src/hooks/useSetting'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 
-const MAX_RECENT_TRANSACTIONS = 5
+const MAX_RECENT_TRANSACTIONS = 20
 
 const Home = () => {
   const router = useRouter()
@@ -48,13 +48,12 @@ const Home = () => {
   const { data: transactions, isLoading: isLoadingTransactions, isFetching } = useGetAllTransactionsQuery({
     walletId: walletId,
     query: {
-      limit: '6',
+      limit: '20',
       sort: 'desc',
-      period: 'all',
+      period: 'week',
     },
   })
 
- 
 
   return (
     <SafeAreaView style={styles.container}>
@@ -80,7 +79,7 @@ const Home = () => {
       />
       {<Loading isLoading={isFetching || isFetchingWallet} text='Loading..' />}
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 24 }} showsVerticalScrollIndicator={false}>
         <View style={styles.balanceSection}>
           <View style={styles.totalBalance}>
             <ThemedText color={TextColor.Secondary} type={TextType.FootnoteRegular}>
@@ -96,24 +95,24 @@ const Home = () => {
               decimalScale: disableDecimal ? 0 : 2,
             })}
           </ThemedText>
-          {/* <View style={styles.summary}>
-            <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />
+          <View style={styles.summary}>
+            {/* <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />
             <ThemedText color={BrandColor.PrimaryColor[400]} type={TextType.CaptionSemibold}>
               {`25% `}
             </ThemedText>
             <ThemedText color={TextColor.Secondary} type={TextType.Caption11Regular}>
               {t('home.morethan')}
             </ThemedText>
-          </View> */}
-          {/* <View style={styles.summary}>
+          </View> 
+      <View style={styles.summary}>
             <Entypo name='triangle-down' size={16} color={BrandColor.Red[500]} />
             <ThemedText color={BrandColor.Red[500]} type={TextType.CaptionSemibold}>
               {`25% `}
             </ThemedText>
             <ThemedText color={BrandColor.Gray[600]} type={TextType.Caption11Regular}>
               {t('home.lessthan')}
-            </ThemedText>
-          </View> */}
+            </ThemedText> */}
+          </View>
         </View>
         <View style={styles.operationSection}>
           <TouchableOpacity
@@ -161,6 +160,7 @@ const Home = () => {
             />
           </View>
         </View>
+
         <View style={styles.historySection}>
           <View style={styles.headerSection}>
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
@@ -201,6 +201,7 @@ const Home = () => {
               </TouchableOpacity>
             ))}
           </View>
+          <View style={{ height: 80 }} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -217,6 +218,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: NeutralColor.GrayLight[100],
+  },
+  container: {
+    flex: 1,
+    backgroundColor: BackgroundColor.LightTheme.Primary,
   },
   logo: {
     flexDirection: 'row',
@@ -243,11 +248,7 @@ const styles = StyleSheet.create({
     height: 22,
     resizeMode: 'contain',
   },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    backgroundColor: BackgroundColor.LightTheme.Primary,
-  },
+
   balanceSection: {
     marginTop: 26,
     alignItems: 'center',

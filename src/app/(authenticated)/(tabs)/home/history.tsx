@@ -29,13 +29,6 @@ import { skipToken } from '@reduxjs/toolkit/query'
 
 const DEFAULT_LIMIT = 20
 
-const periodOptions = [
-  { label: 'Daily', value: 'day' },
-  { label: 'Weekly', value: 'week' },
-  { label: 'Monthly', value: 'month' },
-  { label: 'Yearly', value: 'year' },
-  { label: 'All', value: 'all' },
-]
 
 interface SectionItem {
   [key: string]: Transaction[]
@@ -45,7 +38,14 @@ const history = () => {
   const router = useRouter()
   const { t } = useLocale()
   const {period: periodParam, categoryId} = useLocalSearchParams() as {period: string, categoryId: string}
-  
+  const periodOptions = [
+    { label: t('period.day'), value: 'day' },
+    { label: t('period.week'), value: 'week' },
+    { label: t('period.month'), value: 'month' },
+    { label: t('period.year'), value: 'year' },
+    { label: t('period.all'), value: 'all' },
+  ]
+
   const { height } = Dimensions.get('window')
   const { bottom } = useSafeAreaInsets()
   const dispatch = useAppDispatch()
