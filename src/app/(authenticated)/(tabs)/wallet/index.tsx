@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
 import { useLocale } from '@/src/hooks/useLocale'
 import { useSettings } from '@/src/hooks/useSetting'
 import { TextType } from '@/src/types/text'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 import { AntDesign } from '@expo/vector-icons'
 import { Href } from 'expo-router'
@@ -28,7 +29,7 @@ const Page = () => {
   const dispatch  = useAppDispatch()
   const {walletId} = useAppSelector((state) => state.auth)
   const {currencyCode} = useLocale()
-  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal } =
+  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal, shortenAmount } =
   useSettings().styleMoneyLabel
   
   const getAllWallets = useGetAllWalletsQuery()
@@ -74,20 +75,22 @@ const Page = () => {
       />
       <Loading isLoading={getAllWallets.isFetching} text='Loading...' />
       <View style={{ marginTop: 20, gap: 20 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' , marginBottom: 20}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
           <View style={styles.totalBalance}>
             <ThemedText color={TextColor.Primary} type={TextType.CalloutSemibold}>
               {t('home.totalbalance')} {`:`}
             </ThemedText>
           </View>
           <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
-            {formatValue({
-              value: String(totalBalance),
-              decimalSeparator: decimalSeparator,
-              groupSeparator: groupSeparator,
-              suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
-              decimalScale: disableDecimal ? 0 : 2,
-            })}
+            {shortenAmount
+              ? abbrValueFormat(Number(totalBalance), showCurrency, currencyCode)
+              : formatValue({
+                  value: String(totalBalance),
+                  decimalSeparator: decimalSeparator,
+                  groupSeparator: groupSeparator,
+                  suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                  decimalScale: disableDecimal ? 0 : 2,
+                })}
           </ThemedText>
         </View>
         {getAllWallets.data?.map((wallet) => (

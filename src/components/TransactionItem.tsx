@@ -14,6 +14,7 @@ import { TouchableOpacity } from 'react-native'
 import { formatValue } from 'react-native-currency-input-fields'
 import { useSettings } from '@/src/hooks/useSetting'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { abbrValueFormat } from '../utils/abbrValueFormat'
 
 export type TransactionItemProps = ViewProps & {
   title: string
@@ -50,7 +51,7 @@ const TransactionItem = ({ title, category, amount, icon, type, date, style, onP
           type={TextType.CalloutSemibold}
           color={type === 'income' ? BrandColor.PrimaryColor[400] : BrandColor.Red[300]}
         >
-          {formatValue({
+          {shortenAmount ? abbrValueFormat(amount, showCurrency, currencyCode) :formatValue({
             value: String(amount),
             decimalSeparator: decimalSeparator,
             groupSeparator: groupSeparator,

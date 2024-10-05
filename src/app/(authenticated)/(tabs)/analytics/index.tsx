@@ -39,6 +39,7 @@ import { DefaultTheme } from '@react-navigation/native'
 import GroupedBars from '@/src/components/charts/GroupedBars'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 import { useSettings } from '@/src/hooks/useSetting'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -59,7 +60,7 @@ const dataChart = [
 
 
 const Page = () => {
-  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency } =
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
     useSettings().styleMoneyLabel
 
   const router = useRouter()
@@ -101,13 +102,15 @@ const periodOptions = [
         <View style={styles.info}>
           <View>
             <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
-              {formatValue({
-                value: String(balanceTotal ?? 0),
-                decimalSeparator: decimalSeparator,
-                groupSeparator: groupSeparator,
-                suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
-                decimalScale: disableDecimal ? 0 : 2,
-              })}
+              {shortenAmount
+                ? abbrValueFormat(Number(balanceTotal), showCurrency, currencyCode)
+                : formatValue({
+                    value: String(balanceTotal),
+                    decimalSeparator: decimalSeparator,
+                    groupSeparator: groupSeparator,
+                    suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                    decimalScale: disableDecimal ? 0 : 2,
+                  })}
             </ThemedText>
           </View>
           <Dropdown

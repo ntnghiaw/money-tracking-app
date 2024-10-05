@@ -23,6 +23,9 @@ import { formatPieChart } from '@/src/utils/analytics'
 import { Transaction } from '@/src/types/enum'
 import CustomPieChart from '@/src/components/charts/PieChart'
 import { handleStatistic } from '@/src/utils/handleStatistic'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { useSettings } from '@/src/hooks/useSetting'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 
 export enum CustomTab {
   Tab1,
@@ -48,6 +51,9 @@ const Page = () => {
   ]
   const dispatch = useAppDispatch()
   const { walletId } = useAppSelector((state) => state.auth)
+    const { decimalSeparator, groupSeparator, showCurrency, disableDecimal, shortenAmount } =
+      useSettings().styleMoneyLabel
+  
   const periodOptions = [
     { label: t('period.day'), value: 'day' },
     { label: t('period.week'), value: 'week' },
@@ -86,13 +92,15 @@ const Page = () => {
         <View style={styles.info}>
           <View>
             <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
-              {formatValue({
-                value: balanceTotal?.toString() || '0',
-                intlConfig: {
-                  locale: 'de-DE',
-                  currency: currencyCode,
-                },
-              })}
+              {shortenAmount
+                ? abbrValueFormat(Number(balanceTotal), showCurrency, currencyCode)
+                : formatValue({
+                    value: String(balanceTotal),
+                    decimalSeparator: decimalSeparator,
+                    groupSeparator: groupSeparator,
+                    suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                    decimalScale: disableDecimal ? 0 : 2,
+                  })}
             </ThemedText>
           </View>
           <Dropdown

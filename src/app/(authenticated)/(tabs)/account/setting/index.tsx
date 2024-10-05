@@ -14,6 +14,7 @@ import { Switch } from 'react-native-ui-lib'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 import { Image } from 'react-native'
 import { useSettings } from '@/src/hooks/useSetting'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
 
 interface SettingProperties {
   shorten: boolean
@@ -64,7 +65,7 @@ const Page = () => {
       <View style={[styles.output]}>
         <ThemedText type={TextType.Title20Semibold} color={TextColor.Primary}>
           {shortenAmount
-            ? `${abbrValue(19995555.5)} ${getCurrencySymbol(currencyCode)}`
+            ? `${abbrValueFormat(19995555.5, showCurrency, currencyCode)} `
             : formatValue({
                 value: String(19995555.5),
                 decimalSeparator: decimalSeparator,

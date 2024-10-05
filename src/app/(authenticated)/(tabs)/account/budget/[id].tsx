@@ -23,13 +23,17 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { formatValue } from 'react-native-currency-input-fields'
 import categoriesDefault from '@/src/constants/Categories'
 import { usePrefetchImmediately } from '@/src/hooks/usePrefetchImmediately'
+import { useSettings } from '@/src/hooks/useSetting'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 
 const Page = () => {
   const { t } = useLocale()
   const router = useRouter()
   const { id } = useLocalSearchParams() as { id: string }
   const { currencyCode } = useLocale()
-
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
+    useSettings().styleMoneyLabel
   const { walletId } = useAppSelector((state) => state.auth)
   console.log({
     walletId,
@@ -105,7 +109,19 @@ const Page = () => {
             </View>
             <View style={[styles.value]}>
               <ThemedText type={TextType.HeadlineSemibold} color={BrandColor.PrimaryColor[400]}>
-                {formatter(Number(data?.attributes.target_amount) ?? 0, currencyCode)}
+                {shortenAmount
+                  ? abbrValueFormat(
+                      Number(data?.attributes.target_amount),
+                      showCurrency,
+                      currencyCode
+                    )
+                  : formatValue({
+                      value: String(data?.attributes.target_amount),
+                      decimalSeparator: decimalSeparator,
+                      groupSeparator: groupSeparator,
+                      suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                      decimalScale: disableDecimal ? 0 : 2,
+                    })}
               </ThemedText>
             </View>
           </View>
@@ -138,13 +154,19 @@ const Page = () => {
                   color={BrandColor.Red[300]}
                   adjustsFontSizeToFit={false}
                 >
-                  {formatValue({
-                    value: data?.attributes.spent_amount?.toString(),
-                    intlConfig: {
-                      locale: 'de-DE',
-                      currency: currencyCode,
-                    },
-                  })}
+                  {shortenAmount
+                    ? abbrValueFormat(
+                        Number(data?.attributes.spent_amount),
+                        showCurrency,
+                        currencyCode
+                      )
+                    : formatValue({
+                        value: String(data?.attributes.spent_amount),
+                        decimalSeparator: decimalSeparator,
+                        groupSeparator: groupSeparator,
+                        suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                        decimalScale: disableDecimal ? 0 : 2,
+                      })}
                 </ThemedText>
               </View>
             </View>
@@ -274,9 +296,7 @@ const Page = () => {
                     amount={item.amount}
                     type={item.type}
                     icon={item.category.icon}
-                    date={
-                     item?.createdAt
-                    }
+                    date={item?.createdAt}
                   />
                 </TouchableOpacity>
               )

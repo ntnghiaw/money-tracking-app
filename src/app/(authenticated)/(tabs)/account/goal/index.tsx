@@ -32,6 +32,7 @@ import Button from '@/src/components/buttons/Button'
 import { useSettings } from '@/src/hooks/useSetting'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 import { formatValue } from 'react-native-currency-input-fields'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
 
 type AndroidMode = 'date' | 'time'
 
@@ -53,7 +54,7 @@ const Page = () => {
   const router = useRouter()
   const { width } = useWindowDimensions()
   const { currencyCode } = useLocale()
-  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency } =
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
     useSettings().styleMoneyLabel
 
   const { t } = useLocale()
@@ -131,13 +132,15 @@ const Page = () => {
                   </ThemedText>
                 </View>
                 <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
-                  {formatValue({
-                    value: String(goal.attributes.target_amount),
-                    decimalSeparator: decimalSeparator,
-                    groupSeparator: groupSeparator,
-                    suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
-                    decimalScale: disableDecimal ? 0 : 2,
-                  })}
+                  {shortenAmount
+                    ? abbrValueFormat(Number(goal.attributes.target_amount), showCurrency, currencyCode)
+                    : formatValue({
+                        value: String(goal.attributes.target_amount),
+                        decimalSeparator: decimalSeparator,
+                        groupSeparator: groupSeparator,
+                        suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                        decimalScale: disableDecimal ? 0 : 2,
+                      })}
                 </ThemedText>
                 <View style={styles.outer}>
                   <View

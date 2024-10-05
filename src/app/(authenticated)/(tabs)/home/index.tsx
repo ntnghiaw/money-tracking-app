@@ -29,6 +29,7 @@ import Button from '@/src/components/buttons/Button'
 import { formatValue } from 'react-native-currency-input-fields'
 import { useSettings } from '@/src/hooks/useSetting'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
 
 const MAX_RECENT_TRANSACTIONS = 20
 
@@ -38,7 +39,7 @@ const Home = () => {
   const { t } = useLocale()
   const { currencyCode } = useLocale()
   const dispatch = useAppDispatch()
-  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal } = useSettings().styleMoneyLabel
+  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal, shortenAmount } = useSettings().styleMoneyLabel
   const [type, setType] = useState('expense')
   const { walletId } = useAppSelector((state) => state.auth)
   const { data, isFetching: isFetchingWallet } = useGetWalletByIdQuery({
@@ -87,13 +88,15 @@ const Home = () => {
             </ThemedText>
           </View>
           <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
-            {formatValue({
-              value: String(data?.balance),
-              decimalSeparator: decimalSeparator,
-              groupSeparator: groupSeparator,
-              suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
-              decimalScale: disableDecimal ? 0 : 2,
-            })}
+            {shortenAmount
+              ? abbrValueFormat(Number(data?.balance), showCurrency, currencyCode)
+              : formatValue({
+                  value: String(data?.balance),
+                  decimalSeparator: decimalSeparator,
+                  groupSeparator: groupSeparator,
+                  suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                  decimalScale: disableDecimal ? 0 : 2,
+                })}
           </ThemedText>
           <View style={styles.summary}>
             {/* <Entypo name='triangle-up' size={16} color={BrandColor.PrimaryColor[400]} />

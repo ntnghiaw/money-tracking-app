@@ -7,6 +7,10 @@ import { ThemedText } from '@/src/components/ThemedText'
 import { formatter } from '@/src/utils/formatAmount'
 import { useLocale } from '@/src/hooks/useLocale'
 import { format } from 'date-fns'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { formatValue } from 'react-native-currency-input-fields'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { useSettings } from '@/src/hooks/useSetting'
 
 export type AmountItemProps = {
   title?: string
@@ -16,11 +20,22 @@ export type AmountItemProps = {
 
 const AmountItem = ({ title, amount, date }: AmountItemProps) => {
   const { currencyCode } = useLocale()
+    const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
+      useSettings().styleMoneyLabel
+
   return (
     <View style={styles.item}>
       <View style={styles.amount}>
         <ThemedText type={TextType.Title22Bold} color={BrandColor.Red[300]}>
-          {formatter(amount, currencyCode)}
+          {shortenAmount
+            ? abbrValueFormat(Number(amount), showCurrency, currencyCode)
+            : formatValue({
+                value: String(amount),
+                decimalSeparator: decimalSeparator,
+                groupSeparator: groupSeparator,
+                suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                decimalScale: disableDecimal ? 0 : 2,
+              })}
         </ThemedText>
       </View>
       <View style={styles.info}>

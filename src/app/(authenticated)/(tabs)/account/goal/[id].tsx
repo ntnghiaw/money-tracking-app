@@ -73,7 +73,7 @@ const Page = () => {
     planId: id.toString() ?? skipToken,
   })
 
-  const [addAmountToGoal, { data: resultAddAmount, isSuccess }] = useAddAmountToGoalMutation()
+  const [addAmountToGoal, { data: resultAddAmount, isLoading: isAddAmountLoading, isSuccess }] = useAddAmountToGoalMutation()
 
   useEffect(() => {
     if (resultAddAmount) {
@@ -250,11 +250,11 @@ const Page = () => {
                 key={index}
                 onPress={() =>
                   router.navigate({
-                    pathname: '/(authenticated)/(tabs)/account/goal/amount', 
+                    pathname: '/(authenticated)/(tabs)/account/goal/amount',
                     params: {
                       id: item._id,
-                      planId: id
-                    }
+                      planId: id,
+                    },
                   })
                 }
               >
@@ -281,6 +281,7 @@ const Page = () => {
             headerLabel={t('goals.addamount')}
             buttonText={t('goals.add')}
             onPress={onAddAmount}
+            isLoading={isAddAmountLoading}
           >
             <View style={{ paddingVertical: 14, gap: 24 }}>
               <View style={styles.goalCard}>

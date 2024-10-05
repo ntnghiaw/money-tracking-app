@@ -28,6 +28,10 @@ import { Sliders } from 'react-native-feather'
 import Button from '@/src/components/buttons/Button'
 import { getImg } from '@/src/utils/getImgFromUri'
 import Loading from '@/src/components/Loading'
+import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { formatValue } from 'react-native-currency-input-fields'
+import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { useSettings } from '@/src/hooks/useSetting'
 type AndroidMode = 'date' | 'time'
 
 const screenHeight = Dimensions.get('window').height
@@ -37,6 +41,8 @@ const Page = () => {
   const router = useRouter()
   const { width } = useWindowDimensions()
   const { currencyCode } = useLocale()
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
+    useSettings().styleMoneyLabel
   const { t } = useLocale()
   const { walletId } = useAppSelector((state) => state.auth)
   const [title, setTitle] = useState('')
@@ -242,18 +248,54 @@ const Page = () => {
                   </View>
                   <View style={{ alignItems: 'flex-end' }}>
                     <ThemedText type={TextType.SubheadlineSemibold} color={TextColor.Primary}>
-                      {formatter(budget.attributes.target_amount, currencyCode)}
+                      {shortenAmount
+                        ? abbrValueFormat(
+                            Number(budget.attributes.target_amount),
+                            showCurrency,
+                            currencyCode
+                          )
+                        : formatValue({
+                            value: String(budget.attributes.target_amount),
+                            decimalSeparator: decimalSeparator,
+                            groupSeparator: groupSeparator,
+                            suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                            decimalScale: disableDecimal ? 0 : 2,
+                          })}
                     </ThemedText>
                     <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
                       {attributes.target_amount - attributes.spent_amount > 0
-                        ? `${t('budgets.left')} ${formatter(
-                            attributes.target_amount - attributes.spent_amount,
-                            currencyCode
-                          )}`
-                        : `${t('budgets.overspent')} ${formatter(
-                            attributes.spent_amount - attributes.target_amount,
-                            currencyCode
-                          )}`}
+                        ? `${t('budgets.left')} ${
+                            shortenAmount
+                              ? abbrValueFormat(
+                                  Number(attributes.target_amount - attributes.spent_amount),
+                                  showCurrency,
+                                  currencyCode
+                                )
+                              : formatValue({
+                                  value: String(attributes.target_amount - attributes.spent_amount),
+                                  decimalSeparator: decimalSeparator,
+                                  groupSeparator: groupSeparator,
+                                  suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                                  decimalScale: disableDecimal ? 0 : 2,
+                                })
+                          }`
+                        : `${t('budgets.overspent')} ${
+                            shortenAmount
+                              ? abbrValueFormat(
+                                  Number(-(attributes.target_amount - attributes.spent_amount)),
+                                  showCurrency,
+                                  currencyCode
+                                )
+                              : formatValue({
+                                  value: String(
+                                    -(attributes.target_amount - attributes.spent_amount)
+                                  ),
+                                  decimalSeparator: decimalSeparator,
+                                  groupSeparator: groupSeparator,
+                                  suffix: showCurrency ? getCurrencySymbol(currencyCode) : '',
+                                  decimalScale: disableDecimal ? 0 : 2,
+                                })
+                          }`}
                     </ThemedText>
                   </View>
                 </View>
@@ -282,7 +324,9 @@ const Page = () => {
                   />
                 </View>
                 <ThemedText type={TextType.FootnoteRegular} color={TextColor.Secondary}>
-                  {`${formatDistanceToNowStrict(new Date(budget.end_date))} left `}
+                  {new Date(budget.end_date) > new Date()
+                    ? `${formatDistanceToNowStrict(new Date(budget.end_date))} left `
+                    : 'Expired'}
                 </ThemedText>
               </TouchableOpacity>
             )
@@ -405,5 +449,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 16,
     backgroundColor: BackgroundColor.LightTheme.Primary,
-  }
+  },
 })

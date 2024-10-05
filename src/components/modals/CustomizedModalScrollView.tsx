@@ -13,6 +13,7 @@ const screenWidth = Dimensions.get('window').width
 type CustomizedModalScrollViewProps = BottomSheetViewProps & {
   headerLabel: string
   buttonText: string
+  isLoading: boolean
   onPress: () => void
 }
 
@@ -21,6 +22,7 @@ const CustomizedModalScrollView = ({
   buttonText,
   onPress,
   children,
+  isLoading
 }: CustomizedModalScrollViewProps) => {
   const { bottom } = useSafeAreaInsets()
 
@@ -51,7 +53,7 @@ const CustomizedModalScrollView = ({
           text={buttonText}
           size={'medium'}
           state={'normal'}
-          
+          isLoading={isLoading}
           onPress={onPress}
         />
       </View>
