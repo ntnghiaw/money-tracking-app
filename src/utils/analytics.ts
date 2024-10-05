@@ -155,15 +155,15 @@ const formatBarChart = (rawData: Array<Transaction>, filter: string): Array<Data
       return result
     }
     case 'quarter': {
-      const result = eachQuarterOfInterval({
-        start: startOfYear(new Date()),
-        end: endOfYear(new Date()),
+      const result = eachMonthOfInterval({
+        start: startOfQuarter(new Date()),
+        end: endOfQuarter(new Date()),
       }).map((quarter) => {
         let total = 0
         rawData.forEach((item) => {
           if (
             new Date(item.createdAt) >= quarter &&
-            new Date(item.createdAt) < endOfQuarter(quarter)
+            new Date(item.createdAt) < endOfMonth(quarter)
           ) {
             total += item.amount
           }
@@ -262,7 +262,7 @@ const formartGroupedBarChart = (
     }
 
     case 'quarter': {
-      const result = eachQuarterOfInterval({
+      const result = eachMonthOfInterval({
         start: startOfQuarter(new Date()),
         end: endOfQuarter(new Date()),
       }).map((quarter) => {
