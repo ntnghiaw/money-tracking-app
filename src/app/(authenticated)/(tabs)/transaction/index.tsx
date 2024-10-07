@@ -24,20 +24,22 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Category, Transaction } from '@/src/types/enum'
 import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
 
-import {
-  useCreateTransactionMutation,
-
-} from '@/src/features/transaction/transaction.service'
+import { useCreateTransactionMutation } from '@/src/features/transaction/transaction.service'
 
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
-import Toast from 'react-native-toast-message'
 import CurrencyInput from 'react-native-currency-input-fields'
 import categoriesDefault from '@/src/constants/Categories'
 import { useSettings } from '@/src/hooks/useSetting'
-
+import { useGetAllPlansQuery } from '@/src/features/plan/plan.service'
+import { getBudgetsBycategory } from '@/src/utils/getBudgetsByCategory'
+import { isOverSpentBudget } from '@/src/utils/isOverSpentBudget'
+import Toast from 'react-native-toast-message'
+import AlertCustom from '@/src/components/AlertCustom'
+import { Alert } from 'react-native'
+import { useActionSheet } from '@expo/react-native-action-sheet'
 
 type AndroidMode = 'date' | 'time'
 const screenWidth = Dimensions.get('window').width
@@ -52,7 +54,14 @@ const initialTransaction: Omit<Transaction, '_id'> = {
 }
 
 const Page = () => {
+
+
+
   const { walletId } = useAppSelector((state) => state.auth)
+  const options = [
+    'Open Camera',
+    'Choose Image from Library'
+  ]
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
   const { decimalSeparator, groupSeparator } = useSettings().styleMoneyLabel
@@ -70,6 +79,7 @@ const Page = () => {
     type: string
     transactionId: string
   }
+    const { showActionSheetWithOptions } = useActionSheet()
   const { bottom } = useSafeAreaInsets()
   const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
   const [transaction, setTransaction] = useState(initialTransaction)
@@ -85,6 +95,13 @@ const Page = () => {
   const snapPointsCategory = useMemo(() => ['85%'], [])
 
   const [createTransaction, createdTransactionResult] = useCreateTransactionMutation()
+  const { data: budgets, isFetching: isFetchingBudgets } = useGetAllPlansQuery({
+    walletId,
+    type: 'budget',
+  })
+  const activeBudgets = useMemo(() => {
+    if (budgets) return getBudgetsBycategory(budgets, transaction.category._id)
+  }, [budgets, transaction.category])
   const { data: categoriesRes } = useGetAllCategoriesQuery()
 
   const categoriesFilteredByType = useMemo(
@@ -169,6 +186,41 @@ const Page = () => {
     if (transaction.amount <= 0) return { isValid: false, message: 'Amount must be greater than 0' }
     return { isValid: true, message: '' }
   }
+
+
+
+  const openActionSheet = async () => {
+    const cancelButtonIndex = 4
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        title: t('budgets.selecttimerange'),
+      },
+      (selectedIndex: any) => {
+        if (selectedIndex >= options.length) return
+        console.log(selectedIndex)
+      }
+    )
+  }
+
+  const handleCreateTransaction = async () => {
+    try {
+      await createTransaction({
+        transaction: {
+          amount: transaction.amount,
+          title: transaction.title,
+          category: transaction.category,
+          createdAt: transaction.createdAt.toString(),
+          description: transaction.description,
+          type: selectedTab === 1 ? 'income' : 'expense',
+        },
+        walletId,
+      }).unwrap()
+    } catch (error) {
+    }
+  }
+
   const handleSubmit = async () => {
     const { isValid, message } = validateTransactionInfo({
       amount: parseInt(transaction.amount.toString()),
@@ -184,21 +236,29 @@ const Page = () => {
       type: selectedTab === 1 ? 'income' : 'expense',
     })
     if (!isValid) return Toast.show({ type: 'error', text1: message })
-
-    try {
-      await createTransaction({
-        transaction: {
-          amount: transaction.amount,
-          title: transaction.title,
-          category: transaction.category,
-          createdAt: transaction.createdAt.toString(),
-          description: transaction.description,
-          type: selectedTab === 1 ? 'income' : 'expense',
-        },
-        walletId,
-      }).unwrap()
-    } catch (error) {
-      console.log('🚀 ~ handleSubmit ~ error:', error)
+    if (activeBudgets) {
+      const [isOverSpent, data] = isOverSpentBudget(activeBudgets, transaction.amount)
+      if (isOverSpent) {
+        Alert.alert(t('actions.warning'), t('actions.budgetwarning', {budgets: (data as string[]).join(', ')}), [
+          {
+            text: t('actions.cancel'),
+            onPress: () => {
+              return console.log('Cancel')
+            },
+            style: 'cancel',
+          },
+          {
+            text: t('actions.continue'),
+            onPress: () => handleCreateTransaction(),
+            style: 'default',
+          },
+        ])
+      }
+      else {
+        handleCreateTransaction()
+      }
+    } else {
+      handleCreateTransaction()
     }
   }
 
@@ -302,7 +362,7 @@ const Page = () => {
                 />
 
                 <View style={{ flex: 3 }}>
-                  <Text>{formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}</Text>
+                  <Text numberOfLines={1} adjustsFontSizeToFit={true}>{formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}</Text>
                 </View>
                 <ChevronDown width={24} height={24} color={TextColor.Placeholder} />
               </Pressable>

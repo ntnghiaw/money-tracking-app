@@ -18,24 +18,22 @@ import {
   endOfQuarter,
   startOfYear,
   endOfYear,
-  set,
+  set
 } from 'date-fns'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
 import Input from '@/src/components/Input'
-import MaskInput from 'react-native-mask-input'
-import { formatter } from '@/src/utils/formatAmount'
-import formatDate from '@/src/utils/formatDate'
+
 import { SafeAreaView } from 'react-native'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { ChevronDown, ChevronRight, Plus } from 'react-native-feather'
+import { ChevronDown, ChevronRight, Plus, X } from 'react-native-feather'
 import { ThemedText } from '@/src/components/ThemedText'
 import { TextType } from '@/src/types/text'
 import { Dimensions } from 'react-native'
 import { getImg } from '@/src/utils/getImgFromUri'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
+import {  useAppSelector } from '@/src/hooks/hooks'
 import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
 import Button from '@/src/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -44,21 +42,20 @@ import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
 import { useCreatePlanMutation } from '@/src/features/plan/plan.service'
 
 import {
-  Href,
   Stack,
-  useFocusEffect,
   useLocalSearchParams,
-  useNavigation,
   useRouter,
-  useSegments,
 } from 'expo-router'
 
 import Header from '@/src/components/navigation/Header'
 import HeaderButton from '@/src/components/navigation/HeaderButton'
-
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import CurrencyInput from 'react-native-currency-input-fields'
 import { validations } from '@/src/utils/validations'
+import dayjs, { Dayjs } from 'dayjs'
+import DateTimePicker from 'react-native-ui-datepicker'
+import Modal from 'react-native-modal'
+
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -89,6 +86,18 @@ const Page = () => {
   const [indexOptions, setIndexOptions] = useState(0)
   const { bottom } = useSafeAreaInsets()
   const [budget, setBudget] = useState(initialBudget)
+    const [showCalendar, setShowCalendar] = useState(false)
+    const [customPeriod, setCustomPeriod] = useState<
+      | {
+          startDate: Dayjs
+          endDate: Dayjs
+        }
+      | undefined
+    >({
+      startDate: dayjs(),
+      endDate: dayjs(),
+    })
+
   const { t } = useLocale()
   const router = useRouter()
   const { currencyCode } = useLocale()
@@ -96,8 +105,8 @@ const Page = () => {
   const bottomSheetCategoryModalRef = useRef<BottomSheetModal>(null)
   const snapPointsCategory = useMemo(() => ['85%'], [])
 
-  const { data: categoriesRes } = useGetAllCategoriesQuery()
   const [createBudget, createBudgetResult] = useCreatePlanMutation()
+  const { data: categoriesRes } = useGetAllCategoriesQuery()
 
   const categoriesFilteredByType = useMemo(
     () => categoriesRes?.filter((category) => category.type === 'expense'),
@@ -137,19 +146,32 @@ const Page = () => {
 
     return {
       options: [
-        `This week (${formattedStartWeek} - ${formattedEndWeek})`,
-        `This month (${formattedStartMonth} - ${formattedEndMonth})`,
-        `This quarter (${formattedStartQuarter} - ${formattedEndQuarter})`,
-        `This year (${formattedStartYear} - ${formattedEndYear})`,
+        `${t('period.thisweek')} (${formattedStartWeek} - ${formattedEndWeek})`,
+        `${t('period.thismonth')} (${formattedStartMonth} - ${formattedEndMonth})`,
+        `${t('period.thisquarter')} (${formattedStartQuarter} - ${formattedEndQuarter})`,
+        `${t('period.thisyear')} (${formattedStartYear} - ${formattedEndYear})`,
+        `${t('period.custom')} (${format(
+          customPeriod?.startDate.toString() ?? new Date().toString(),
+          'dd/MM'
+        )} - ${format(customPeriod?.endDate?.toString() ?? new Date().toString(), 'dd/MM')})`,
       ],
       values: [
         [startWeek, endWeek],
         [startMonth, endMonth],
         [startQuarter, endQuarter],
         [startYear, endYear],
+        [customPeriod?.startDate, customPeriod?.endDate],
       ],
     }
-  }, []) || ['This week', 'This month', 'This quarter', 'This year', 'Cancel']
+  }, [customPeriod]) || [
+    t('period.thisweek'),
+    t('period.thismonth'),
+    t('period.thisquarter'),
+    t('period.thisyear'),
+    t('period.custom'),
+
+    'Cancel',
+  ]
 
   const renderBackdropCategoryModal = useCallback(
     (props: any) => (
@@ -212,6 +234,9 @@ const Page = () => {
       },
       (selectedIndex: any) => {
         if(selectedIndex >= options.length) return 
+        if (selectedIndex === 4) {
+            setShowCalendar(true)
+        } 
         setIndexOptions(selectedIndex)
       }
     )
@@ -284,6 +309,33 @@ const Page = () => {
         }}
       />
       <SafeAreaView style={styles.inner}>
+        <Modal
+          style={styles.modal}
+          isVisible={showCalendar}
+          onBackdropPress={() => setShowCalendar(false)}
+        >
+          <View style={{ alignItems: 'flex-end', padding: 12 }}>
+            <Pressable
+              style={{ justifyContent: 'center', alignItems: 'center' }}
+              onPress={() => setShowCalendar(false)}
+            >
+              <X width={24} height={24} color={TextColor.Primary} />
+            </Pressable>
+          </View>
+          <DateTimePicker
+            height={300}
+            mode='range'
+            timePicker={true}
+            startDate={customPeriod?.startDate}
+            endDate={customPeriod?.endDate}
+            onChange={({ startDate, endDate }) => {
+              setCustomPeriod({
+                startDate,
+                endDate,
+              })
+            }}
+          />
+        </Modal>
         <View style={{ paddingVertical: 32, gap: 24 }}>
           <View
             style={{
@@ -365,7 +417,10 @@ const Page = () => {
               }}
             >
               <Pressable onPress={openActionSheet} style={[styles.button, { width: '100%' }]}>
-                <Image source={require('@/src/assets/icons/calendar.png') } style={{width: 24, height:24 , resizeMode: 'contain'}}/>
+                <Image
+                  source={require('@/src/assets/icons/calendar.png')}
+                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                />
                 <View style={{ flex: 3 }}>
                   <Text>{options[indexOptions]}</Text>
                 </View>
@@ -526,5 +581,13 @@ const styles = StyleSheet.create({
     color: TextColor.Primary,
     alignSelf: 'center',
     height: 60,
+  },
+  modal: {
+    maxHeight: 400,
+    backgroundColor: '#F5FCFF',
+    borderRadius: 12,
+    padding: 12,
+    margin: 'auto',
+    marginHorizontal: 24,
   },
 })

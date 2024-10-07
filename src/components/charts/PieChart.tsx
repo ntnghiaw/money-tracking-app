@@ -101,7 +101,7 @@ const CustomPieChart = ({ data }: CustomPieChartProps) => {
             return (
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
-                  {data[0].value}%
+                  {data[0]?.value}%
                 </ThemedText>
                 <ThemedText
                   type={TextType.FootnoteSemibold}
@@ -109,9 +109,9 @@ const CustomPieChart = ({ data }: CustomPieChartProps) => {
                   adjustsFontSizeToFit={true}
                   numberOfLines={1}
                 >
-                  {isDefaultCategory(data[0].text!)
-                    ? t(`categories.${data[0].text}`)
-                    : data[0].text}
+                  {isDefaultCategory(data[0]?.text!)
+                    ? t(`categories.${data[0]?.text}`)
+                    : data[0]?.text}
                 </ThemedText>
               </View>
             )

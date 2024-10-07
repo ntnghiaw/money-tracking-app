@@ -114,8 +114,13 @@ const CategoryDetails = () => {
                         setEditable(true)
                         setShowEdit(false)
                       }}
-                      type='text'
-                      text={t('actions.edit')}
+                      type='btn'
+                      button={() => (
+                        <Image
+                          source={require('@/src/assets/icons/edit.png')}
+                          style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                        />
+                      )}
                     />
                   )
                 )

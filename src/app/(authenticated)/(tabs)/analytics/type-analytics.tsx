@@ -1,7 +1,7 @@
 import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
 import { ThemedText } from '@/src/components/ThemedText'
 import TransactionItem from '@/src/components/TransactionItem'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TextType } from '@/src/types/text'
 import { Href, Link, Stack } from 'expo-router'
@@ -20,27 +20,31 @@ import { useGetAllTransactionsQuery } from '@/src/features/transaction/transacti
 import Loading from '@/src/components/Loading'
 import { formatValue } from 'react-native-currency-input-fields'
 import { formatBarChart } from '@/src/utils/analytics'
-import { Transaction } from '@/src/types/enum'
+import { Category, Transaction } from '@/src/types/enum'
 import Bar from '@/src/components/charts/Bar'
 import { useSettings } from '@/src/hooks/useSetting'
 import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
-
+import dayjs, { Dayjs } from 'dayjs'
+import Modal from 'react-native-modal'
+import DateTimePicker from 'react-native-ui-datepicker'
+import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { getImg } from '@/src/utils/getImgFromUri'
+import Header from '@/src/components/navigation/Header'
+import HeaderButton from '@/src/components/navigation/HeaderButton'
+import { Pressable } from 'react-native'
+import { X } from 'react-native-feather'
 
 export enum CustomTab {
   Tab1,
   Tab2,
 }
 
-const dataChart = [
-  { value: 250, label: 'Mon' },
-  { value: 500, label: 'Tue' },
-  { value: 745, label: 'Wed' },
-  { value: 320, label: 'Thu' },
-  { value: 600, label: 'Fri' },
-  { value: 256, label: 'Sat' },
-  { value: 300, label: 'Sun' },
-]
+interface CategorySectionItem {
+  [key: string]: Category[]
+}
+const screenWidth = Dimensions.get('window').width
 
 const Page = () => {
   const router = useRouter()
@@ -51,6 +55,22 @@ const Page = () => {
   const [isFocusPeriod, setIsFocusPeriod] = useState(false)
   const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
     useSettings().styleMoneyLabel
+  const [categories, setCategories] = useState<string[]>([])
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [customPeriod, setCustomPeriod] = useState<
+    | {
+        startDate: Dayjs
+        endDate: Dayjs
+      }
+    | undefined
+  >({
+    startDate: dayjs(),
+    endDate: dayjs(),
+  })
+
+  const bottomSheetCategoryModalRef = useRef<BottomSheetModal>(null)
+  const snapPointsCategory = useMemo(() => ['85%'], [])
+  const { data: categoriesRes } = useGetAllCategoriesQuery()
 
   const { t } = useLocale()
   const { currencyCode } = useLocale()
@@ -61,35 +81,168 @@ const Page = () => {
   const dispatch = useAppDispatch()
   const { walletId } = useAppSelector((state) => state.auth)
   const periodOptions = [
+    { label: t('period.day'), value: 'day' },
     { label: t('period.week'), value: 'week' },
     { label: t('period.month'), value: 'month' },
-    { label: t('period.quarter'), value: 'quarter' },
     { label: t('period.year'), value: 'year' },
     { label: t('period.all'), value: 'all' },
+    {
+      label: t('period.custom'),
+      value: 'custom',
+    },
   ]
 
-  const { isLoading, data, isError, isFetching } = useGetAllTransactionsQuery({
-    walletId: walletId!,
-    query: {
-      period,
-      sort: 'desc',
-      type: selectedTab === CustomTab.Tab1 ? 'expense' : 'income',
+  const { isLoading, data, isError, isFetching } = useGetAllTransactionsQuery(
+    {
+      walletId: walletId!,
+      query: {
+        period,
+        sort: 'desc',
+        type: selectedTab === CustomTab.Tab1 ? 'expense' : 'income',
+        startDate: customPeriod?.startDate && customPeriod?.startDate.toString(),
+        endDate: customPeriod?.endDate ? customPeriod?.endDate?.toString() : dayjs().toString(),
+      },
+      categories: [...new Set(categories)],
     },
-  })
+    {
+      skip: showCalendar,
+    }
+  )
+  const handleSetCategories = (id: string) => {
+    if (categories.includes(id)) {
+      setCategories((prev) => prev.filter((cat) => cat !== id))
+    } else {
+      setCategories((prev) => [...prev, id])
+    }
+  }
+  const renderBackdropCategoryModal = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        opacity={0.3}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior='collapse'
+        onPress={() => bottomSheetCategoryModalRef.current?.dismiss()}
+      />
+    ),
+    []
+  )
+
+  const showCategoryModal = async () => {
+    bottomSheetCategoryModalRef.current?.present()
+  }
 
   const balanceTotal = useMemo(() => {
     return data?.reduce((acc, item) => acc + item.amount, 0)
   }, [data])
-  const dataChart = useMemo(() => formatBarChart(data as Transaction[], period), [data])
+  const dataChart = useMemo(
+    () =>
+      formatBarChart(
+        data as Transaction[],
+        period,
+        customPeriod?.startDate.toString(),
+        customPeriod?.endDate.toString()
+      ),
+    [data]
+  )
 
+  const categoriesFilteredByType = useMemo(
+    () =>
+      categoriesRes?.filter((category) => {
+        if (selectedTab === CustomTab.Tab1) {
+          return category.type === 'expense'
+        } else {
+          return category.type === 'income'
+        }
+      }),
+    [categoriesRes, selectedTab]
+  )
+
+  const categoriesSections = useMemo(() => {
+    if (categoriesFilteredByType && categoriesFilteredByType.length > 0) {
+      const grouped = categoriesFilteredByType.reduce(
+        (acc: { [key: string]: Category[] }, item) => {
+          const key = item.type
+          if (!acc[key]) {
+            acc[key] = []
+          }
+          acc[key].push(item)
+          return acc
+        },
+        {} as CategorySectionItem
+      )
+      return Object.entries(grouped).map(([key, value]) => ({
+        title: key,
+        data: value,
+      }))
+    }
+    return [
+      {
+        title: '',
+        data: [],
+      },
+    ]
+  }, [categoriesFilteredByType])
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
         options={{
           headerTitle: t('analytics.header'),
+          header: (props) => (
+            <Header
+              {...props}
+              headerLeft={() => (
+                <HeaderButton
+                  onPress={() => router.back()}
+                  type='btn'
+                  button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
+                />
+              )}
+              headerRight={() => (
+                <HeaderButton
+                  onPress={() => showCategoryModal()}
+                  type='btn'
+                  button={() => (
+                    <Image
+                      source={require('@/src/assets/icons/filter.png')}
+                      style={{ width: 22, height: 22, resizeMode: 'contain' }}
+                    />
+                  )}
+                />
+              )}
+            />
+          ),
         }}
       />
-      <Loading isLoading={isFetching} text='Loading...' />
+      <Loading isLoading={isFetching} text='' />
+      <Modal
+        style={styles.modal}
+        isVisible={showCalendar}
+        onBackdropPress={() => setShowCalendar(false)}
+      >
+        <View style={{ alignItems: 'flex-end', padding: 12 }}>
+          <Pressable
+            style={{ justifyContent: 'center', alignItems: 'center' }}
+            onPress={() => setShowCalendar(false)}
+          >
+            <X width={24} height={24} color={TextColor.Primary} />
+          </Pressable>
+        </View>
+        <DateTimePicker
+          height={300}
+          mode='range'
+          timePicker={true}
+          startDate={customPeriod?.startDate}
+          endDate={customPeriod?.endDate}
+          onChange={({ startDate, endDate }) => {
+            setCustomPeriod({
+              startDate,
+              endDate,
+            })
+          }}
+        />
+      </Modal>
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={{ marginTop: 14 }}>
           <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
@@ -128,6 +281,9 @@ const Page = () => {
             onFocus={() => setIsFocusPeriod(true)}
             onBlur={() => setIsFocusPeriod(false)}
             onChange={(item) => {
+              if (item.value === 'custom') {
+                setShowCalendar(true)
+              }
               setPeriod(item.value)
               setIsFocusPeriod(false)
             }}
@@ -220,6 +376,81 @@ const Page = () => {
           </TouchableOpacity>
         )}
       </ScrollView>
+
+      <BottomSheetModal
+        ref={bottomSheetCategoryModalRef}
+        index={0}
+        backdropComponent={renderBackdropCategoryModal}
+        snapPoints={snapPointsCategory}
+        handleComponent={null}
+        enableOverDrag={false}
+        enablePanDownToClose
+      >
+        <BottomSheetScrollView style={styles.bottomSheetModal}>
+          <View style={styles.header}>
+            <View style={styles.horizontalBar}></View>
+            <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
+              {t('transaction.categories')}
+            </ThemedText>
+          </View>
+
+          <SafeAreaView>
+            <ScrollView>
+              {categoriesSections &&
+                categoriesSections.map((item, index) => {
+                  const { title, data } = item
+                  return (
+                    <View key={item.title}>
+                      <View style={{ marginTop: 24, marginBottom: 12 }}>
+                        <ThemedText
+                          type={TextType.CalloutSemibold}
+                          color={TextColor.Primary}
+                          style={{ textTransform: 'capitalize' }}
+                        >
+                          {title}
+                        </ThemedText>
+                      </View>
+                      {data &&
+                        data.map((cat) => (
+                          <TouchableOpacity
+                            key={cat._id}
+                            style={styles.item}
+                            onPress={() => handleSetCategories(cat._id)}
+                          >
+                            <View style={styles.iconCover}>
+                              <Image source={getImg(cat.icon)} style={styles.iconitem} />
+                            </View>
+                            <ThemedText
+                              type={TextType.SubheadlineRegular}
+                              color={TextColor.Primary}
+                            >
+                              {cat.name}
+                            </ThemedText>
+                            <View style={{ position: 'absolute', right: 12 }}>
+                              <TouchableOpacity onPress={() => handleSetCategories(cat._id)}>
+                                {categories.includes(cat._id) ? (
+                                  <Image
+                                    source={require('@/src/assets/icons/checked.png')}
+                                    style={{ width: 24, height: 24 }}
+                                  />
+                                ) : (
+                                  <Image
+                                    source={require('@/src/assets/icons/circle_plus2.png')}
+                                    style={{ width: 24, height: 24 }}
+                                  />
+                                )}
+                              </TouchableOpacity>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                    </View>
+                  )
+                })}
+            </ScrollView>
+          </SafeAreaView>
+          <View style={{ height: 80 }} />
+        </BottomSheetScrollView>
+      </BottomSheetModal>
     </SafeAreaView>
   )
 }
@@ -292,5 +523,61 @@ const styles = StyleSheet.create({
     gap: 8,
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  bottomSheetModal: {
+    width: screenWidth,
+    paddingHorizontal: 24,
+    borderStartStartRadius: 24,
+    flex: 1,
+  },
+  header: {
+    width: '100%',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 6,
+    paddingBottom: 12,
+    borderBottomColor: NeutralColor.GrayLight[100],
+    borderBottomWidth: 1,
+  },
+  horizontalBar: {
+    width: '20%',
+    height: 6,
+    backgroundColor: NeutralColor.GrayLight[50],
+    borderRadius: 18,
+  },
+  item: {
+    width: '100%',
+    backgroundColor: BrandColor.Gray[50],
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderBottomColor: BrandColor.Gray[100],
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconitem: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
+  },
+  iconCover: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: BrandColor.Gray[200],
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modal: {
+    maxHeight: 400,
+    backgroundColor: '#F5FCFF',
+    borderRadius: 12,
+    padding: 12,
+    margin: 'auto',
+    marginHorizontal: 24,
   },
 })

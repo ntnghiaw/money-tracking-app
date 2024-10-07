@@ -122,14 +122,14 @@ const Page = () => {
 
         <View style={styles.form}>
           {/* <Link href={'/(authenticated)/(tabs)/account/notifications' as Href} asChild> */}
-            <TouchableOpacity style={styles.item}>
+            {/* <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
                 {t('settings.notifications')}
               </ThemedText>
               <View style={styles.right}>
                 <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           {/* </Link> */}
           <Link href={'/(authenticated)/(tabs)/account/setting' as Href} asChild>
             <TouchableOpacity style={styles.item}>

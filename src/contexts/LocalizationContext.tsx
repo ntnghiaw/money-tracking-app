@@ -19,7 +19,7 @@ export const LocalizationContext = createContext({
 
 export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [languageCode, setLanguageCode] = useState<string>(i18next.language)
-  const [currencyCode, setCurrencyCode] = useState<string>( 'VND' || getCurrencies()[0])
+  const [currencyCode, setCurrencyCode] = useState<string>(getCurrencies()[0])
   // const [languageTag, setLanguageTag] = useState<string>(getLocales()[0].languageTag)
 
 

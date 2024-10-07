@@ -39,7 +39,7 @@ const initState: SettingProperties = {
 const Page = () => {
   const {
     styleMoneyLabel: { shortenAmount, showCurrency, decimalSeparator, groupSeparator, disableDecimal },
-    setStyleMoneyLabel,
+    changeStyleMoneyLabel
   } = useSettings()
   const { t, currencyCode } = useLocale()
   const [setting, setSetting] = useState<SettingProperties>(initState)
@@ -84,7 +84,13 @@ const Page = () => {
             <Switch
               value={shortenAmount}
               onValueChange={(value: boolean) =>
-                setStyleMoneyLabel((_style: any) => ({ ..._style, shortenAmount: value }))
+                changeStyleMoneyLabel({
+                  showCurrency,
+                  decimalSeparator,
+                  groupSeparator,
+                  disableDecimal,
+                  shortenAmount: value,
+                })
               }
               onColor={BrandColor.PrimaryColor[400]}
               offColor={BrandColor.Gray[100]}
@@ -99,7 +105,13 @@ const Page = () => {
             <Switch
               value={showCurrency}
               onValueChange={(value: boolean) =>
-                setStyleMoneyLabel((_style: any) => ({ ..._style, showCurrency: value }))
+                changeStyleMoneyLabel({
+                  shortenAmount,
+                  decimalSeparator,
+                  groupSeparator,
+                  disableDecimal,
+                  showCurrency: value,
+                })
               }
               onColor={BrandColor.PrimaryColor[400]}
               offColor={BrandColor.Gray[100]}
@@ -118,11 +130,13 @@ const Page = () => {
         <TouchableOpacity
           style={styles.item}
           onPress={() =>
-            setStyleMoneyLabel((prev: any) => ({
-              ...prev,
+            changeStyleMoneyLabel({
+              shortenAmount,
+              showCurrency,
+              disableDecimal,
               decimalSeparator: '.',
               groupSeparator: ',',
-            }))
+            })
           }
         >
           <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
@@ -144,11 +158,13 @@ const Page = () => {
         <TouchableOpacity
           style={styles.item}
           onPress={() =>
-            setStyleMoneyLabel((prev: any) => ({
-              ...prev,
+            changeStyleMoneyLabel({
+              shortenAmount,
+              showCurrency,
+              disableDecimal,
               decimalSeparator: ',',
               groupSeparator: '.',
-            }))
+            })
           }
         >
           <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
@@ -180,10 +196,13 @@ const Page = () => {
         <TouchableOpacity
           style={styles.item}
           onPress={() =>
-            setStyleMoneyLabel((prev: any) => ({
-              ...prev,
+            changeStyleMoneyLabel({
+              shortenAmount,
+              showCurrency,
+              decimalSeparator,
+              groupSeparator,
               disableDecimal: false,
-            }))
+            })
           }
         >
           <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
@@ -206,10 +225,13 @@ const Page = () => {
         <TouchableOpacity
           style={styles.item}
           onPress={() =>
-            setStyleMoneyLabel((prev: any) => ({
-              ...prev,
+            changeStyleMoneyLabel({
+              shortenAmount,
+              showCurrency,
+              decimalSeparator,
+              groupSeparator,
               disableDecimal: true,
-            }))
+            })
           }
         >
           <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>

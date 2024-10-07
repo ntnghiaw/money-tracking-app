@@ -92,7 +92,7 @@
   },
   "budgets": {
     "youhavenobudgets": "You have no budgets yet",
-    "runningbudgets": "Running Budgets",
+    "runningbudgets": "Budgets",
     "createbudget": "Create a Budget",
     "description": "Start saving money by creating a budgets and we will help you stick to it",
     "targetamount": "Amount",
@@ -236,7 +236,9 @@
     "update": "Update",
     "close": "Close",
     "more": "More",
-    "deletemessage": "Are you sure you want to delete this item?"
+    "deletemessage": "Are you sure you want to delete this item?",
+    "warning": "Warning",
+    "budgetwarning": "This transaction will exceed the budgets: {{budgets}}"
   },
   "categories": {
     "Bonuses": "Bonus",
@@ -281,6 +283,11 @@
     "year": "Yearly",
     "all": "All",
     "yesterday": "Yesterday",
-    "today": "Today"
+    "today": "Today",
+    "custom": "Custom",
+    "thisweek": "This week",
+    "thismonth": "This month",
+    "thisquarter": "This quarter",
+    "thisyear": "This year"
   }
 }

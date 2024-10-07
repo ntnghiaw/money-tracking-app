@@ -237,7 +237,9 @@
     "update": "Cập nhật",
     "close": "Đóng",
     "more": "Thêm",
-    "deletemessage": "Bạn có chắc chắn muốn xóa mục này không?"
+    "deletemessage": "Bạn có chắc chắn muốn xóa mục này không?",
+    "warning": "Cảnh báo",
+    "budgetwarning": "Giao dịch này sẽ làm vượt ngưỡng ngân sách: {{budgets}}"
   },
   "categories": {
     "Bonuses": "Thưởng",
@@ -282,6 +284,11 @@
     "year": "Năm",
     "all": "Tất cả",
     "yesterday": "Hôm qua",
-    "today": "Hôm nay"
+    "today": "Hôm nay",
+    "custom": "Tùy chọn",
+    "thisweek": "Tuần này",
+    "thismonth": "Tháng này",
+    "thisquarter": "Quý này",
+    "thisyear": "Năm nay"
   }
 }

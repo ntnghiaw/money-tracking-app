@@ -14,7 +14,9 @@ import {
   View,
 } from 'react-native'
 import { currencies } from '@/src/constants/Currency'
-import { useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import SearchBar from '@/src/components/SearchBar'
+import { useDebounce } from '@/src/hooks/useDebounce'
 const ICON_SIZE = 28
 
 type CurrencyItemProps = {
@@ -53,11 +55,23 @@ const Item = ({ icon, name, symbol, code }: CurrencyItemProps) => {
 }
 
 const Page = () => {
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search)
+
+  const searchCurrencies = useMemo(() => {
+    if(!debouncedSearch) return currencies
+    return currencies.filter((currency) =>  currency.name.toLocaleLowerCase().includes(debouncedSearch.toLowerCase())
+   )
+  },[debouncedSearch, currencies])
+
 
   return (
     <View style={styles.container}>
+      <View style={styles.searchBar}>
+        <SearchBar value={search} onChangeText={(text) => setSearch(text)} />
+      </View>
       <FlatList
-        data={currencies}
+        data={searchCurrencies}
         renderItem={({ item }) => (
           <Item icon={item.icon} code={item.code} name={item.name} symbol={item.symbol} />
         )}
@@ -103,4 +117,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
+  searchBar: {
+    width: '100%',
+    height: 44,
+    marginTop: 24,
+    marginBottom: 32,
+  }
 })

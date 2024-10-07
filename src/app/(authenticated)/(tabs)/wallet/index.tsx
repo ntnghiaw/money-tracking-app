@@ -18,6 +18,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { Href } from 'expo-router'
 import { Stack, useRouter } from 'expo-router'
 import { useMemo } from 'react'
+import { Image } from 'react-native'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { formatValue } from 'react-native-currency-input-fields'
 
@@ -62,11 +63,16 @@ const Page = () => {
               )}
               headerRight={() => (
                 <HeaderButton
-                  type='text'
+                  type='btn'
                   onPress={() =>
                     router.navigate('/(authenticated)/(tabs)/wallet/edit-wallets' as Href)
                   }
-                  text={t('actions.edit')}
+                  button={() => (
+                    <Image
+                      source={require('@/src/assets/icons/edit.png')}
+                      style={{ width: 22, height: 22, resizeMode: 'contain' }}
+                    />
+                  )}
                 />
               )}
             />
@@ -81,7 +87,7 @@ const Page = () => {
               {t('home.totalbalance')} {`:`}
             </ThemedText>
           </View>
-          <ThemedText color={TextColor.Primary} type={TextType.Title28Bold}>
+          <ThemedText color={TextColor.Primary} type={TextType.Title20Semibold}>
             {shortenAmount
               ? abbrValueFormat(Number(totalBalance), showCurrency, currencyCode)
               : formatValue({

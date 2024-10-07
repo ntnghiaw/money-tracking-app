@@ -1,15 +1,19 @@
 import { Transaction } from '@/src/types/enum'
 import {
+  differenceInDays,
+  eachDayOfInterval,
   eachMonthOfInterval,
   eachQuarterOfInterval,
   eachWeekOfInterval,
   eachYearOfInterval,
+  endOfDay,
   endOfMonth,
   endOfQuarter,
   endOfWeek,
   endOfYear,
   format,
   setYear,
+  startOfDay,
   startOfMonth,
   startOfQuarter,
   startOfYear,
@@ -53,7 +57,12 @@ interface DataPieChart {
  *
  */
 
-const formatBarChart = (rawData: Array<Transaction>, filter: string): Array<DataBarChart> => {
+const formatBarChart = (
+  rawData: Array<Transaction>,
+  filter: string,
+  startDate?: string,
+  endDate?: string
+): Array<DataBarChart> => {
   if (!rawData) return []
   switch (filter) {
     case 'day': {
@@ -213,17 +222,81 @@ const formatBarChart = (rawData: Array<Transaction>, filter: string): Array<Data
       return result
     }
     default: {
-      return []
+      if (!startDate || !endDate) return []
+      if (startDate && !endDate) return []
+      const days = differenceInDays(new Date(endDate), new Date(startDate))
+      console.log(days)
+      if (days < 12) {
+        const result = eachDayOfInterval({
+          start: startOfDay(startDate),
+          end: endOfDay(endDate),
+        }).map((day) => {
+          let total = 0
+          rawData.forEach((item) => {
+            if (new Date(item.createdAt) >= day && new Date(item.createdAt) < endOfDay(day)) {
+              total += item.amount
+            }
+          })
+
+          return {
+            label: format(day, 'dd'),
+            value: total,
+          }
+        })
+        return result
+      } else if (days < 45) {
+        const result = eachWeekOfInterval(
+          {
+            start: startOfDay(startDate),
+            end: endOfDay(endDate),
+          },
+          { weekStartsOn: 1 }
+        ).map((week) => {
+          let total = 0
+          rawData.forEach((item) => {
+            if (new Date(item.createdAt) >= week && new Date(item.createdAt) < endOfWeek(week)) {
+              total += item.amount
+            }
+          })
+
+          return {
+            label: format(week, 'dd/MM'),
+            value: total,
+          }
+        })
+        return result
+      } else {
+        const result = eachMonthOfInterval({
+          start: startOfDay(startDate),
+          end: endOfDay(endDate),
+        }).map((month) => {
+          let total = 0
+          rawData.forEach((item) => {
+            if (new Date(item.createdAt) >= month && new Date(item.createdAt) < endOfMonth(month)) {
+              total += item.amount
+            }
+          })
+          return {
+            label: format(month, 'LLL'),
+            value: total,
+          }
+        })
+        return result
+      }
     }
   }
 }
 
 const formartGroupedBarChart = (
   rawData: Array<Transaction>,
-  filter: string
-): Array<DataGroupedBarChart> => {
+  filter: string,
+  startDate?: string,
+  endDate?: string
+): DataGroupedBarChart[] => {
   if (!rawData) return []
   switch (filter) {
+    case 'week': {
+    }
     case 'month': {
       const result = eachWeekOfInterval(
         {
@@ -254,7 +327,7 @@ const formartGroupedBarChart = (
           },
           {
             value: totalIncome,
-            frontColor:BrandColor.PrimaryColor[400] ,
+            frontColor: BrandColor.PrimaryColor[400],
           },
         ]
       })
@@ -367,7 +440,110 @@ const formartGroupedBarChart = (
       return result.flat()
     }
     default: {
-      return []
+      if (!startDate || !endDate) return []
+      if (startDate && !endDate) return []
+      const days = differenceInDays(new Date(endDate), new Date(startDate))
+      if (days < 12) {
+        const result = eachDayOfInterval({
+          start: startOfDay(startDate),
+          end: endOfDay(endDate),
+        }).map((day) => {
+          let totalExpense = 0
+          let totalIncome = 0
+          rawData.forEach((item) => {
+            if (new Date(item.createdAt) >= day && new Date(item.createdAt) < endOfDay(day)) {
+              if (item.type === 'expense') {
+                totalExpense += item.amount
+              } else {
+                totalIncome += item.amount
+              }
+            }
+          })
+          return [
+            {
+              value: totalExpense,
+              label: format(day, 'dd'),
+              spacing: 2,
+              labelWidth: 36,
+              labelTextStyle: { color: BrandColor.Gray[600], fontSize: 13, textAlign: 'center' },
+              frontColor: BrandColor.Red[300],
+            },
+            {
+              value: totalIncome,
+              frontColor: BrandColor.PrimaryColor[400],
+            },
+          ]
+        })
+
+        return result.flat()
+      } else if (days < 45) {
+        const result = eachWeekOfInterval(
+          {
+            start: startOfDay(startDate),
+            end: endOfDay(endDate),
+          },
+          { weekStartsOn: 1 }
+        ).map((week) => {
+          let totalExpense = 0
+          let totalIncome = 0
+          rawData.forEach((item) => {
+            if (new Date(item.createdAt) >= week && new Date(item.createdAt) < endOfWeek(week)) {
+              if (item.type === 'expense') {
+                totalExpense += item.amount
+              } else {
+                totalIncome += item.amount
+              }
+            }
+          })
+          return [
+            {
+              value: totalExpense,
+              label: format(week, 'dd/MM'),
+              spacing: 2,
+              labelWidth: 36,
+              labelTextStyle: { color: BrandColor.Gray[600], fontSize: 13, textAlign: 'center' },
+              frontColor: BrandColor.Red[300],
+            },
+            {
+              value: totalIncome,
+              frontColor: BrandColor.PrimaryColor[400],
+            },
+          ]
+        })
+        return result.flat()
+      } else {
+        const result = eachMonthOfInterval({
+          start: startOfYear(startDate),
+          end: endOfYear(endDate),
+        }).map((month) => {
+          let totalExpense = 0
+          let totalIncome = 0
+          rawData.forEach((item) => {
+            if (new Date(item.createdAt) >= month && new Date(item.createdAt) < endOfMonth(month)) {
+              if (item.type === 'expense') {
+                totalExpense += item.amount
+              } else {
+                totalIncome += item.amount
+              }
+            }
+          })
+          return [
+            {
+              value: totalExpense,
+              label: format(month, 'LLL'),
+              spacing: 2,
+              labelWidth: 36,
+              labelTextStyle: { color: BrandColor.Gray[600], fontSize: 12 },
+              frontColor: BrandColor.Red[300],
+            },
+            {
+              value: totalIncome,
+              frontColor: BrandColor.PrimaryColor[400],
+            },
+          ]
+        })
+        return result.flat()
+      }
     }
   }
 }
@@ -391,12 +567,12 @@ const formatPieChart = (rawData: Transaction[]): DataPieChart[] => {
   const { total, data } = handleStatistic(rawData)
   const result = data.map((item, index) => {
     return {
-      focused : index === 0,
+      focused: index === 0,
       value: item.percentage,
       color: colors[index],
       gradientCenterColor: gradientCenterColors[index],
       text: item.name,
-      id: item.id
+      id: item.id,
     }
   })
   return result

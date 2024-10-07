@@ -18,21 +18,7 @@ const Layout = () => {
       {/* <Stack.Screen name='first-wallet' options={{ title: 'Create new wallet', headerBackVisible: false }} /> */}
       <Stack.Screen
         name='categories-analytics'
-        options={{
-          headerTitle: t('analytics.header'),
-          header: (props) => (
-            <Header
-              {...props}
-              headerLeft={() => (
-                <HeaderButton
-                  onPress={() => router.back()}
-                  type='btn'
-                  button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
-                />
-              )}
-            />
-          ),
-        }}
+  
       />
     </Stack>
   )

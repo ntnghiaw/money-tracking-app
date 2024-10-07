@@ -50,16 +50,28 @@ const Page = () => {
   const [desiredDate, setDesiredDate] = useState(new Date().toString())
   const [mode, setMode] = useState<AndroidMode>('date')
   const [show, setShow] = useState(false)
-  const { data: budgets, isFetching } = useGetAllPlansQuery({
+  const { data, isFetching } = useGetAllPlansQuery({
     walletId,
     type: 'budget',
   })
+
+
 
   const [createPlan, { data: createPlanResponse, isSuccess }] = useCreatePlanMutation()
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
 
   const snapPoints = useMemo(() => ['96%'], [])
+  // sort end_date desc
+  const budgets = useMemo(() => {
+    if(!data) return []
+    const newData = [...data]
+    return newData.sort((pre, cur) => {
+      if (pre.end_date > cur.end_date) return -1 
+      else if (pre.end_date < cur.end_date) return 1
+      return 0
+    })
+  }, [data])
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -130,15 +142,7 @@ const Page = () => {
             header: (props) => (
               <Header
                 {...props}
-                // headerRight={() => (
-                //   <HeaderButton
-                //     type='btn'
-                //     onPress={() => console.log('show action sheet')}
-                //     button={() => (
-                //       <Sliders width={24} height={24} color={BrandColor.PrimaryColor[400]} />
-                //     )}
-                //   />
-                // )}
+ 
               />
             ),
           }}
@@ -209,7 +213,7 @@ const Page = () => {
             return (
               <TouchableOpacity
                 key={budget._id}
-                style={styles.item}
+                style={[styles.item, new Date(budget.end_date) <= new Date() ? {backgroundColor: BrandColor.Gray[300]} : {}]}
                 onPress={() =>
                   router.push({
                     pathname: '/(authenticated)/(tabs)/account/budget/[id]',

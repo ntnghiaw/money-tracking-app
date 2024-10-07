@@ -30,7 +30,7 @@ import { formatter } from '@/src/utils/formatAmount'
 import formatDate from '@/src/utils/formatDate'
 import { SafeAreaView } from 'react-native'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { ChevronDown, ChevronRight, Plus } from 'react-native-feather'
+import { ChevronDown, ChevronRight, Plus, X } from 'react-native-feather'
 import { ThemedText } from '@/src/components/ThemedText'
 import { TextType } from '@/src/types/text'
 import { Dimensions } from 'react-native'
@@ -65,6 +65,9 @@ import CurrencyInput from 'react-native-currency-input-fields'
 import { validations } from '@/src/utils/validations'
 import { skipToken } from '@reduxjs/toolkit/query'
 import categoriesDefault from '@/src/constants/Categories'
+import dayjs, { Dayjs } from 'dayjs'
+import DateTimePicker from 'react-native-ui-datepicker'
+import Modal from 'react-native-modal'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -135,6 +138,17 @@ const Page = () => {
   const [indexOptions, setIndexOptions] = useState<number | undefined>()
   const { bottom } = useSafeAreaInsets()
   const [budget, setBudget] = useState(initialBudget)
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [customPeriod, setCustomPeriod] = useState<
+    | {
+        startDate: Dayjs
+        endDate: Dayjs
+      }
+    | undefined
+  >({
+    startDate: dayjs(),
+    endDate: dayjs(),
+  })
   const { t } = useLocale()
   const router = useRouter()
   const { currencyCode } = useLocale()
@@ -159,11 +173,58 @@ const Page = () => {
       return (budget.attributes as Budget).categories.map((category) => category._id)
     }, [budget]) || []
 
-  const { options, values } = useMemo(() => getPeriods(), []) || [
-    'This week',
-    'This month',
-    'This quarter',
-    'This year',
+  const { options, values } = useMemo(() => {
+    const startWeek = startOfWeek(new Date(), { weekStartsOn: 1 })
+    const endWeek = endOfWeek(new Date(), { weekStartsOn: 1 })
+
+    // Format the dates as needed (optional)
+    const formattedStartWeek = format(startWeek, 'dd/MM')
+    const formattedEndWeek = format(endWeek, 'dd/MM')
+
+    const startMonth = startOfMonth(new Date())
+    const endMonth = endOfMonth(new Date())
+
+    const startQuarter = startOfQuarter(new Date())
+    const endQuarter = endOfQuarter(new Date())
+
+    const startYear = startOfYear(new Date())
+    const endYear = endOfYear(new Date())
+
+    const formattedStartMonth = format(startMonth, 'dd/MM')
+    const formattedEndMonth = format(endMonth, 'dd/MM')
+
+    const formattedStartQuarter = format(startQuarter, 'dd/MM')
+    const formattedEndQuarter = format(endQuarter, 'dd/MM')
+
+    const formattedStartYear = format(startYear, 'dd/MM')
+    const formattedEndYear = format(endYear, 'dd/MM')
+
+    return {
+      options: [
+        `${t('period.thisweek')} (${formattedStartWeek} - ${formattedEndWeek})`,
+        `${t('period.thismonth')} (${formattedStartMonth} - ${formattedEndMonth})`,
+        `${t('period.thisquarter')} (${formattedStartQuarter} - ${formattedEndQuarter})`,
+        `${t('period.thisyear')} (${formattedStartYear} - ${formattedEndYear})`,
+        `${t('period.custom')} (${format(
+          customPeriod?.startDate.toString() ?? new Date().toString(),
+          'dd/MM'
+        )} - ${format(customPeriod?.endDate?.toString() ?? new Date().toString(), 'dd/MM')})`,
+      ],
+      values: [
+        [startWeek, endWeek],
+        [startMonth, endMonth],
+        [startQuarter, endQuarter],
+        [startYear, endYear],
+        [customPeriod?.startDate, customPeriod?.endDate],
+      ],
+    }
+  }, [customPeriod]) || [
+    t('period.thisweek'),
+    t('period.thismonth'),
+    t('period.thisquarter'),
+    t('period.thisyear'),
+    t('period.custom'),
+    'Cancel',
   ]
   const period = useMemo(() => {
     const { end_date } = fetchedBudget
@@ -247,6 +308,11 @@ const Page = () => {
         title: t('budgets.selecttimerange'),
       },
       (selectedIndex: any) => {
+        if (selectedIndex >= options.length) return
+
+        if (selectedIndex === 4) {
+          setShowCalendar(true)
+        }
         setIndexOptions(selectedIndex)
       }
     )
@@ -322,6 +388,33 @@ const Page = () => {
         }}
       />
       <SafeAreaView style={styles.inner}>
+        <Modal
+          style={styles.modal}
+          isVisible={showCalendar}
+          onBackdropPress={() => setShowCalendar(false)}
+        >
+          <View style={{ alignItems: 'flex-end', padding: 12 }}>
+            <Pressable
+              style={{ justifyContent: 'center', alignItems: 'center' }}
+              onPress={() => setShowCalendar(false)}
+            >
+              <X width={24} height={24} color={TextColor.Primary} />
+            </Pressable>
+          </View>
+          <DateTimePicker
+            height={300}
+            mode='range'
+            timePicker={true}
+            startDate={customPeriod?.startDate}
+            endDate={customPeriod?.endDate}
+            onChange={({ startDate, endDate }) => {
+              setCustomPeriod({
+                startDate,
+                endDate,
+              })
+            }}
+          />
+        </Modal>
         <View style={{ paddingVertical: 32, gap: 24 }}>
           <View
             style={{
@@ -589,5 +682,13 @@ const styles = StyleSheet.create({
     color: TextColor.Primary,
     alignSelf: 'center',
     height: 60,
+  },
+  modal: {
+    maxHeight: 400,
+    backgroundColor: '#F5FCFF',
+    borderRadius: 12,
+    padding: 12,
+    margin: 'auto',
+    marginHorizontal: 24,
   },
 })

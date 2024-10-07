@@ -87,12 +87,11 @@ const Page = () => {
               )}
               headerRight={() => (
                 <HeaderButton
-                  type='text'
-                  // onPress={() => onEdit(id)}
+                  type='btn'
                   onPress={() =>
                     router.push(`(authenticated)/(tabs)/home/edit-transaction?id=${id}` as Href)
                   }
-                  text={t('actions.edit')}
+                  button={() => <Image  source={require('@/src/assets/icons/edit.png')} style={{width:24, height:24, resizeMode: 'contain'}}/>}
                 />
               )}
             />

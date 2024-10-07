@@ -1,45 +1,39 @@
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
 import { ThemedText } from '@/src/components/ThemedText'
 import TransactionItem from '@/src/components/TransactionItem'
 import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
 import { useLocale } from '@/src/hooks/useLocale'
 import { TextType } from '@/src/types/text'
-import { formatter } from '@/src/utils/formatAmount'
 import { Href, Link, Stack } from 'expo-router'
 import { useRouter } from 'expo-router'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { Dimensions, Image, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { useMemo, useState } from 'react'
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import dayjs, { Dayjs } from 'dayjs'
 import { Dropdown } from 'react-native-element-dropdown'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import formatDate from '@/src/utils/formatDate'
-import { getImg } from '@/src/utils/getImgFromUri'
-import { BarChart } from 'react-native-gifted-charts'
+import DateTimePicker from 'react-native-ui-datepicker'
+import Modal from 'react-native-modal'
 import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
-import {
-  format,
-  startOfDay,
-  startOfMonth,
-  startOfTomorrow,
-  startOfWeek,
-  startOfYear,
-} from 'date-fns'
+
 import Loading from '@/src/components/Loading'
 import { formatValue } from 'react-native-currency-input-fields'
 import { formartGroupedBarChart } from '@/src/utils/analytics'
 import { Transaction } from '@/src/types/enum'
-import Bar from '@/src/components/charts/Bar'
 import InfoButton from '@/src/components/buttons/InfoButton'
-import { Ionicons } from '@expo/vector-icons'
-import { Plus } from 'react-native-feather'
-import { DefaultTheme } from '@react-navigation/native'
+
 import GroupedBars from '@/src/components/charts/GroupedBars'
 import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
 import { useSettings } from '@/src/hooks/useSetting'
 import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { X } from 'react-native-feather'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -48,56 +42,96 @@ export enum CustomTab {
   Tab2,
 }
 
-const dataChart = [
-  { value: 250, label: 'Mon' },
-  { value: 500, label: 'Tue' },
-  { value: 745, label: 'Wed' },
-  { value: 320, label: 'Thu' },
-  { value: 600, label: 'Fri' },
-  { value: 256, label: 'Sat' },
-  { value: 300, label: 'Sun' },
-]
-
-
 const Page = () => {
   const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
     useSettings().styleMoneyLabel
 
   const router = useRouter()
-  const { bottom, top } = useSafeAreaInsets()
-  const [period, setPeriod] = useState('month')
-  const [isFocusPeriod, setIsFocusPeriod] = useState(false)
-
   const { t } = useLocale()
   const { currencyCode } = useLocale()
+  const [period, setPeriod] = useState('month')
+  const [isFocusPeriod, setIsFocusPeriod] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [customPeriod, setCustomPeriod] = useState<
+    | {
+        startDate: Dayjs
+        endDate: Dayjs
+      }
+    | undefined
+  >({
+    startDate: dayjs(),
+    endDate: dayjs()
+  })
 
-  const dispatch = useAppDispatch()
   const { walletId } = useAppSelector((state) => state.auth)
-const periodOptions = [
-  { label: t('period.month'), value: 'month' },
-  { label: t('period.quarter'), value: 'quarter' },
-  { label: t('period.year'), value: 'year' },
-  { label: t('period.all'), value: 'all' },
-]
+  const periodOptions = [
+    { label: t('period.month'), value: 'month' },
+    { label: t('period.quarter'), value: 'quarter' },
+    { label: t('period.year'), value: 'year' },
+    { label: t('period.all'), value: 'all' },
+    {
+      label: t('period.custom'),
+      value: 'custom',
+    },
+  ]
 
   const { isLoading, data, isError, isFetching } = useGetAllTransactionsQuery({
     walletId: walletId!,
     query: {
       period,
       sort: 'desc',
+      startDate: customPeriod?.startDate && customPeriod?.startDate.toString(),
+      endDate: customPeriod?.endDate ? customPeriod?.endDate?.toString() : dayjs().toString(),
     },
-  })
+    
+  }, {skip: showCalendar})
 
   const balanceTotal = useMemo(() => {
     return data?.reduce((acc, item) => {
       return item.type === 'expense' ? acc - item.amount : acc + item.amount
     }, 0)
   }, [data])
-  const dataChart = useMemo(() => formartGroupedBarChart(data as Transaction[], period), [data])
+  const dataChart = useMemo(
+    () =>
+      formartGroupedBarChart(
+        data as Transaction[],
+        period,
+        customPeriod?.startDate.toString(),
+        customPeriod?.endDate.toString()
+      ),
+    [data]
+  )
 
   return (
     <SafeAreaView style={styles.container}>
-      <Loading isLoading={isFetching} text='Loading...' />
+      <Loading isLoading={isFetching} text='' />
+      <Modal
+        style={styles.modal}
+        isVisible={showCalendar}
+        onBackdropPress={() => setShowCalendar(false)}
+      >
+        <View style={{ alignItems: 'flex-end', padding: 12 }}>
+          <Pressable
+            style={{ justifyContent: 'center', alignItems: 'center' }}
+            onPress={() => setShowCalendar(false)}
+          >
+            <X width={24} height={24} color={TextColor.Primary} />
+          </Pressable>
+        </View>
+        <DateTimePicker
+          height={300}
+          mode='range'
+          timePicker={true}
+          startDate={customPeriod?.startDate}
+          endDate={customPeriod?.endDate}
+          onChange={({ startDate, endDate }) => {
+            setCustomPeriod({
+              startDate,
+              endDate,
+            })
+          }}
+        />
+      </Modal>
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={styles.info}>
           <View>
@@ -133,6 +167,9 @@ const periodOptions = [
             onFocus={() => setIsFocusPeriod(true)}
             onBlur={() => setIsFocusPeriod(false)}
             onChange={(item) => {
+              if (item.value === 'custom') {
+                setShowCalendar(true)
+              }
               setPeriod(item.value)
               setIsFocusPeriod(false)
             }}
@@ -260,7 +297,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dropdown: {
-    width: 100,
+    width: 160,
     height: 44,
     borderColor: BrandColor.Gray[300],
     borderWidth: 0.5,
@@ -292,5 +329,13 @@ const styles = StyleSheet.create({
     gap: 8,
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  modal: {
+    maxHeight: 400,
+    backgroundColor: '#F5FCFF',
+    borderRadius: 12,
+    padding: 12,
+    margin: 'auto',
+    marginHorizontal: 24
   },
 })

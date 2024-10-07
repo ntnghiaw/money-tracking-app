@@ -164,13 +164,18 @@ const Page = () => {
               )}
               headerRight={() => (
                 <HeaderButton
-                  type='text'
+                  type='btn'
                   onPress={() =>
                     router.navigate(
                       `/(authenticated)/(tabs)/account/goal/edit-goal?id=${goal?._id}`
                     )
                   }
-                  text={t('goals.edit')}
+                  button={() => (
+                    <Image
+                      source={require('@/src/assets/icons/edit.png')}
+                      style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                    />
+                  )}
                 />
               )}
             />

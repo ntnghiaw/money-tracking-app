@@ -7,7 +7,7 @@ export const useSettings = () => {
    PIN,
    setPIN,
    styleMoneyLabel,
-   setStyleMoneyLabel,
+   changeStyleMoneyLabel,
    timeFormat,
    changeTimeFormat,
    firstDayOfWeek,
@@ -22,7 +22,7 @@ export const useSettings = () => {
     PIN,
     setPIN,
     styleMoneyLabel,
-    setStyleMoneyLabel,
+    changeStyleMoneyLabel,
     timeFormat,
     changeTimeFormat,
     firstDayOfWeek,
@@ -30,6 +30,6 @@ export const useSettings = () => {
     dailyReminder,
     toggleDailyReminder,
     dailyReminderTime,
-    setDailyReminderTime
+    setDailyReminderTime,
   }
 }

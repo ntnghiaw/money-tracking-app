@@ -35,10 +35,7 @@ const Page = () => {
   const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
     useSettings().styleMoneyLabel
   const { walletId } = useAppSelector((state) => state.auth)
-  console.log({
-    walletId,
-    planId: id,
-  })
+
   const { data, isFetching } = useGetPlanByIdQuery(
     {
       walletId,
@@ -87,11 +84,11 @@ const Page = () => {
               )}
               headerRight={() => (
                 <HeaderButton
-                  type='text'
+                  type='btn'
                   onPress={() =>
                     router.push(`/(authenticated)/(tabs)/account/budget/edit-budget?id=${id}`)
                   }
-                  text={t('actions.edit')}
+                  button={() => <Image  source={require('@/src/assets/icons/edit.png')} style={{width:24, height:24, resizeMode: 'contain'}}/>}
                 />
               )}
             />

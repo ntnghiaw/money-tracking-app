@@ -1,6 +1,16 @@
 import { t } from "i18next";
-import { createContext, useState } from "react";
-import { getCurrencies, getLocales } from "react-native-localize";
+import { createContext, useEffect, useState } from "react";
+import { StorageService } from '@/src/services/storage.service'
+
+
+interface StyleMoneyLabel  {
+  shortenAmount: boolean
+  showCurrency: boolean
+  disableDecimal: boolean
+  decimalSeparator: string
+  groupSeparator: string
+
+}
 
 export const SettingsContext = createContext({
   timeFormat: 'dd/mm/yyyy',
@@ -20,11 +30,9 @@ export const SettingsContext = createContext({
     decimalSeparator: '.',
     groupSeparator: ',',
   },
-  setStyleMoneyLabel: (_style: any) => {},
-
-
+  changeStyleMoneyLabel: (_style: any) => {},
 })
-
+const USER_STYLES = 'USER_STYLES'
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [timeFormat, setTimeFormat] = useState('dd/mm/yyyy');
@@ -40,6 +48,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     groupSeparator: ',',
   });
 
+  const changeStyleMoneyLabel = async (styles: StyleMoneyLabel) => {
+    setStyleMoneyLabel({...styles})
+    await StorageService.setItem(USER_STYLES, styles)
+  }
+
   const changeTimeFormat = (format: string) => {
     setTimeFormat(format);
   }
@@ -52,21 +65,32 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setDailyReminder((prev) => !prev);
   }
 
+
+  useEffect(() => {
+    const getUserSettings = async () => {
+      const settings = await StorageService.getItem(USER_STYLES)
+      if(settings) setStyleMoneyLabel({ ...settings })
+    }
+    getUserSettings()
+  }, [])
+
   return (
-    <SettingsContext.Provider value={{
-      timeFormat,
-      changeTimeFormat,
-      firstDayOfWeek,
-      changeFirstDayOfWeek,
-      dailyReminder,
-      toggleDailyReminder,
-      dailyReminderTime,
-      setDailyReminderTime,
-      PIN,
-      setPIN,
-      styleMoneyLabel,
-      setStyleMoneyLabel,
-    }}>
+    <SettingsContext.Provider
+      value={{
+        timeFormat,
+        changeTimeFormat,
+        firstDayOfWeek,
+        changeFirstDayOfWeek,
+        dailyReminder,
+        toggleDailyReminder,
+        dailyReminderTime,
+        setDailyReminderTime,
+        PIN,
+        setPIN,
+        styleMoneyLabel,
+        changeStyleMoneyLabel,
+      }}
+    >
       {children}
     </SettingsContext.Provider>
   )

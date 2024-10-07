@@ -51,7 +51,7 @@ const Home = () => {
     query: {
       limit: '20',
       sort: 'desc',
-      period: 'week',
+      period: 'all',
     },
   })
 
@@ -68,12 +68,12 @@ const Home = () => {
                   {t('welcome.brand')}
                 </ThemedText>
               </View>
-              <TouchableOpacity style={styles.notification}>
+              {/* <TouchableOpacity style={styles.notification}>
                 <Image
                   source={require('@/src/assets/icons/bell.jpg')}
                   style={styles.notificationIcon}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           ),
         }}

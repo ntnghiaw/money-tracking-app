@@ -31,12 +31,17 @@ export const transactionApi = appApi.injectEndpoints({
           type?: string
           limit?: string
           offset?: string
-          category?: string
+          startDate?: string
+          endDate?: string
         }
+        categories?: string[]
+        search?: string
       }
     >({
       query: (data) => ({
-        url: `/transactions/${data.walletId}?${new URLSearchParams(data.query).toString()}`,
+        url: `/transactions/${data.walletId}?${new URLSearchParams(
+          data.query
+        ).toString()}&category=${data.categories ? data.categories?.join(',') : ''} `,
         method: 'GET',
       }),
       transformResponse: (response: Response<Transaction[]>) => response.metadata,
@@ -79,11 +84,7 @@ export const transactionApi = appApi.injectEndpoints({
       }),
       transformResponse: (response: { metadata: Transaction }) => response.metadata,
       providesTags: (result, error, data) =>
-        result
-          ? [
-              { type: 'Transaction', id: result._id },
-            ]
-          : [{ type: 'Transaction', id: 'LIST' }],
+        result ? [{ type: 'Transaction', id: result._id }] : [{ type: 'Transaction', id: 'LIST' }],
     }),
     updateTransaction: builder.mutation<
       Response<Transaction>,
