@@ -83,6 +83,7 @@
     "createdAt": "Created Date",
     "scan": "Scan",
     "getimagefromlibrary": "Get image from library",
+    "takeapicture": "Take a photo",
     "chooseimage": "Choose image",
     "transactiondetails": "Transaction Details",
     "amount": "Amount",

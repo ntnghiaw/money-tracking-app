@@ -240,7 +240,7 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='text'
-                  onPress={() => router.navigate('/(authenticated)/(tabs)/transaction/camera')}
+                  onPress={() => router.navigate('/(authenticated)/(tabs)/home/camera')}
                   text={t('transaction.scan')}
                 />
               )}

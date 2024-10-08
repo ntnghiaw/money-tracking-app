@@ -100,7 +100,7 @@ const Page = () => {
   useEffect(() => {
     if (isSuccess) {
       router.navigate({
-        pathname: '/(authenticated)/(tabs)/transaction',
+        pathname: '/(authenticated)/(tabs)/home/edit-transaction',
         params: {
           img_url: data?.img_url,
           total: data?.total,
@@ -133,7 +133,6 @@ const Page = () => {
   if (device == null) return Alert.alert('No Camera Device')
 
   if (showCamera) {
-    
     return (
       <View style={{ flex: 1 }}>
         <Camera
@@ -142,7 +141,7 @@ const Page = () => {
           isActive={true}
           ref={camera}
           photo={true}
-        
+          // format={format}
         />
         <View
           style={{
