@@ -1,13 +1,13 @@
-import Loading from '@/src/components/Loading'
-import { ThemedText } from '@/src/components/ThemedText'
-import TransactionItem from '@/src/components/TransactionItem'
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { Category, Transaction } from '@/src/types/enum'
-import { TextType } from '@/src/types/text'
-import { getImg } from '@/src/utils/getImgFromUri'
+import Loading from '@/components/Loading'
+import { ThemedText } from '@/components/ThemedText'
+import TransactionItem from '@/components/TransactionItem'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
+import { useGetAllTransactionsQuery } from '@/features/transaction/transaction.service'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { Category, Transaction } from '@/types/enum'
+import { TextType } from '@/types/text'
+import { getImg } from '@/utils/getImgFromUri'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Pressable, SectionList } from 'react-native'
@@ -18,26 +18,26 @@ import { format, isYesterday, isToday, differenceInDays, endOfDay } from 'date-f
 import { Dimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Stack } from 'expo-router'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign, Foundation } from '@expo/vector-icons'
-import ListHeader from '@/src/components/ListHeader'
+import ListHeader from '@/components/ListHeader'
 import { Dropdown } from 'react-native-element-dropdown'
 import { formatValue } from 'react-native-currency-input-fields'
 import { skipToken } from '@reduxjs/toolkit/query'
 import dayjs, { Dayjs } from 'dayjs'
 import Modal from 'react-native-modal'
 import DateTimePicker from 'react-native-ui-datepicker'
-import SearchBar from '@/src/components/SearchBar'
+import SearchBar from '@/components/SearchBar'
 import { Filter, X } from 'react-native-feather'
-import { useDebounce } from '@/src/hooks/useDebounce'
+import { useDebounce } from '@/hooks/useDebounce'
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetScrollView,
   BottomSheetView,
 } from '@gorhom/bottom-sheet'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
 const DEFAULT_LIMIT = 20
 const screenHeight = Dimensions.get('window').height
 const screenWidth = Dimensions.get('window').width
@@ -331,7 +331,7 @@ const history = () => {
                   type='btn'
                   button={() => (
                     <Image
-                      source={require('@/src/assets/icons/filter.png')}
+                      source={require('@/assets/icons/filter.png')}
                       style={{ width: 22, height: 22, resizeMode: 'contain' }}
                     />
                   )}
@@ -359,7 +359,7 @@ const history = () => {
               style={{ justifyContent: 'center', alignItems: 'center' }}
               onPress={() => setShowCalendar(false)}
             >
-            <X width={24} height={24} color={TextColor.Primary}/>
+              <X width={24} height={24} color={TextColor.Primary} />
             </Pressable>
           </View>
           <DateTimePicker
@@ -370,8 +370,8 @@ const history = () => {
             endDate={customPeriod?.endDate}
             onChange={({ startDate, endDate }) => {
               setCustomPeriod({
-                startDate,
-                endDate,
+                startDate: dayjs(startDate),
+                endDate: dayjs(endDate),
               })
             }}
           />
@@ -387,7 +387,7 @@ const history = () => {
               key={item._id}
               onPress={() =>
                 router.push({
-                  pathname: '/(authenticated)/(tabs)/home/[id]',
+                  pathname: '/home/[id]',
                   params: { id: item._id },
                 })
               }
@@ -469,7 +469,6 @@ const history = () => {
               }
             />
           }
-      
           stickySectionHeadersEnabled={true}
         />
         {data && data?.length === 0 && (
@@ -533,12 +532,12 @@ const history = () => {
                                 <TouchableOpacity onPress={() => handleSetCategories(cat._id)}>
                                   {categories.includes(cat._id) ? (
                                     <Image
-                                      source={require('@/src/assets/icons/checked.png')}
+                                      source={require('@/assets/icons/checked.png')}
                                       style={{ width: 24, height: 24 }}
                                     />
                                   ) : (
                                     <Image
-                                      source={require('@/src/assets/icons/circle_plus2.png')}
+                                      source={require('@/assets/icons/circle_plus2.png')}
                                       style={{ width: 24, height: 24 }}
                                     />
                                   )}

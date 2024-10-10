@@ -1,5 +1,5 @@
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native'
-import { BackgroundColor, BrandColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor } from '@/constants/Colors'
 
 
 

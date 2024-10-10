@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { User, UserProfile } from '@/src/types/enum'
+import type { User, UserProfile } from '@/types/enum'
 
 
 

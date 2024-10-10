@@ -1,19 +1,19 @@
-import BottomContainer from '@/src/components/BottomContainer'
-import Button from '@/src/components/buttons/Button'
-import Loading from '@/src/components/Loading'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import WalletItem from '@/src/components/WalletItem'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { setDefaultWallet } from '@/src/features/auth/authSlice'
-import { useGetAllWalletsQuery } from '@/src/features/wallet/wallet.service'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { useSettings } from '@/src/hooks/useSetting'
-import { TextType } from '@/src/types/text'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import BottomContainer from '@/components/BottomContainer'
+import Button from '@/components/buttons/Button'
+import Loading from '@/components/Loading'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import WalletItem from '@/components/WalletItem'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { setDefaultWallet } from '@/features/auth/authSlice'
+import { useGetAllWalletsQuery } from '@/features/wallet/wallet.service'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { useSettings } from '@/hooks/useSetting'
+import { TextType } from '@/types/text'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
 import { AntDesign } from '@expo/vector-icons'
 import { Href } from 'expo-router'
 import { Stack, useRouter } from 'expo-router'
@@ -22,28 +22,27 @@ import { Image } from 'react-native'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { formatValue } from 'react-native-currency-input-fields'
 
-
-
 const Page = () => {
   const router = useRouter()
-  const {t} = useLocale()
-  const dispatch  = useAppDispatch()
-  const {walletId} = useAppSelector((state) => state.auth)
-  const {currencyCode} = useLocale()
+  const { t } = useLocale()
+  const dispatch = useAppDispatch()
+  const { walletId } = useAppSelector((state) => state.auth)
+  const { currencyCode } = useLocale()
   const { decimalSeparator, groupSeparator, showCurrency, disableDecimal, shortenAmount } =
-  useSettings().styleMoneyLabel
-  
+    useSettings().styleMoneyLabel
+
   const getAllWallets = useGetAllWalletsQuery()
 
-  
-
   const handleSelectWallet = (_id: string) => {
-    if(walletId === _id) return
+    if (walletId === _id) return
     dispatch(setDefaultWallet(_id))
     router.back()
   }
 
-  const totalBalance = useMemo(() => (getAllWallets.data?.reduce((pre, cur) => pre + cur.balance, 0)), [getAllWallets.data])
+  const totalBalance = useMemo(
+    () => getAllWallets.data?.reduce((pre, cur) => pre + cur.balance, 0),
+    [getAllWallets.data]
+  )
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -64,12 +63,10 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='btn'
-                  onPress={() =>
-                    router.navigate('/(authenticated)/(tabs)/wallet/edit-wallets' as Href)
-                  }
+                  onPress={() => router.navigate('/wallet/edit-wallets' as Href)}
                   button={() => (
                     <Image
-                      source={require('@/src/assets/icons/edit.png')}
+                      source={require('@/assets/icons/edit.png')}
                       style={{ width: 22, height: 22, resizeMode: 'contain' }}
                     />
                   )}
@@ -116,7 +113,7 @@ const Page = () => {
           state='normal'
           size='large'
           text={t('actions.add')}
-          onPress={() => router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)}
+          onPress={() => router.navigate('/wallet/create-wallet' as Href)}
           type='primary'
         />
       </View>

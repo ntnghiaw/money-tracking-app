@@ -1,5 +1,5 @@
 import { PrefetchOptions } from "@reduxjs/toolkit/query"
-import { appApi } from "@/src/features/api.service"
+import { appApi } from "@/features/api.service"
 import { useAppDispatch } from "./hooks"
 import { useEffect } from "react"
 

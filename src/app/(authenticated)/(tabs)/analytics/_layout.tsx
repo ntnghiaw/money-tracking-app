@@ -1,7 +1,7 @@
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import { AntDesign } from '@expo/vector-icons'
 import { Link, Stack, useRouter } from 'expo-router'
 import { X } from 'react-native-feather'
@@ -26,28 +26,6 @@ const Layout = () => {
               )}
             />
           ),
-        }}
-      />
-
-      <Stack.Screen
-        name='create-category'
-        options={{
-          headerTitle: t('analytics.addnewcategories'),
-          animation: 'slide_from_bottom',
-          header: (props) => (
-            <Header
-              {...props}
-              headerLeft={() => (
-                <HeaderButton
-                  onPress={() => router.back()}
-                  type='btn'
-                  button={() => <X width={24} height={24} color={TextColor.Primary} />}
-                />
-              )}
-            />
-          ),
-
-          // headerShown: false,
         }}
       />
       <Stack.Screen

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useContext } from 'react'
-import { SettingsContext } from '@/src/contexts/SettingsContext'
+import { SettingsContext } from '@/contexts/SettingsContext'
 
 export const useSettings = () => {
   const {

@@ -8,28 +8,28 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native'
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { ThemedText } from '@/src/components/ThemedText'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import { Entypo, Ionicons } from '@expo/vector-icons'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useGetWalletByIdQuery } from '@/src/features/wallet/wallet.service'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useGetWalletByIdQuery } from '@/features/wallet/wallet.service'
 import { useEffect, useMemo, useState } from 'react'
-import { formatter } from '@/src/utils/formatAmount'
+import { formatter } from '@/utils/formatAmount'
 import { Plus } from 'react-native-feather'
-import InfoButton from '@/src/components/buttons/InfoButton'
-import TransactionItem from '@/src/components/TransactionItem'
-import { getImg } from '@/src/utils/getImgFromUri'
-import formatDate from '@/src/utils/formatDate'
-import Loading from '@/src/components/Loading'
-import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
-import Button from '@/src/components/buttons/Button'
+import InfoButton from '@/components/buttons/InfoButton'
+import TransactionItem from '@/components/TransactionItem'
+import { getImg } from '@/utils/getImgFromUri'
+import formatDate from '@/utils/formatDate'
+import Loading from '@/components/Loading'
+import { useGetAllTransactionsQuery } from '@/features/transaction/transaction.service'
+import Button from '@/components/buttons/Button'
 import { formatValue } from 'react-native-currency-input-fields'
-import { useSettings } from '@/src/hooks/useSetting'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { useSettings } from '@/hooks/useSetting'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
 
 const MAX_RECENT_TRANSACTIONS = 20
 
@@ -39,14 +39,19 @@ const Home = () => {
   const { t } = useLocale()
   const { currencyCode } = useLocale()
   const dispatch = useAppDispatch()
-  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal, shortenAmount } = useSettings().styleMoneyLabel
+  const { decimalSeparator, groupSeparator, showCurrency, disableDecimal, shortenAmount } =
+    useSettings().styleMoneyLabel
   const [type, setType] = useState('expense')
   const { walletId } = useAppSelector((state) => state.auth)
   const { data, isFetching: isFetchingWallet } = useGetWalletByIdQuery({
     walletId: walletId,
   })
 
-  const { data: transactions, isLoading: isLoadingTransactions, isFetching } = useGetAllTransactionsQuery({
+  const {
+    data: transactions,
+    isLoading: isLoadingTransactions,
+    isFetching,
+  } = useGetAllTransactionsQuery({
     walletId: walletId,
     query: {
       limit: '20',
@@ -55,7 +60,6 @@ const Home = () => {
     },
   })
 
-
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -63,14 +67,14 @@ const Home = () => {
           header: () => (
             <View style={[styles.header, { paddingTop: top }]}>
               <View style={styles.logo}>
-                <Image source={require('@/src/assets/icons/logo.png')} style={styles.logoImg} />
+                <Image source={require('@/assets/icons/logo.png')} style={styles.logoImg} />
                 <ThemedText color={TextColor.Primary} type={TextType.Title22Bold}>
                   {t('welcome.brand')}
                 </ThemedText>
               </View>
               {/* <TouchableOpacity style={styles.notification}>
                 <Image
-                  source={require('@/src/assets/icons/bell.jpg')}
+                  source={require('@/assets/icons/bell.jpg')}
                   style={styles.notificationIcon}
                 />
               </TouchableOpacity> */}
@@ -122,7 +126,7 @@ const Home = () => {
             style={[styles.btn50, { backgroundColor: BrandColor.Red[50] }]}
             onPress={() =>
               router.navigate({
-                pathname: '/(authenticated)/(tabs)/home/categories-analytics',
+                pathname: '/home/categories-analytics',
                 params: { type: 'expense' },
               })
             }
@@ -139,7 +143,7 @@ const Home = () => {
             style={[styles.btn50, { backgroundColor: BrandColor.Blue[50] }]}
             onPress={() =>
               router.navigate({
-                pathname: '/(authenticated)/(tabs)/home/categories-analytics',
+                pathname: '/home/categories-analytics',
                 params: { type: 'income' },
               })
             }
@@ -159,7 +163,7 @@ const Home = () => {
                 <Plus width={20} height={20} color={BrandColor.PrimaryColor[400]} />
               )}
               description={t('home.walletdescription')}
-              onPress={() => router.navigate('/(authenticated)/(tabs)/wallet')}
+              onPress={() => router.navigate('/wallet')}
             />
           </View>
         </View>
@@ -169,7 +173,7 @@ const Home = () => {
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
               {t('home.recents')}
             </ThemedText>
-            <Link href='/(authenticated)/(tabs)/home/history' asChild>
+            <Link href='/home/history' asChild>
               <Text style={styles.link}>{t('home.seeall')}</Text>
             </Link>
           </View>
@@ -188,7 +192,7 @@ const Home = () => {
                 key={index}
                 onPress={() =>
                   router.push({
-                    pathname: `/(authenticated)/(tabs)/home/[id]`,
+                    pathname: `/home/[id]`,
                     params: { id: item._id },
                   })
                 }

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { type BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { BrandColor, NeutralColor } from '@/src/constants/Colors'
+import { BrandColor, NeutralColor } from '@/constants/Colors'
 import { Pressable } from 'react-native'
 import { useMemo, useState } from 'react'
 

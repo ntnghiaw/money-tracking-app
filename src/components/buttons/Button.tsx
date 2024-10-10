@@ -8,11 +8,11 @@ import {
   ViewStyle,
   DimensionValue,
 } from 'react-native'
-import { ThemedText } from '@/src/components/ThemedText'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { TextType } from '@/types/text'
 import { useMemo, type ReactElement } from 'react'
-import { BrandColor, NeutralColor } from '@/src/constants/Colors'
-import { hexToRgb } from '@/src/utils/convert'
+import { BrandColor, NeutralColor } from '@/constants/Colors'
+import { hexToRgb } from '@/utils/convert'
 import { ActivityIndicator } from 'react-native'
 
 export enum ButtonType {

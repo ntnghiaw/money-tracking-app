@@ -1,29 +1,26 @@
-
-
-import Button from '@/src/components/buttons/Button'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { useLogoutMutation } from '@/src/features/auth/auth.service'
-import { clearAuth } from '@/src/features/auth/authSlice'
-import { useGetProfileQuery } from '@/src/features/user/user.service'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import Button from '@/components/buttons/Button'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
+import { useLogoutMutation } from '@/features/auth/auth.service'
+import { clearAuth } from '@/features/auth/authSlice'
+import { useGetProfileQuery } from '@/features/user/user.service'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import Entypo from '@expo/vector-icons/Entypo'
 import { Href, Link, Stack, useRouter } from 'expo-router'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ChevronRight, ChevronsRight, LogOut } from 'react-native-feather'
 
-
 const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
-    const dispatch = useAppDispatch()
-    const { user, tokens, walletId, isAuthenticated } = useAppSelector((state) => state.auth)
-    const [logout, { data, isSuccess, isError, error, isLoading }] = useLogoutMutation()
-    const { data: userInfo, isError: isErrorGetInfo } = useGetProfileQuery()
+  const dispatch = useAppDispatch()
+  const { user, tokens, walletId, isAuthenticated } = useAppSelector((state) => state.auth)
+  const [logout, { data, isSuccess, isError, error, isLoading }] = useLogoutMutation()
+  const { data: userInfo, isError: isErrorGetInfo } = useGetProfileQuery()
 
   const handleLogout = async () => {
     await logout()
@@ -32,11 +29,8 @@ const Page = () => {
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={[styles.form, { marginTop: 18 }]}>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/account/profile')}
-          >
-            <Image style={styles.imageIcon} source={require('@/src/assets/icons/account.jpg')} />
+          <TouchableOpacity style={styles.item} onPress={() => router.navigate('/account/profile')}>
+            <Image style={styles.imageIcon} source={require('@/assets/icons/account.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.editaccount')}
             </ThemedText>
@@ -46,9 +40,9 @@ const Page = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.item}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/account/change-password')}
+            onPress={() => router.navigate('/account/change-password')}
           >
-            <Image style={styles.imageIcon} source={require('@/src/assets/icons/lock.jpg')} />
+            <Image style={styles.imageIcon} source={require('@/assets/icons/lock.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.resetpassword')}
             </ThemedText>
@@ -58,9 +52,9 @@ const Page = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.item}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/account/category')}
+            onPress={() => router.navigate('/account/category')}
           >
-            <Image style={styles.imageIcon} source={require('@/src/assets/icons/change.jpg')} />
+            <Image style={styles.imageIcon} source={require('@/assets/icons/change.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.categories')}
             </ThemedText>
@@ -68,11 +62,8 @@ const Page = () => {
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/account/budget')}
-          >
-            <Image style={styles.imageIcon} source={require('@/src/assets/icons/parts.jpg')} />
+          <TouchableOpacity style={styles.item} onPress={() => router.navigate('/account/budget')}>
+            <Image style={styles.imageIcon} source={require('@/assets/icons/parts.jpg')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.budgets')}
             </ThemedText>
@@ -80,13 +71,10 @@ const Page = () => {
               <Entypo name='chevron-thin-right' size={20} color={TextColor.Placeholder} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/account/goal')}
-          >
+          <TouchableOpacity style={styles.item} onPress={() => router.navigate('/account/goal')}>
             <Image
               style={styles.imageIcon}
-              source={require('@/src/assets/icons/goals-active.jpg')}
+              source={require('@/assets/icons/goals-active.jpg')}
             />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.goals')}
@@ -98,7 +86,7 @@ const Page = () => {
         </View>
 
         <View style={styles.form}>
-          <Link href={'/(authenticated)/(tabs)/account/languages' as Href} asChild>
+          <Link href={'/account/languages' as Href} asChild>
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
                 {t('settings.language')}
@@ -108,7 +96,7 @@ const Page = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={'/(authenticated)/(tabs)/account/currencies' as Href} asChild>
+          <Link href={'/account/currencies' as Href} asChild>
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
                 {t('settings.currency')}
@@ -121,8 +109,8 @@ const Page = () => {
         </View>
 
         <View style={styles.form}>
-          {/* <Link href={'/(authenticated)/(tabs)/account/notifications' as Href} asChild> */}
-            {/* <TouchableOpacity style={styles.item}>
+          {/* <Link href={'/account/notifications' as Href} asChild> */}
+          {/* <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
                 {t('settings.notifications')}
               </ThemedText>
@@ -131,7 +119,7 @@ const Page = () => {
               </View>
             </TouchableOpacity> */}
           {/* </Link> */}
-          <Link href={'/(authenticated)/(tabs)/account/setting' as Href} asChild>
+          <Link href={'/account/setting' as Href} asChild>
             <TouchableOpacity style={styles.item}>
               <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
                 {t('settings.settings')}
@@ -189,6 +177,6 @@ const styles = StyleSheet.create({
   },
   right: {
     position: 'absolute',
-    right: 12
-  }
+    right: 12,
+  },
 })

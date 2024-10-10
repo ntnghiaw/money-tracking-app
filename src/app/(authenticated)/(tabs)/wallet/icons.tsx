@@ -1,5 +1,5 @@
-import { BackgroundColor } from '@/src/constants/Colors'
-import { walletIcons } from '@/src/constants/Icons'
+import { BackgroundColor } from '@/constants/Colors'
+import { walletIcons } from '@/constants/Icons'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 

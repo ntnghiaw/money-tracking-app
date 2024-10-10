@@ -1,24 +1,24 @@
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
-import { getImg } from '@/src/utils/getImgFromUri'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
+import { getImg } from '@/utils/getImgFromUri'
 import { Href, useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { useCallback, useMemo, useState } from 'react'
 import { Image, SafeAreaView, ScrollView } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
 import { CustomTab } from '../../analytics'
 import { Stack } from 'expo-router'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import Loading from '@/src/components/Loading'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
-import { Category } from '@/src/types/enum'
-import categoriesDefault from '@/src/constants/Categories'
+import Loading from '@/components/Loading'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
+import { Category } from '@/types/enum'
+import categoriesDefault from '@/constants/Categories'
 
 const history = () => {
   const router = useRouter()
@@ -43,7 +43,7 @@ const history = () => {
 
   const chooseCategory = (category: Category) => {
     router.navigate(
-      `/(authenticated)/(tabs)/account/category/${category._id}?icon=${category.icon}&name=${category.name}&type=${category.type}` as Href
+      `/account/category/${category._id}?icon=${category.icon}&name=${category.name}&type=${category.type}` as Href
     )
   }
 
@@ -70,9 +70,7 @@ const history = () => {
               )}
               headerRight={() => (
                 <HeaderButton
-                  onPress={() =>
-                    router.push('/(authenticated)/(tabs)/account/category/create-category' as Href)
-                  }
+                  onPress={() => router.push('/account/category/create-category' as Href)}
                   type='text'
                   text={t('actions.add')}
                 />

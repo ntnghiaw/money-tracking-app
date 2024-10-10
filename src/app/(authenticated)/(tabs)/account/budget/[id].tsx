@@ -1,29 +1,29 @@
-import Loading from '@/src/components/Loading'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useDeletePlanMutation, useGetPlanByIdQuery } from '@/src/features/plan/plan.service'
-import { useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
-import formatDate from '@/src/utils/formatDate'
-import { getImg } from '@/src/utils/getImgFromUri'
+import Loading from '@/components/Loading'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useDeletePlanMutation, useGetPlanByIdQuery } from '@/features/plan/plan.service'
+import { useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
+import formatDate from '@/utils/formatDate'
+import { getImg } from '@/utils/getImgFromUri'
 import { AntDesign } from '@expo/vector-icons'
 import { Link, Stack, useRouter } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import { Alert, TouchableOpacity } from 'react-native'
-import Button from '@/src/components/buttons/Button'
+import Button from '@/components/buttons/Button'
 import { Image } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-import TransactionItem from '@/src/components/TransactionItem'
+import TransactionItem from '@/components/TransactionItem'
 import { ScrollView } from 'react-native-gesture-handler'
 import { formatValue } from 'react-native-currency-input-fields'
-import categoriesDefault from '@/src/constants/Categories'
-import { usePrefetchImmediately } from '@/src/hooks/usePrefetchImmediately'
-import { useSettings } from '@/src/hooks/useSetting'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import categoriesDefault from '@/constants/Categories'
+import { usePrefetchImmediately } from '@/hooks/usePrefetchImmediately'
+import { useSettings } from '@/hooks/useSetting'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
 
 const Page = () => {
   const { t } = useLocale()
@@ -83,10 +83,13 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='btn'
-                  onPress={() =>
-                    router.push(`/(authenticated)/(tabs)/account/budget/edit-budget?id=${id}`)
-                  }
-                  button={() => <Image  source={require('@/src/assets/icons/edit.png')} style={{width:24, height:24, resizeMode: 'contain'}}/>}
+                  onPress={() => router.push(`/account/budget/edit-budget?id=${id}`)}
+                  button={() => (
+                    <Image
+                      source={require('@/assets/icons/edit.png')}
+                      style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                    />
+                  )}
                 />
               )}
             />
@@ -311,7 +314,7 @@ const Page = () => {
           onPress={handleDelete}
           buttonLeft={() => (
             <Image
-              source={require('@/src/assets/icons/recycle-bin.png')}
+              source={require('@/assets/icons/recycle-bin.png')}
               style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
           )}

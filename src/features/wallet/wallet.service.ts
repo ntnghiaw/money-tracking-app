@@ -2,10 +2,10 @@ import {
   Response,
   Wallet,
   WalletResponse,
-} from '@/src/types/enum'
+} from '@/types/enum'
 
-import config from '@/src/config'
-import { appApi } from '@/src/features/api.service'
+import config from '@/config'
+import { appApi } from '@/features/api.service'
 
 interface WalletRequest {
   name: string

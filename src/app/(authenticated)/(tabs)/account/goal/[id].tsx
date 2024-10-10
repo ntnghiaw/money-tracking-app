@@ -1,11 +1,11 @@
-import InfoButton from '@/src/components/buttons/InfoButton'
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
-import { ThemedText } from '@/src/components/ThemedText'
-import TransactionItem from '@/src/components/TransactionItem'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
-import { formatter } from '@/src/utils/formatAmount'
+import InfoButton from '@/components/buttons/InfoButton'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
+import { ThemedText } from '@/components/ThemedText'
+import TransactionItem from '@/components/TransactionItem'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
+import { formatter } from '@/utils/formatAmount'
 import { Href, Link, Stack, useLocalSearchParams } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -20,37 +20,36 @@ import {
 } from '@gorhom/bottom-sheet'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import CustomizeModalScrollView from '@/src/components/modals/CustomizedModalScrollView'
-import Input from '@/src/components/Input'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useGetPlanByIdQuery } from '@/src/features/plan/plan.service'
-import { useGetWalletByIdQuery } from '@/src/features/wallet/wallet.service'
-import formatDate from '@/src/utils/formatDate'
-import { getImg } from '@/src/utils/getImgFromUri'
+import CustomizeModalScrollView from '@/components/modals/CustomizedModalScrollView'
+import Input from '@/components/Input'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useGetPlanByIdQuery } from '@/features/plan/plan.service'
+import { useGetWalletByIdQuery } from '@/features/wallet/wallet.service'
+import formatDate from '@/utils/formatDate'
+import { getImg } from '@/utils/getImgFromUri'
 import { skipToken } from '@reduxjs/toolkit/query'
-import Pie from '@/src/components/charts/PieChart'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Pie from '@/components/charts/PieChart'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign, FontAwesome6, Fontisto, Foundation } from '@expo/vector-icons'
 import MaskInput, { Masks } from 'react-native-mask-input'
-import CustomizedModalScrollView from '@/src/components/modals/CustomizedModalScrollView'
-import { useAddAmountToGoalMutation } from '@/src/features/plan/plan.service'
-import AmountItem from '@/src/components/plan/AmountItem'
-import Loading from '@/src/components/Loading'
+import CustomizedModalScrollView from '@/components/modals/CustomizedModalScrollView'
+import { useAddAmountToGoalMutation } from '@/features/plan/plan.service'
+import AmountItem from '@/components/plan/AmountItem'
+import Loading from '@/components/Loading'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
-import { Amount } from '@/src/types/enum'
+import { Amount } from '@/types/enum'
 import { Pressable } from 'react-native'
 import { format } from 'date-fns'
 import CurrencyInput from 'react-native-currency-input-fields'
-import CustomPieChart2 from '@/src/components/charts/PieChart2'
-
+import CustomPieChart2 from '@/components/charts/PieChart2'
 
 type AndroidMode = 'date' | 'time'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-const initalAmount: Pick<Amount, 'amount' | 'createdAt'>  = {
+const initalAmount: Pick<Amount, 'amount' | 'createdAt'> = {
   amount: 0,
   createdAt: new Date().toString(),
 }
@@ -63,8 +62,8 @@ const Page = () => {
   const { currencyCode } = useLocale()
   const [amount, setAmount] = useState(initalAmount)
   const [index, setIndex] = useState(0)
-    const [mode, setMode] = useState<AndroidMode>('date')
-    const [show, setShow] = useState(false)
+  const [mode, setMode] = useState<AndroidMode>('date')
+  const [show, setShow] = useState(false)
 
   const { walletId } = useAppSelector((state) => state.auth)
 
@@ -73,7 +72,8 @@ const Page = () => {
     planId: id.toString() ?? skipToken,
   })
 
-  const [addAmountToGoal, { data: resultAddAmount, isLoading: isAddAmountLoading, isSuccess }] = useAddAmountToGoalMutation()
+  const [addAmountToGoal, { data: resultAddAmount, isLoading: isAddAmountLoading, isSuccess }] =
+    useAddAmountToGoalMutation()
 
   useEffect(() => {
     if (resultAddAmount) {
@@ -100,7 +100,6 @@ const Page = () => {
     []
   )
 
-  
   const onChange = (event: DateTimePickerEvent, date?: Date) => {
     const currentDate = date
     setShow(false)
@@ -165,14 +164,10 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='btn'
-                  onPress={() =>
-                    router.navigate(
-                      `/(authenticated)/(tabs)/account/goal/edit-goal?id=${goal?._id}`
-                    )
-                  }
+                  onPress={() => router.navigate(`/account/goal/edit-goal?id=${goal?._id}`)}
                   button={() => (
                     <Image
-                      source={require('@/src/assets/icons/edit.png')}
+                      source={require('@/assets/icons/edit.png')}
                       style={{ width: 24, height: 24, resizeMode: 'contain' }}
                     />
                   )}
@@ -234,7 +229,7 @@ const Page = () => {
               {t('home.history')}
             </ThemedText>
             {/* <Link
-              href={`/(authenticated)/(tabs)/account/goal/amount-history`}
+              href={`/account/goal/amount-history`}
               asChild
             >
               <Text style={styles.link}>{t('home.seeall')}</Text>
@@ -255,7 +250,7 @@ const Page = () => {
                 key={index}
                 onPress={() =>
                   router.navigate({
-                    pathname: '/(authenticated)/(tabs)/account/goal/amount',
+                    pathname: '/account/goal/amount',
                     params: {
                       id: item._id,
                       planId: id,

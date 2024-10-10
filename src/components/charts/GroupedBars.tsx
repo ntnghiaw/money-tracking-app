@@ -1,5 +1,5 @@
-import { BackgroundColor, BrandColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import { BackgroundColor, BrandColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { abbrValue } from 'react-native-currency-input-fields'

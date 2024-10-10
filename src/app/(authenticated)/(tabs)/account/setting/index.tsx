@@ -1,9 +1,9 @@
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import { AntDesign, Entypo } from '@expo/vector-icons'
 import { Link, router } from 'expo-router'
 import { Href, Stack } from 'expo-router'
@@ -11,10 +11,10 @@ import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { abbrValue, formatValue } from 'react-native-currency-input-fields'
 import { Switch } from 'react-native-ui-lib'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
 import { Image } from 'react-native'
-import { useSettings } from '@/src/hooks/useSetting'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { useSettings } from '@/hooks/useSetting'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
 
 interface SettingProperties {
   shorten: boolean
@@ -149,7 +149,7 @@ const Page = () => {
           <View style={styles.right}>
             {decimalSeparator === '.' && groupSeparator === ',' ? (
               <Image
-                source={require('@/src/assets/icons/checked.png')}
+                source={require('@/assets/icons/checked.png')}
                 style={styles.checkedIcon}
               />
             ) : null}
@@ -177,7 +177,7 @@ const Page = () => {
           <View style={styles.right}>
             {decimalSeparator === ',' && groupSeparator === '.' ? (
               <Image
-                source={require('@/src/assets/icons/checked.png')}
+                source={require('@/assets/icons/checked.png')}
                 style={styles.checkedIcon}
               />
             ) : null}
@@ -216,7 +216,7 @@ const Page = () => {
           <View style={styles.right}>
             {!disableDecimal ? (
               <Image
-                source={require('@/src/assets/icons/checked.png')}
+                source={require('@/assets/icons/checked.png')}
                 style={styles.checkedIcon}
               />
             ) : null}
@@ -245,7 +245,7 @@ const Page = () => {
           <View style={styles.right}>
             {disableDecimal ? (
               <Image
-                source={require('@/src/assets/icons/checked.png')}
+                source={require('@/assets/icons/checked.png')}
                 style={styles.checkedIcon}
               />
             ) : null}

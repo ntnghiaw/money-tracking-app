@@ -1,43 +1,41 @@
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { CustomTab } from '@/src/app/(authenticated)/(tabs)/analytics/index'
+import { CustomTab } from '@/types/enum'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocale } from '@/src/hooks/useLocale'
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
+import { useLocale } from '@/hooks/useLocale'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
-import Input from '@/src/components/Input'
-import { formatter } from '@/src/utils/formatAmount'
-import formatDate from '@/src/utils/formatDate'
+import Input from '@/components/Input'
+import formatDate from '@/utils/formatDate'
 import { SafeAreaView } from 'react-native'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import { ChevronDown } from 'react-native-feather'
-import { ThemedText } from '@/src/components/ThemedText'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { TextType } from '@/types/text'
 import { Dimensions } from 'react-native'
-import { getImg } from '@/src/utils/getImgFromUri'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
-import Button from '@/src/components/buttons/Button'
+import { getImg } from '@/utils/getImgFromUri'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
+import Button from '@/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Category, Transaction } from '@/src/types/enum'
-import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
+import { Category, Transaction } from '@/types/enum'
+import { AntDesign } from '@expo/vector-icons'
 
-import { useCreateTransactionMutation } from '@/src/features/transaction/transaction.service'
+import { useCreateTransactionMutation } from '@/features/transaction/transaction.service'
 
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import CurrencyInput from 'react-native-currency-input-fields'
-import categoriesDefault from '@/src/constants/Categories'
-import { useSettings } from '@/src/hooks/useSetting'
-import { useGetAllPlansQuery } from '@/src/features/plan/plan.service'
-import { getBudgetsBycategory } from '@/src/utils/getBudgetsByCategory'
-import { isOverSpentBudget } from '@/src/utils/isOverSpentBudget'
+import categoriesDefault from '@/constants/Categories'
+import { useSettings } from '@/hooks/useSetting'
+import { useGetAllPlansQuery } from '@/features/plan/plan.service'
+import { getBudgetsBycategory } from '@/utils/getBudgetsByCategory'
+import { isOverSpentBudget } from '@/utils/isOverSpentBudget'
 import Toast from 'react-native-toast-message'
-import AlertCustom from '@/src/components/AlertCustom'
 import { Alert } from 'react-native'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 
@@ -54,14 +52,8 @@ const initialTransaction: Omit<Transaction, '_id'> = {
 }
 
 const Page = () => {
-
-
-
   const { walletId } = useAppSelector((state) => state.auth)
-  const options = [
-    'Open Camera',
-    'Choose Image from Library'
-  ]
+  const options = ['Open Camera', 'Choose Image from Library']
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
   const { decimalSeparator, groupSeparator } = useSettings().styleMoneyLabel
@@ -79,7 +71,7 @@ const Page = () => {
     type: string
     transactionId: string
   }
-    const { showActionSheetWithOptions } = useActionSheet()
+  const { showActionSheetWithOptions } = useActionSheet()
   const { bottom } = useSafeAreaInsets()
   const [selectedTab, setSelectedTab] = useState<CustomTab>(CustomTab.Tab1)
   const [transaction, setTransaction] = useState(initialTransaction)
@@ -187,8 +179,6 @@ const Page = () => {
     return { isValid: true, message: '' }
   }
 
-
-
   const openActionSheet = async () => {
     const cancelButtonIndex = 4
     showActionSheetWithOptions(
@@ -217,8 +207,7 @@ const Page = () => {
         },
         walletId,
       }).unwrap()
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   const handleSubmit = async () => {
@@ -239,22 +228,25 @@ const Page = () => {
     if (activeBudgets) {
       const [isOverSpent, data] = isOverSpentBudget(activeBudgets, transaction.amount)
       if (isOverSpent) {
-        Alert.alert(t('actions.warning'), t('actions.budgetwarning', {budgets: (data as string[]).join(', ')}), [
-          {
-            text: t('actions.cancel'),
-            onPress: () => {
-              return console.log('Cancel')
+        Alert.alert(
+          t('actions.warning'),
+          t('actions.budgetwarning', { budgets: (data as string[]).join(', ') }),
+          [
+            {
+              text: t('actions.cancel'),
+              onPress: () => {
+                return console.log('Cancel')
+              },
+              style: 'cancel',
             },
-            style: 'cancel',
-          },
-          {
-            text: t('actions.continue'),
-            onPress: () => handleCreateTransaction(),
-            style: 'default',
-          },
-        ])
-      }
-      else {
+            {
+              text: t('actions.continue'),
+              onPress: () => handleCreateTransaction(),
+              style: 'default',
+            },
+          ]
+        )
+      } else {
         handleCreateTransaction()
       }
     } else {
@@ -274,7 +266,7 @@ const Page = () => {
                 <HeaderButton
                   type='btn'
                   onPress={() => {
-                    router.replace('/(authenticated)/(tabs)/home')
+                    router.replace('/home')
                   }}
                   button={() => <AntDesign name='arrowleft' size={24} color={TextColor.Primary} />}
                 />
@@ -282,7 +274,7 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='text'
-                  onPress={() => router.navigate('/(authenticated)/(tabs)/transaction/camera')}
+                  onPress={() => router.navigate('/transaction/camera')}
                   text={t('transaction.scan')}
                 />
               )}
@@ -315,7 +307,7 @@ const Page = () => {
           <Input
             placeholder={t('transaction.addtitle')}
             value={transaction.title}
-            buttonLeft={() => <Image source={require('@/src/assets/icons/note.png')} />}
+            buttonLeft={() => <Image source={require('@/assets/icons/note.png')} />}
             onChangeText={(text) => {
               setTransaction((pre) => {
                 return { ...pre, title: text }
@@ -330,7 +322,7 @@ const Page = () => {
               source={
                 transaction.category._id
                   ? getImg(transaction.category.icon)
-                  : require('@/src/assets/icons/categories.png')
+                  : require('@/assets/icons/categories.png')
               }
               style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
@@ -357,18 +349,20 @@ const Page = () => {
             >
               <Pressable onPress={showDatepicker} style={[styles.button, { width: '49%' }]}>
                 <Image
-                  source={require('@/src/assets/icons/calendar.png')}
+                  source={require('@/assets/icons/calendar.png')}
                   style={{ width: 24, height: 24, resizeMode: 'contain' }}
                 />
 
                 <View style={{ flex: 3 }}>
-                  <Text numberOfLines={1} adjustsFontSizeToFit={true}>{formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}</Text>
+                  <Text numberOfLines={1} adjustsFontSizeToFit={true}>
+                    {formatDate(new Date(transaction.createdAt), 'dd/mm/yy')}
+                  </Text>
                 </View>
                 <ChevronDown width={24} height={24} color={TextColor.Placeholder} />
               </Pressable>
               <TouchableOpacity style={[styles.button, { width: '49%' }]} onPress={showTimepicker}>
                 <Image
-                  source={require('@/src/assets/icons/clock.png')}
+                  source={require('@/assets/icons/clock.png')}
                   style={{ width: 24, height: 24, resizeMode: 'contain' }}
                 />
                 <View style={{ flex: 3 }}>
@@ -442,7 +436,7 @@ const Page = () => {
                         : category.name}
                     </ThemedText>
                     {/* { transaction.category._id === category._id && (  <View style={{position: 'absolute', right: 12}}>
-                      <Image source={require('@/src/assets/icons/checked.png')} style={{width: 18, height: 18}} />
+                      <Image source={require('@/assets/icons/checked.png')} style={{width: 18, height: 18}} />
                     </View>)} */}
                   </TouchableOpacity>
                 )

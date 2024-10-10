@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { WalletResponse, Wallet, WalletsState } from '@/src/types/enum'
+import type { WalletResponse, Wallet, WalletsState } from '@/types/enum'
 
 const initialState: WalletsState = {
   wallets: [],

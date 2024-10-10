@@ -1,4 +1,4 @@
-import { Budget, FinancialPlan } from "@/src/types/enum";
+import { Budget, FinancialPlan } from "@/types/enum";
 
 export const getBudgetsBycategory = (budgets: FinancialPlan[], categoryId: string) => {
   return budgets.filter((budget) => {

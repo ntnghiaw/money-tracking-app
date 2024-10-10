@@ -1,4 +1,4 @@
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
 import {
   Alert,
   AnimatableStringValue,
@@ -10,25 +10,25 @@ import {
 } from 'react-native'
 import { endOfDay, set } from 'date-fns'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocale } from '@/src/hooks/useLocale'
+import { useLocale } from '@/hooks/useLocale'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
-import Input from '@/src/components/Input'
+import Input from '@/components/Input'
 import MaskInput from 'react-native-mask-input'
-import { formatter } from '@/src/utils/formatAmount'
-import formatDate from '@/src/utils/formatDate'
+import { formatter } from '@/utils/formatAmount'
+import formatDate from '@/utils/formatDate'
 import { SafeAreaView } from 'react-native'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { ChevronDown, ChevronRight, Plus } from 'react-native-feather'
-import { ThemedText } from '@/src/components/ThemedText'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { TextType } from '@/types/text'
 import { Dimensions } from 'react-native'
-import { getImg } from '@/src/utils/getImgFromUri'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
-import Button from '@/src/components/buttons/Button'
+import { getImg } from '@/utils/getImgFromUri'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
+import Button from '@/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Amount, Budget, Category, FinancialPlan, Goal, Transaction } from '@/src/types/enum'
+import { Amount, Budget, Category, FinancialPlan, Goal, Transaction } from '@/types/enum'
 import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
 import {
   useCreatePlanMutation,
@@ -37,18 +37,18 @@ import {
   useGetPlanByIdQuery,
   useUpdateAmountToGoalMutation,
   useUpdatePlanMutation,
-} from '@/src/features/plan/plan.service'
+} from '@/features/plan/plan.service'
 
 import { Href, Stack, useLocalSearchParams, useRouter } from 'expo-router'
 
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import CurrencyInput from 'react-native-currency-input-fields'
-import { validations } from '@/src/utils/validations'
+import { validations } from '@/utils/validations'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
-import BottomContainer from '@/src/components/BottomContainer'
+import BottomContainer from '@/components/BottomContainer'
 
 const initialGoal: Omit<FinancialPlan, '_id'> = {
   name: '',
@@ -64,7 +64,6 @@ type AndroidMode = 'date' | 'time'
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-
 const initalAmount: Pick<Amount, 'amount' | 'createdAt'> = {
   amount: 0,
   createdAt: new Date().toString(),
@@ -72,7 +71,7 @@ const initalAmount: Pick<Amount, 'amount' | 'createdAt'> = {
 
 const Page = () => {
   const { walletId } = useAppSelector((state) => state.auth)
-  const { id, planId } = useLocalSearchParams() as { id: string, planId: string }
+  const { id, planId } = useLocalSearchParams() as { id: string; planId: string }
   const [amount, setAmount] = useState(initalAmount)
 
   const { t } = useLocale()
@@ -82,32 +81,27 @@ const Page = () => {
   const [show, setShow] = useState(false)
   const [mode, setMode] = useState<AndroidMode>('date')
 
-  const {
-    data: fetchedGoal,
-    isLoading,
-    isError,
-  } = useGetPlanByIdQuery({ walletId,  planId })
+  const { data: fetchedGoal, isLoading, isError } = useGetPlanByIdQuery({ walletId, planId })
   const [updateAmount, updateAmountResult] = useUpdateAmountToGoalMutation()
   const [deleteAmount, deleteAmountResult] = useDeleteAmountGoalMutation()
 
   useEffect(() => {
     if (fetchedGoal) {
-      const foundAmount = fetchedGoal?.attributes.records.find((record) => record._id === id) as Amount
+      const foundAmount = fetchedGoal?.attributes.records.find(
+        (record) => record._id === id
+      ) as Amount
       setAmount(foundAmount ?? initalAmount)
     }
-
-    
-  }, [id,fetchedGoal])
+  }, [id, fetchedGoal])
 
   useEffect(() => {
     if (updateAmountResult.isSuccess) {
       setAmount(initalAmount)
       router.back()
     } else if (deleteAmountResult.isSuccess) {
-      router.navigate('/(authenticated)/(tabs)/account/goal' as Href)
+      router.navigate('/account/goal' as Href)
     }
   }, [updateAmountResult, deleteAmountResult])
-
 
   const onChange = (event: DateTimePickerEvent, date?: Date) => {
     const currentDate = date
@@ -125,29 +119,25 @@ const Page = () => {
 
   const handleUpdateAmount = async () => {
     //validate
-    
 
     if (!amount.amount) {
       Alert.alert('Error', 'Amount is required')
       return
     }
     try {
- 
       await updateAmount({
         walletId,
         planId,
         recordId: id,
-        record: amount
+        record: amount,
       }).unwrap()
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   const handleDeleteAmount = async () => {
     try {
       await deleteAmount({ walletId, planId, recordId: id }).unwrap()
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   return (

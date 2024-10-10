@@ -12,10 +12,10 @@ import {
   TextInputEndEditingEventData,
 } from 'react-native'
 import { ThemedText } from './ThemedText'
-import { TextType } from '@/src/types/text'
+import { TextType } from '@/types/text'
 import { useEffect, useState, type ReactElement } from 'react'
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { hexToRgb } from '@/src/utils/convert'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
+import { hexToRgb } from '@/utils/convert'
 import { TextInput } from 'react-native-gesture-handler'
 import { Pressable } from 'react-native'
 

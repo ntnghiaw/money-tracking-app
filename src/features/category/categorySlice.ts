@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import {Category } from '@/src/types/enum'
+import {Category } from '@/types/enum'
 const initialState: Category = {
   _id: '',
   name: '',

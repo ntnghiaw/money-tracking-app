@@ -1,7 +1,10 @@
-import { Slot } from "expo-router"
+import { Stack } from "expo-router"
 const Layout = () => {
   return (
-    <Slot/>
+    <Stack>
+      <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+      {/* <Stack.Screen name='(home,transaction)' options={{ headerShown: false }} /> */}
+    </Stack>
   )
 }
 export default Layout

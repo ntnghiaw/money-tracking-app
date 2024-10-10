@@ -1,4 +1,4 @@
-import { Transaction } from '@/src/types/enum'
+import { Transaction } from '@/types/enum'
 
 
 const LIMIT = 5

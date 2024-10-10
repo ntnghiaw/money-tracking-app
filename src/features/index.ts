@@ -1,6 +1,6 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
-import { RootState } from '@/src/store/store'
-import config from '@/src/config' 
+import { RootState } from '@/store/store'
+import config from '@/config' 
 
 const UPLOAD_ENDPOINTS = ['scanImageReceipts', 'updateProfile']
 

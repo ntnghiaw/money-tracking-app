@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { AuthState, Tokens, User } from '@/src/types/enum'
-import { authApi } from '@/src/features/auth/auth.service'
+import type { AuthState, Tokens, User } from '@/types/enum'
+import { authApi } from '@/features/auth/auth.service'
 import { walletApi } from '../wallet/wallet.service'
 const initialState: AuthState = {
   tokens: {

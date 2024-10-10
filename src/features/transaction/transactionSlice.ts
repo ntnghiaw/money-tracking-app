@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type {Transaction } from '@/src/types/enum'
+import type {Transaction } from '@/types/enum'
 
 
 interface ReceiptInfo {

@@ -1,13 +1,13 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
 import { ThemedText } from './ThemedText'
-import { TextType } from '@/src/types/text'
-import { getImg, getWaleltImg } from '@/src/utils/getImgFromUri'
-import { useLocale } from '@/src/hooks/useLocale'
+import { TextType } from '@/types/text'
+import { getImg, getWaleltImg } from '@/utils/getImgFromUri'
+import { useLocale } from '@/hooks/useLocale'
 import { formatValue } from 'react-native-currency-input-fields'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
-import { useSettings } from '@/src/hooks/useSetting'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
+import { useSettings } from '@/hooks/useSetting'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
 
 interface WalletItemProps {
   name: string
@@ -49,7 +49,7 @@ const WalletItem = ({ name, balance, icon, isDefault }: WalletItemProps) => {
       </View>
       <View style={styles.check}>
         {isDefault && (
-          <Image source={require('@/src/assets/icons/checked.png')} style={styles.checkedIcon} />
+          <Image source={require('@/assets/icons/checked.png')} style={styles.checkedIcon} />
         )}
       </View>
     </View>

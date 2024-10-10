@@ -1,6 +1,6 @@
 import { t } from "i18next";
 import { createContext, useEffect, useState } from "react";
-import { StorageService } from '@/src/services/storage.service'
+import { StorageService } from '@/services/storage.service'
 
 
 interface StyleMoneyLabel  {

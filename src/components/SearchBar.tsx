@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { BrandColor } from '@/src/constants/Colors'
+import { BrandColor } from '@/constants/Colors'
 import { Filter, Search } from 'react-native-feather'
 import { useState } from 'react'
 

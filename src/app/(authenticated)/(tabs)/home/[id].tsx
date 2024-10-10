@@ -1,35 +1,43 @@
-import Button from '@/src/components/buttons/Button'
-import Loading from '@/src/components/Loading'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import Button from '@/components/buttons/Button'
+import Loading from '@/components/Loading'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
 import {
   useDeleteTransactionMutation,
   useGetTransactionByIdQuery,
-} from '@/src/features/transaction/transaction.service'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
-import { formatter } from '@/src/utils/formatAmount'
-import {format} from 'date-fns'
-import { getImg } from '@/src/utils/getImgFromUri'
+} from '@/features/transaction/transaction.service'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
+import { formatter } from '@/utils/formatAmount'
+import { format } from 'date-fns'
+import { getImg } from '@/utils/getImgFromUri'
 import { AntDesign } from '@expo/vector-icons'
 import { skipToken } from '@reduxjs/toolkit/query'
-import { Href, Stack, useLocalSearchParams, useNavigation, useRouter, useSegments } from 'expo-router'
+import {
+  Href,
+  Stack,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+  useSegments,
+} from 'expo-router'
 import { Alert, Image } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-import { setEdit } from '@/src/features/transaction/transactionSlice'
-import categoriesDefault from '@/src/constants/Categories'
+import { setEdit } from '@/features/transaction/transactionSlice'
+import categoriesDefault from '@/constants/Categories'
 import { formatValue } from 'react-native-currency-input-fields'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
-import { useSettings } from '@/src/hooks/useSetting'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
+import { useSettings } from '@/hooks/useSetting'
 
 const Page = () => {
-  const {  id } = useLocalSearchParams() as { id: string }
+  const { id } = useLocalSearchParams() as { id: string }
   const { currencyCode } = useLocale()
   const { walletId } = useAppSelector((state) => state.auth)
-  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency} = useSettings().styleMoneyLabel
+  const { decimalSeparator, groupSeparator, disableDecimal, showCurrency } =
+    useSettings().styleMoneyLabel
   const dispatch = useAppDispatch()
   const { t } = useLocale()
   const router = useRouter()
@@ -64,7 +72,7 @@ const Page = () => {
   }
 
   const onEdit = (id: string) => {
-    router.push(`/(authenticated)/(tabs)/transaction`)
+    router.push(`/transaction`)
     dispatch(setEdit(id))
   }
 
@@ -88,10 +96,13 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='btn'
-                  onPress={() =>
-                    router.push(`(authenticated)/(tabs)/home/edit-transaction?id=${id}` as Href)
-                  }
-                  button={() => <Image  source={require('@/src/assets/icons/edit.png')} style={{width:24, height:24, resizeMode: 'contain'}}/>}
+                  onPress={() => router.push(`home/edit-transaction?id=${id}` as Href)}
+                  button={() => (
+                    <Image
+                      source={require('@/assets/icons/edit.png')}
+                      style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                    />
+                  )}
                 />
               )}
             />
@@ -224,7 +235,7 @@ const Page = () => {
                 <Image source={{ uri: data.img_url }} style={styles.img} />
               ) : (
                 <Image
-                  source={require('@/src/assets/icons/no-image-icon.png')}
+                  source={require('@/assets/icons/no-image-icon.png')}
                   style={styles.img}
                 />
               )}
@@ -243,7 +254,7 @@ const Page = () => {
           onPress={handleDelete}
           buttonLeft={() => (
             <Image
-              source={require('@/src/assets/icons/recycle-bin.png')}
+              source={require('@/assets/icons/recycle-bin.png')}
               style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
           )}

@@ -1,8 +1,8 @@
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import { AntDesign, Fontisto } from '@expo/vector-icons'
 import { Stack, useRouter } from 'expo-router'
 import {
@@ -16,23 +16,23 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import { useGetAllPlansQuery } from '@/src/features/plan/plan.service'
-import { useAppSelector } from '@/src/hooks/hooks'
-import { TextType } from '@/src/types/text'
+import { useGetAllPlansQuery } from '@/features/plan/plan.service'
+import { useAppSelector } from '@/hooks/hooks'
+import { TextType } from '@/types/text'
 import { useState } from 'react'
 const { format } = require('date-fns')
 
-import { formatter } from '@/src/utils/formatAmount'
+import { formatter } from '@/utils/formatAmount'
 
 import { endOfMonth, formatDate } from 'date-fns'
-import { Amount, FinancialPlan } from '@/src/types/enum'
-import Loading from '@/src/components/Loading'
-import BottomContainer from '@/src/components/BottomContainer'
-import Button from '@/src/components/buttons/Button'
-import { useSettings } from '@/src/hooks/useSetting'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { Amount, FinancialPlan } from '@/types/enum'
+import Loading from '@/components/Loading'
+import BottomContainer from '@/components/BottomContainer'
+import Button from '@/components/buttons/Button'
+import { useSettings } from '@/hooks/useSetting'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
 import { formatValue } from 'react-native-currency-input-fields'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
 
 type AndroidMode = 'date' | 'time'
 
@@ -86,7 +86,7 @@ const Page = () => {
               //     type='text'
               //     text={t('actions.add')}
               //     onPress={() =>
-              //       router.navigate('/(authenticated)/(tabs)/account/goal/create-goal')
+              //       router.navigate('/account/goal/create-goal')
               //     }
               //   />
               // )}
@@ -121,7 +121,7 @@ const Page = () => {
                 style={styles.item}
                 onPress={() =>
                   router.push({
-                    pathname: '/(authenticated)/(tabs)/account/goal/[id]',
+                    pathname: '/account/goal/[id]',
                     params: { id: goal._id },
                   })
                 }
@@ -133,7 +133,11 @@ const Page = () => {
                 </View>
                 <ThemedText type={TextType.Title22Bold} color={TextColor.Primary}>
                   {shortenAmount
-                    ? abbrValueFormat(Number(goal.attributes.target_amount), showCurrency, currencyCode)
+                    ? abbrValueFormat(
+                        Number(goal.attributes.target_amount),
+                        showCurrency,
+                        currencyCode
+                      )
                     : formatValue({
                         value: String(goal.attributes.target_amount),
                         decimalSeparator: decimalSeparator,
@@ -174,7 +178,7 @@ const Page = () => {
       <BottomContainer>
         <Button
           style={{ marginTop: 24 }}
-          onPress={() => router.push('/(authenticated)/(tabs)/account/goal/create-goal')}
+          onPress={() => router.push('/account/goal/create-goal')}
           text={t('actions.add')}
           type='primary'
           state='normal'

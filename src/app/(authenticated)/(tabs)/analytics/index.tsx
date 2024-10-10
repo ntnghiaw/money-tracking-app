@@ -1,8 +1,8 @@
-import { ThemedText } from '@/src/components/ThemedText'
-import TransactionItem from '@/src/components/TransactionItem'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import TransactionItem from '@/components/TransactionItem'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import { Href, Link, Stack } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
@@ -18,29 +18,26 @@ import { StyleSheet, Text, View } from 'react-native'
 import dayjs, { Dayjs } from 'dayjs'
 import { Dropdown } from 'react-native-element-dropdown'
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 import DateTimePicker from 'react-native-ui-datepicker'
 import Modal from 'react-native-modal'
-import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
+import { useGetAllTransactionsQuery } from '@/features/transaction/transaction.service'
 
-import Loading from '@/src/components/Loading'
+import Loading from '@/components/Loading'
 import { formatValue } from 'react-native-currency-input-fields'
-import { formartGroupedBarChart } from '@/src/utils/analytics'
-import { Transaction } from '@/src/types/enum'
-import InfoButton from '@/src/components/buttons/InfoButton'
+import { formartGroupedBarChart } from '@/utils/analytics'
+import { Transaction } from '@/types/enum'
+import InfoButton from '@/components/buttons/InfoButton'
 
-import GroupedBars from '@/src/components/charts/GroupedBars'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
-import { useSettings } from '@/src/hooks/useSetting'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import GroupedBars from '@/components/charts/GroupedBars'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
+import { useSettings } from '@/hooks/useSetting'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
 import { X } from 'react-native-feather'
 
 const screenWidth = Dimensions.get('window').width
 
-export enum CustomTab {
-  Tab1,
-  Tab2,
-}
+
 
 const Page = () => {
   const { decimalSeparator, groupSeparator, disableDecimal, showCurrency, shortenAmount } =
@@ -60,7 +57,7 @@ const Page = () => {
     | undefined
   >({
     startDate: dayjs(),
-    endDate: dayjs()
+    endDate: dayjs(),
   })
 
   const { walletId } = useAppSelector((state) => state.auth)
@@ -75,16 +72,18 @@ const Page = () => {
     },
   ]
 
-  const { isLoading, data, isError, isFetching } = useGetAllTransactionsQuery({
-    walletId: walletId!,
-    query: {
-      period,
-      sort: 'desc',
-      startDate: customPeriod?.startDate && customPeriod?.startDate.toString(),
-      endDate: customPeriod?.endDate ? customPeriod?.endDate?.toString() : dayjs().toString(),
+  const { isLoading, data, isError, isFetching } = useGetAllTransactionsQuery(
+    {
+      walletId: walletId!,
+      query: {
+        period,
+        sort: 'desc',
+        startDate: customPeriod?.startDate && customPeriod?.startDate.toString(),
+        endDate: customPeriod?.endDate ? customPeriod?.endDate?.toString() : dayjs().toString(),
+      },
     },
-    
-  }, {skip: showCalendar})
+    { skip: showCalendar }
+  )
 
   const balanceTotal = useMemo(() => {
     return data?.reduce((acc, item) => {
@@ -126,8 +125,8 @@ const Page = () => {
           endDate={customPeriod?.endDate}
           onChange={({ startDate, endDate }) => {
             setCustomPeriod({
-              startDate,
-              endDate,
+              startDate: dayjs(startDate),
+              endDate: dayjs(endDate),
             })
           }}
         />
@@ -183,18 +182,18 @@ const Page = () => {
             title={t('analytics.seereportbyexpenseincome')}
             icon={() => (
               <Image
-                source={require('@/src/assets/icons/circle-chart.png')}
+                source={require('@/assets/icons/circle-chart.png')}
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
             )}
             buttonRight={() => (
               <Image
-                source={require('@/src/assets/icons/arrow-right.png')}
+                source={require('@/assets/icons/arrow-right.png')}
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
             )}
             description={t('analytics.seereportbyexpenseincomedescription')}
-            onPress={() => router.navigate('/(authenticated)/(tabs)/analytics/type-analytics')}
+            onPress={() => router.navigate('/analytics/type-analytics')}
           />
         </View>
         <View style={styles.historySection}>
@@ -202,7 +201,7 @@ const Page = () => {
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
               {t('home.history')}
             </ThemedText>
-            <Link href='/(authenticated)/(tabs)/home/history' asChild>
+            <Link href='/home/history' asChild>
               <Text style={styles.link}>{t('home.seeall')}</Text>
             </Link>
           </View>
@@ -221,7 +220,7 @@ const Page = () => {
                 key={index}
                 onPress={() =>
                   router.navigate({
-                    pathname: '/(authenticated)/(tabs)/home/[id]',
+                    pathname: '/home/[id]',
                     params: { id: item._id },
                   })
                 }
@@ -242,7 +241,7 @@ const Page = () => {
           style={styles.linkBtn}
           onPress={() =>
             router.navigate({
-              pathname: '/(authenticated)/(tabs)/home/history',
+              pathname: '/home/history',
               params: {
                 period,
               },
@@ -250,7 +249,7 @@ const Page = () => {
           }
         >
           <Image
-            source={require('@/src/assets/icons/arrow-down-blue.png')}
+            source={require('@/assets/icons/arrow-down-blue.png')}
             style={{ width: 24, height: 24, resizeMode: 'contain' }}
           />
           <ThemedText type={TextType.FootnoteRegular} color={BrandColor.Blue[600]}>
@@ -336,6 +335,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     margin: 'auto',
-    marginHorizontal: 24
+    marginHorizontal: 24,
   },
 })

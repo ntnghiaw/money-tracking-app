@@ -178,6 +178,11 @@ export interface User {
   wallets: string[]
 }
 
+export enum CustomTab {
+  Tab1,
+  Tab2,
+}
+
 export type UserProfile = Pick<
   User,
   'name' | 'gender' | 'avatar_url' | 'dob' | '_id' | 'email' | 'phone'

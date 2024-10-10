@@ -1,7 +1,7 @@
-import { BrandColor } from '@/src/constants/Colors'
+import { BrandColor } from '@/constants/Colors'
 import { Pressable, StyleSheet, TouchableOpacity } from 'react-native'
 import { ThemedText } from '../ThemedText'
-import { TextType } from '@/src/types/text'
+import { TextType } from '@/types/text'
 
 const BTN_SIZE = 38
 

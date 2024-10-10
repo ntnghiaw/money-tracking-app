@@ -1,7 +1,7 @@
-import { Category, Response, User, UserProfile } from '@/src/types/enum'
+import { Category, Response, User, UserProfile } from '@/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from '@/src/features'
-import categories from '@/src/constants/Categories'
+import { baseQuery } from '@/features'
+import categories from '@/constants/Categories'
 
 interface HeaderRequest {
   accessToken: string

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ActivityIndicator, useWindowDimensions } from 'react-native'
 
-import { Colors } from '@/src/constants/Colors'
+import { Colors } from '@/constants/Colors'
 
 interface LoadingProps {
   isLoading: boolean

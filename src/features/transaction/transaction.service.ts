@@ -1,5 +1,5 @@
-import { Response, Transaction } from '@/src/types/enum'
-import { appApi } from '@/src/features/api.service'
+import { Response, Transaction } from '@/types/enum'
+import { appApi } from '@/features/api.service'
 
 interface ScanImageReceiptsResponse {
   img_url: string

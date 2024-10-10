@@ -1,4 +1,4 @@
-import { Budget, FinancialPlan } from '@/src/types/enum'
+import { Budget, FinancialPlan } from '@/types/enum'
 
 export const isOverSpentBudget = (budgets: FinancialPlan[], amount: number) => {
  let isOverSpent = false

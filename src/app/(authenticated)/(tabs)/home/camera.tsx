@@ -1,29 +1,25 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import {
   Camera,
-  CameraPermissionStatus,
   useCameraDevice,
-  useCameraFormat,
   useCameraPermission,
 } from 'react-native-vision-camera'
-import * as ExpoMediaLibrary from 'expo-media-library'
 import { useEffect, useRef, useState } from 'react'
 import * as MediaLibrary from 'expo-media-library'
 import { Image } from 'react-native'
-import Button from '@/src/components/buttons/Button'
+import Button from '@/components/buttons/Button'
 import * as ImagePicker from 'expo-image-picker'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import { BackgroundColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import { Stack, useRouter } from 'expo-router'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import { useScanImageReceiptsMutation } from '@/src/features/transaction/transaction.service'
-import { useAppSelector } from '@/src/hooks/hooks'
+import { useScanImageReceiptsMutation } from '@/features/transaction/transaction.service'
+import { useAppSelector } from '@/hooks/hooks'
 import { Alert } from 'react-native'
-import * as FileSystem from 'expo-file-system'
 import mime from 'mime'
-import Loading from '@/src/components/Loading'
+import Loading from '@/components/Loading'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -33,8 +29,6 @@ const Page = () => {
   const { t } = useLocale()
   const device = useCameraDevice('back')
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset | undefined>()
-  const [img, setImg] = useState()
-  const { user, tokens } = useAppSelector((state) => state.auth)
   const [permissionResponse, requestLibraryPermission] = MediaLibrary.usePermissions()
   const { hasPermission, requestPermission } = useCameraPermission()
   const [loading, setLoading] = useState(false)
@@ -64,7 +58,7 @@ const Page = () => {
       await MediaLibrary.saveToLibraryAsync(`file://${file?.path}`)
       const media = await MediaLibrary.getAssetsAsync({
         mediaType: ['photo'], // Filter by media type
-        first: 1, // Number of assets to load
+        first: 20, 
         sortBy: [[MediaLibrary.SortBy.creationTime, false]], // Sort by creation time, descending
       })
       if (media && media.assets) {
@@ -74,7 +68,6 @@ const Page = () => {
     } catch (error) {
       console.log('🚀 ~ takePhoto ~ error:', error)
     }
-    //  const data = await result.blob()
   }
 
   const getImageFromLibrary = async () => {
@@ -87,7 +80,7 @@ const Page = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         aspect: [1, 1],
-        quality: 1,
+        quality: 0.1,
       })
       if (result && result.assets) {
         setImage(result?.assets[0])
@@ -100,7 +93,7 @@ const Page = () => {
   useEffect(() => {
     if (isSuccess) {
       router.navigate({
-        pathname: '/(authenticated)/(tabs)/home/edit-transaction',
+        pathname: '/home/edit-transaction',
         params: {
           img_url: data?.img_url,
           total: data?.total,

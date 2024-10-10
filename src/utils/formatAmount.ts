@@ -1,5 +1,5 @@
 // Create our number formatter.
-import { codes } from '@/src/constants/Currency'
+import { codes } from '@/constants/Currency'
 
 type CurrencyCode = (typeof codes)[number]
 

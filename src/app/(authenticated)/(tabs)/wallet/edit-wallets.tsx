@@ -1,19 +1,19 @@
-import Button from '@/src/components/buttons/Button'
-import Loading from '@/src/components/Loading'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import WalletItem from '@/src/components/WalletItem'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
-import { useGetAllWalletsQuery } from '@/src/features/wallet/wallet.service'
-import { useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
+import Button from '@/components/buttons/Button'
+import Loading from '@/components/Loading'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import WalletItem from '@/components/WalletItem'
+import { BackgroundColor, TextColor } from '@/constants/Colors'
+import { useGetAllWalletsQuery } from '@/features/wallet/wallet.service'
+import { useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
 import { AntDesign } from '@expo/vector-icons'
 import { Href, Stack } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 const Page = () => {
- const router = useRouter()
- const {t} = useLocale()
+  const router = useRouter()
+  const { t } = useLocale()
 
   const { walletId } = useAppSelector((state) => state.auth)
   const getAllWallets = useGetAllWalletsQuery()
@@ -39,7 +39,7 @@ const Page = () => {
               //   <HeaderButton
               //     type='text'
               //     onPress={() =>
-              //       router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)
+              //       router.navigate('/wallet/create-wallet' as Href)
               //     }
               //     text={t('actions.add')}
               //   />
@@ -55,7 +55,7 @@ const Page = () => {
             key={wallet._id}
             onPress={() =>
               router.navigate({
-                pathname: '/(authenticated)/(tabs)/wallet/edit-wallet',
+                pathname: '/wallet/edit-wallet',
                 params: { id: wallet._id },
               })
             }
@@ -75,7 +75,7 @@ const Page = () => {
           state='normal'
           size='large'
           text={t('actions.add')}
-          onPress={() => router.navigate('/(authenticated)/(tabs)/wallet/create-wallet' as Href)}
+          onPress={() => router.navigate('/wallet/create-wallet' as Href)}
           type='primary'
         />
       </View> */}
@@ -84,9 +84,9 @@ const Page = () => {
 }
 export default Page
 const styles = StyleSheet.create({
- container: {
-  flex: 1,
-  backgroundColor: BackgroundColor.LightTheme.Primary,
-  paddingHorizontal: 24,
- }
+  container: {
+    flex: 1,
+    backgroundColor: BackgroundColor.LightTheme.Primary,
+    paddingHorizontal: 24,
+  },
 })

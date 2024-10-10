@@ -1,18 +1,23 @@
-import BottomContainer from '@/src/components/BottomContainer'
-import Button from '@/src/components/buttons/Button'
-import Input from '@/src/components/Input'
-import Loading from '@/src/components/Loading'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useCreateNewWalletMutation, useGetWalletByIdQuery, useUpdateWalletMutation, useDeleteWalletMutation } from '@/src/features/wallet/wallet.service'
-import { useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { Wallet } from '@/src/types/enum'
-import { TextType } from '@/src/types/text'
-import { getWaleltImg } from '@/src/utils/getImgFromUri'
-import { isEntityError } from '@/src/utils/helpers'
+import BottomContainer from '@/components/BottomContainer'
+import Button from '@/components/buttons/Button'
+import Input from '@/components/Input'
+import Loading from '@/components/Loading'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import {
+  useCreateNewWalletMutation,
+  useGetWalletByIdQuery,
+  useUpdateWalletMutation,
+  useDeleteWalletMutation,
+} from '@/features/wallet/wallet.service'
+import { useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { Wallet } from '@/types/enum'
+import { TextType } from '@/types/text'
+import { getWaleltImg } from '@/utils/getImgFromUri'
+import { isEntityError } from '@/utils/helpers'
 import { AntDesign } from '@expo/vector-icons'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { Href, Stack, useLocalSearchParams, useRouter } from 'expo-router'
@@ -46,28 +51,26 @@ const types = [
 const Page = () => {
   const router = useRouter()
   const { t } = useLocale()
-  const {id, icon} = useLocalSearchParams() as {id: string, icon: string}
+  const { id, icon } = useLocalSearchParams() as { id: string; icon: string }
   const [wallet, setWallet] = useState<typeof initWallet>(initWallet)
-  const {walletId} = useAppSelector((state) => state.auth)
+  const { walletId } = useAppSelector((state) => state.auth)
   const [isFocusType, setIsFocusType] = useState(false)
   const [isValidFields, setIsValidFields] = useState({
     name: true,
   })
 
   const fetchedWallet = useGetWalletByIdQuery({
-   walletId: id ?? skipToken
+    walletId: id ?? skipToken,
   })
 
-
   useEffect(() => {
-    if(fetchedWallet.isSuccess){
+    if (fetchedWallet.isSuccess) {
       setWallet(fetchedWallet.data)
     }
   }, [fetchedWallet])
 
   const [updateWallet, updateWalletResult] = useUpdateWalletMutation()
   const [deleteWallet, deleteWalletResult] = useDeleteWalletMutation()
-
 
   const errorForm: FormError = useMemo(() => {
     const errorResult = updateWalletResult.error
@@ -128,15 +131,22 @@ const Page = () => {
         }}
       />
 
-        <Loading isLoading={fetchedWallet.isLoading} text='Loading...' />
+      <Loading isLoading={fetchedWallet.isLoading} text='Loading...' />
       <View style={styles.form}>
         <TouchableOpacity
           style={[styles.iconSmile, { alignSelf: 'center' }]}
-          onPress={() => router.push('/(authenticated)/(tabs)/wallet/icons' as Href)}
+          onPress={() => router.push('/wallet/icons' as Href)}
         >
-         {
-          wallet.icon ? <Image source={getWaleltImg(wallet.icon) } style={styles.img} /> : icon ? <Image source={ getWaleltImg(icon)} style={styles.img} /> : <Image source={require('@/src/assets/icons/smile.png')} style={{width: 24, height: 24, resizeMode: 'contain'}}/>
-         }
+          {wallet.icon ? (
+            <Image source={getWaleltImg(wallet.icon)} style={styles.img} />
+          ) : icon ? (
+            <Image source={getWaleltImg(icon)} style={styles.img} />
+          ) : (
+            <Image
+              source={require('@/assets/icons/smile.png')}
+              style={{ width: 24, height: 24, resizeMode: 'contain' }}
+            />
+          )}
         </TouchableOpacity>
         <Input
           label={t('wallets.name')}
@@ -202,7 +212,7 @@ const Page = () => {
           state={'normal'}
           onPress={handleDeleteWallet}
           isLoading={deleteWalletResult.isLoading}
-          disabled={ walletId === id}
+          disabled={walletId === id}
           style={{ width: '48%' }}
         />
         <Button

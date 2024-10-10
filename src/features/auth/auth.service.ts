@@ -1,6 +1,6 @@
-import { Auth, AuthState, Response, UserProfile } from '@/src/types/enum'
+import { Auth, AuthState, Response, UserProfile } from '@/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import {baseQuery} from '@/src/features'
+import {baseQuery} from '@/features'
 
 interface LoginRequest {
   email: string

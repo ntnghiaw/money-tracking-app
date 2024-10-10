@@ -1,10 +1,10 @@
 import { View, Text, Pressable } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
 import { ChevronLeft, FolderPlus } from 'react-native-feather'
-import { Colors, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import { Colors, NeutralColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
 
 

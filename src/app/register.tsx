@@ -1,19 +1,19 @@
-import { useSignupMutation } from '@/src/features/auth/auth.service'
-import { setAuth } from '@/src/features/auth/authSlice'
-import { useAppDispatch } from '@/src/hooks/hooks'
+import { useSignupMutation } from '@/features/auth/auth.service'
+import { setAuth } from '@/features/auth/authSlice'
+import { useAppDispatch } from '@/hooks/hooks'
 import {  Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { ThemedText } from '@/src/components/ThemedText'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
-import Input from '@/src/components/Input'
+import { BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
+import { ThemedText } from '@/components/ThemedText'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
+import Input from '@/components/Input'
 import { useEffect, useMemo, useState } from 'react'
-import { EmailRegExp, PasswordRegExp } from '@/src/utils/RegExp'
-import Button from '@/src/components/buttons/Button'
+import { EmailRegExp, PasswordRegExp } from '@/utils/RegExp'
+import Button from '@/components/buttons/Button'
 import { Ionicons } from '@expo/vector-icons'
 import { Eye, EyeOff } from 'react-native-feather'
-import { useRouter } from 'expo-router'
-import { isEntityError } from '@/src/utils/helpers'
+import { router } from 'expo-router'
+import { isEntityError } from '@/utils/helpers'
 
 interface FormData {
   email: string
@@ -32,7 +32,7 @@ type FormError =
   | null
 
 const Page = () => {
-  const router = useRouter()
+
   const { t } = useLocale()
   const [isSecure, setIsSecure] = useState(true)
   const [form, setForm] = useState<FormData>(initialState)
@@ -80,7 +80,7 @@ const Page = () => {
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
-        <Image source={require('@/src/assets/icons/logo.png')} style={styles.img} />
+        <Image source={require('@/assets/icons/logo.png')} style={styles.img} />
       </View>
       <View style={styles.welcome}>
         <ThemedText type={TextType.Title22Bold} color={TextColor.Primary} style={styles.textAlign}>
@@ -101,7 +101,7 @@ const Page = () => {
           placeholder={t('signup.email')}
           buttonLeft={() => (
             <Image
-              source={require('@/src/assets/icons/mail.png')}
+              source={require('@/assets/icons/mail.png')}
               width={24}
               height={24}
               resizeMode='contain'
@@ -120,7 +120,7 @@ const Page = () => {
           value={form.password}
           onChangeText={(text) => setForm({ ...form, password: text })}
           placeholder={t('signup.password')}
-          buttonLeft={() => <Image source={require('@/src/assets/icons/lock-outline.png')} />}
+          buttonLeft={() => <Image source={require('@/assets/icons/lock-outline.png')} />}
           buttonRight={() => (
             <TouchableOpacity onPress={toggleSecure}>
               {isSecure ? (
@@ -188,7 +188,7 @@ const Page = () => {
           size='large'
           state='normal'
           onPress={() => console.log('google')}
-          buttonLeft={() => <Image source={require('@/src/assets/icons/google.jpg')} />}
+          buttonLeft={() => <Image source={require('@/assets/icons/google.jpg')} />}
           textColor={TextColor.Primary}
           type='tertiary'
         />

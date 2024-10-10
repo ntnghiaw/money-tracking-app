@@ -10,20 +10,20 @@ import * as ExpoMediaLibrary from 'expo-media-library'
 import { useEffect, useRef, useState } from 'react'
 import * as MediaLibrary from 'expo-media-library'
 import { Image } from 'react-native'
-import Button from '@/src/components/buttons/Button'
+import Button from '@/components/buttons/Button'
 import * as ImagePicker from 'expo-image-picker'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import { BackgroundColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import { Stack, useRouter } from 'expo-router'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import { useScanImageReceiptsMutation } from '@/src/features/transaction/transaction.service'
-import { useAppSelector } from '@/src/hooks/hooks'
+import { useScanImageReceiptsMutation } from '@/features/transaction/transaction.service'
+import { useAppSelector } from '@/hooks/hooks'
 import { Alert } from 'react-native'
 import * as FileSystem from 'expo-file-system'
 import mime from 'mime'
-import Loading from '@/src/components/Loading'
+import Loading from '@/components/Loading'
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -100,7 +100,7 @@ const Page = () => {
   useEffect(() => {
     if (isSuccess) {
       router.navigate({
-        pathname: '/(authenticated)/(tabs)/transaction',
+        pathname: '/transaction',
         params: {
           img_url: data?.img_url,
           total: data?.total,
@@ -133,7 +133,6 @@ const Page = () => {
   if (device == null) return Alert.alert('No Camera Device')
 
   if (showCamera) {
-    
     return (
       <View style={{ flex: 1 }}>
         <Camera
@@ -142,7 +141,6 @@ const Page = () => {
           isActive={true}
           ref={camera}
           photo={true}
-        
         />
         <View
           style={{

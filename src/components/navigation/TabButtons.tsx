@@ -1,4 +1,4 @@
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
 import { useMemo, useState } from 'react'
 import { LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {

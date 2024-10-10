@@ -1,6 +1,6 @@
-import { walletApi } from '@/src/features/wallet/wallet.service'
-import { Amount, Budget, FinancialPlan, Goal } from '@/src/types/enum'
-import { appApi } from '@/src/features/api.service';
+import { walletApi } from '@/features/wallet/wallet.service'
+import { Amount, Budget, FinancialPlan, Goal } from '@/types/enum'
+import { appApi } from '@/features/api.service';
 
 
 type PlanRequest = Omit<FinancialPlan, '_id'>

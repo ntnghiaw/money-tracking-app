@@ -1,4 +1,4 @@
-import { Transaction } from '@/src/types/enum'
+import { Transaction } from '@/types/enum'
 import {
   differenceInDays,
   eachDayOfInterval,
@@ -18,8 +18,8 @@ import {
   startOfQuarter,
   startOfYear,
 } from 'date-fns'
-import { BrandColor } from '@/src/constants/Colors'
-import { handleStatistic } from '@/src/utils/handleStatistic'
+import { BrandColor } from '@/constants/Colors'
+import { handleStatistic } from '@/utils/handleStatistic'
 
 interface DataBarChart {
   value: number

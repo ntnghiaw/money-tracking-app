@@ -1,7 +1,7 @@
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import { DefaultTheme } from '@react-navigation/native'
 import {
   FlatList,
@@ -13,10 +13,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { currencies } from '@/src/constants/Currency'
+import { currencies } from '@/constants/Currency'
 import { useCallback, useMemo, useState } from 'react'
-import SearchBar from '@/src/components/SearchBar'
-import { useDebounce } from '@/src/hooks/useDebounce'
+import SearchBar from '@/components/SearchBar'
+import { useDebounce } from '@/hooks/useDebounce'
 const ICON_SIZE = 28
 
 type CurrencyItemProps = {
@@ -47,7 +47,7 @@ const Item = ({ icon, name, symbol, code }: CurrencyItemProps) => {
       </View>
       {currencyCode === code ? (
         <View style={styles.right}>
-          <Image source={require('@/src/assets/icons/checked.png')} />
+          <Image source={require('@/assets/icons/checked.png')} />
         </View>
       ) : null}
     </TouchableOpacity>

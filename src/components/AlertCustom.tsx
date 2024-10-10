@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import Modal from 'react-native-modal'
 import { ThemedText } from './ThemedText'
-import { TextType } from '@/src/types/text'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import { TextType } from '@/types/text'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
 
 interface AlertCustomProps {
   title: string

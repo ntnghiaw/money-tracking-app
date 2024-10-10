@@ -1,7 +1,7 @@
 import { Tabs, useRouter, useSegments } from 'expo-router'
 import { Image } from 'react-native'
-import TabBar from '@/src/components/navigation/TabBar'
-import { useLocale } from '@/src/hooks/useLocale'
+import TabBar from '@/components/navigation/TabBar'
+import { useLocale } from '@/hooks/useLocale'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const Layout = () => {
@@ -21,9 +21,9 @@ const Layout = () => {
             headerShown: false,
             tabBarIcon: ({ size, focused, color }) => {
               if (focused) {
-                return <Image source={require('@/src/assets/icons/home-active.jpg')} />
+                return <Image source={require('@/assets/icons/home-active.jpg')} />
               }
-              return <Image source={require('@/src/assets/icons/home.jpg')} />
+              return <Image source={require('@/assets/icons/home.jpg')} />
             },
             tabBarHideOnKeyboard: true,
             tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
@@ -40,14 +40,14 @@ const Layout = () => {
               if (focused) {
                 return (
                   <Image
-                    source={require('@/src/assets/icons/wallet-active.png')}
+                    source={require('@/assets/icons/wallet-active.png')}
                     style={{ width: size, height: size, resizeMode: 'contain' }}
                   />
                 )
               }
               return (
                 <Image
-                  source={require('@/src/assets/icons/wallet.png')}
+                  source={require('@/assets/icons/wallet.png')}
                   style={{ width: size, height: size, resizeMode: 'contain' }}
                 />
               )
@@ -64,7 +64,7 @@ const Layout = () => {
             tabBarIcon: ({ size, focused, color }) => {
               return (
                 <Image
-                  source={require('@/src/assets/icons/plus-circle.jpg')}
+                  source={require('@/assets/icons/plus-circle.jpg')}
                   style={{ paddingTop: 12 }}
                 />
               )
@@ -83,9 +83,9 @@ const Layout = () => {
             tabBarHideOnKeyboard: true,
             tabBarIcon: ({ size, focused, color }) => {
               if (focused) {
-                return <Image source={require('@/src/assets/icons/analytics-active.jpg')} />
+                return <Image source={require('@/assets/icons/analytics-active.jpg')} />
               }
-              return <Image source={require('@/src/assets/icons/analytics.jpg')} />
+              return <Image source={require('@/assets/icons/analytics.jpg')} />
             },
             tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },
           }}
@@ -97,9 +97,9 @@ const Layout = () => {
             headerShown: false,
             tabBarIcon: ({ size, focused, color }) => {
               if (focused) {
-                return <Image source={require('@/src/assets/icons/grid2-active.png')} />
+                return <Image source={require('@/assets/icons/grid2-active.png')} />
               }
-              return <Image source={require('@/src/assets/icons/grid2.png')} />
+              return <Image source={require('@/assets/icons/grid2.png')} />
             },
             tabBarHideOnKeyboard: true,
             tabBarStyle: { display: segment.length > 3 ? 'none' : 'flex' },

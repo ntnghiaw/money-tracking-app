@@ -1,4 +1,4 @@
-import { TextType } from '@/src/types/text'
+import { TextType } from '@/types/text'
 import { Text, type TextProps, StyleSheet } from 'react-native'
 
 export type ThemedTextProps = TextProps & {

@@ -1,6 +1,6 @@
 import { abbrValue } from "react-native-currency-input-fields"
 import { getCurrencySymbol } from "./getCurrencySymbol"
-import { useLocale } from "@/src/hooks/useLocale"
+import { useLocale } from "@/hooks/useLocale"
 
 
 export const abbrValueFormat = (value: number, showCurrency?: boolean, currencyCode?: string) => {

@@ -1,9 +1,9 @@
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
-import { ThemedText } from '@/src/components/ThemedText'
-import TransactionItem from '@/src/components/TransactionItem'
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
+import { ThemedText } from '@/components/ThemedText'
+import TransactionItem from '@/components/TransactionItem'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import { Href, Link, Stack } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useCallback, useMemo, useRef, useState } from 'react'
@@ -13,26 +13,26 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Dropdown } from 'react-native-element-dropdown'
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 
-import { useGetAllTransactionsQuery } from '@/src/features/transaction/transaction.service'
+import { useGetAllTransactionsQuery } from '@/features/transaction/transaction.service'
 
-import Loading from '@/src/components/Loading'
+import Loading from '@/components/Loading'
 import { formatValue } from 'react-native-currency-input-fields'
-import { formatBarChart } from '@/src/utils/analytics'
-import { Category, Transaction } from '@/src/types/enum'
-import Bar from '@/src/components/charts/Bar'
-import { useSettings } from '@/src/hooks/useSetting'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
+import { formatBarChart } from '@/utils/analytics'
+import { Category, Transaction } from '@/types/enum'
+import Bar from '@/components/charts/Bar'
+import { useSettings } from '@/hooks/useSetting'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
 import dayjs, { Dayjs } from 'dayjs'
 import Modal from 'react-native-modal'
 import DateTimePicker from 'react-native-ui-datepicker'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { getImg } from '@/src/utils/getImgFromUri'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import { getImg } from '@/utils/getImgFromUri'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { Pressable } from 'react-native'
 import { X } from 'react-native-feather'
 
@@ -205,7 +205,7 @@ const Page = () => {
                   type='btn'
                   button={() => (
                     <Image
-                      source={require('@/src/assets/icons/filter.png')}
+                      source={require('@/assets/icons/filter.png')}
                       style={{ width: 22, height: 22, resizeMode: 'contain' }}
                     />
                   )}
@@ -237,8 +237,8 @@ const Page = () => {
           endDate={customPeriod?.endDate}
           onChange={({ startDate, endDate }) => {
             setCustomPeriod({
-              startDate,
-              endDate,
+              startDate: dayjs(startDate),
+              endDate: dayjs(endDate),
             })
           }}
         />
@@ -297,19 +297,19 @@ const Page = () => {
             title={t('analytics.seereportbycategories')}
             icon={() => (
               <Image
-                source={require('@/src/assets/icons/circle-chart.png')}
+                source={require('@/assets/icons/circle-chart.png')}
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
             )}
             buttonRight={() => (
               <Image
-                source={require('@/src/assets/icons/arrow-right.png')}
+                source={require('@/assets/icons/arrow-right.png')}
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
             )}
             description={t('analytics.seereportbycategoriesdescription')}
             onPress={() =>
-              router.navigate('/(authenticated)/(tabs)/analytics/categories-analytics')
+              router.navigate('/analytics/categories-analytics')
             }
           />
         </View> */}
@@ -318,7 +318,7 @@ const Page = () => {
             <ThemedText type={TextType.CalloutSemibold} color={TextColor.Primary}>
               {t('home.history')}
             </ThemedText>
-            <Link href='/(authenticated)/(tabs)/home/history' asChild>
+            <Link href='/home/history' asChild>
               <Text style={styles.link}>{t('home.seeall')}</Text>
             </Link>
           </View>
@@ -337,7 +337,7 @@ const Page = () => {
                 key={index}
                 onPress={() =>
                   router.navigate({
-                    pathname: '/(authenticated)/(tabs)/home/[id]',
+                    pathname: '/home/[id]',
                     params: { id: item._id },
                   })
                 }
@@ -359,7 +359,7 @@ const Page = () => {
             style={styles.linkBtn}
             onPress={() =>
               router.navigate({
-                pathname: '/(authenticated)/(tabs)/home/history',
+                pathname: '/home/history',
                 params: {
                   period,
                 },
@@ -367,7 +367,7 @@ const Page = () => {
             }
           >
             <Image
-              source={require('@/src/assets/icons/arrow-down-blue.png')}
+              source={require('@/assets/icons/arrow-down-blue.png')}
               style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
             <ThemedText type={TextType.FootnoteRegular} color={BrandColor.Blue[600]}>
@@ -430,12 +430,12 @@ const Page = () => {
                               <TouchableOpacity onPress={() => handleSetCategories(cat._id)}>
                                 {categories.includes(cat._id) ? (
                                   <Image
-                                    source={require('@/src/assets/icons/checked.png')}
+                                    source={require('@/assets/icons/checked.png')}
                                     style={{ width: 24, height: 24 }}
                                   />
                                 ) : (
                                   <Image
-                                    source={require('@/src/assets/icons/circle_plus2.png')}
+                                    source={require('@/assets/icons/circle_plus2.png')}
                                     style={{ width: 24, height: 24 }}
                                   />
                                 )}

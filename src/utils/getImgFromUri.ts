@@ -1,5 +1,5 @@
-import { icons } from '@/src/constants/Icons'
-import { walletIcons } from '@/src/constants/Icons'
+import { icons } from '@/constants/Icons'
+import { walletIcons } from '@/constants/Icons'
 
 export const getImg = (icon: string) => {
   for (let i = 0; i < icons.length; i++) {

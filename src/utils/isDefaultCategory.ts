@@ -1,4 +1,4 @@
-import categoriesDefault from '@/src/constants/Categories'
+import categoriesDefault from '@/constants/Categories'
 
 
 export const isDefaultCategory = (categoryName: string): boolean => {

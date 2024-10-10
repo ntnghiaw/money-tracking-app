@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { authApi } from '@/src/features/auth/auth.service'
+import { authApi } from '@/features/auth/auth.service'
 import storage from '@react-native-async-storage/async-storage'
 import { combineReducers } from '@reduxjs/toolkit'
 import {
@@ -14,14 +14,14 @@ import {
   REGISTER,
 } from 'redux-persist'
 
-import authReducer from '@/src/features/auth/authSlice'
-import walletReducer from '@/src/features/wallet/walletSlice'
-import categoryReducer from '@/src/features/category/categorySlice'
-import transactionReducer from '@/src/features/transaction/transactionSlice'
-import userReducer from '@/src/features/user/UserSlice'
-import { userApi } from '@/src/features/user/user.service'
-import { appApi } from '@/src/features/api.service'
-import { rtkQueryErrorLogger } from '@/src/services/errorHandling.service'
+import authReducer from '@/features/auth/authSlice'
+import walletReducer from '@/features/wallet/walletSlice'
+import categoryReducer from '@/features/category/categorySlice'
+import transactionReducer from '@/features/transaction/transactionSlice'
+import userReducer from '@/features/user/UserSlice'
+import { userApi } from '@/features/user/user.service'
+import { appApi } from '@/features/api.service'
+import { rtkQueryErrorLogger } from '@/services/errorHandling.service'
 
 const authPersistConfig = {
   key: 'auth',

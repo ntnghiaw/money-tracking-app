@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from '@/src/features'
-import config from '@/src/config'
+import { baseQuery } from '@/features'
+import config from '@/config'
 
 export const appApi = createApi({
   reducerPath: 'appApi',

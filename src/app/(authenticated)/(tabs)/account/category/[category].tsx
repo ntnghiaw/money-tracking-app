@@ -1,25 +1,28 @@
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import { useState, useMemo, useEffect } from 'react'
-import categories from '@/src/constants/Categories'
+import categories from '@/constants/Categories'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
-import Input from '@/src/components/Input'
-import { Category } from '@/src/types/enum'
-import Button from '@/src/components/buttons/Button'
-import { getImg } from '@/src/utils/getImgFromUri'
-import {useUpdateCategoryMutation, useDeleteCategoryMutation} from '@/src/features/category/category.service'
+import Input from '@/components/Input'
+import { Category } from '@/types/enum'
+import Button from '@/components/buttons/Button'
+import { getImg } from '@/utils/getImgFromUri'
+import {
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+} from '@/features/category/category.service'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Loading from '@/src/components/Loading'
+import Loading from '@/components/Loading'
 
 const CategoryDetails = () => {
   const { t } = useLocale()
-  const {bottom} = useSafeAreaInsets()
+  const { bottom } = useSafeAreaInsets()
   const { category: id, icon, name, type } = useLocalSearchParams()
   const router = useRouter()
   const [editable, setEditable] = useState(false)
@@ -28,8 +31,11 @@ const CategoryDetails = () => {
     icon: '',
   })
   const [showEdit, setShowEdit] = useState(true)
-  const [updateCategory, {data ,isSuccess}] = useUpdateCategoryMutation()
-  const [deleteCategory, {data: deletedCategory, isSuccess: isDeleted, isLoading: isLoadingDelete}] = useDeleteCategoryMutation()
+  const [updateCategory, { data, isSuccess }] = useUpdateCategoryMutation()
+  const [
+    deleteCategory,
+    { data: deletedCategory, isSuccess: isDeleted, isLoading: isLoadingDelete },
+  ] = useDeleteCategoryMutation()
 
   useEffect(() => {
     if (id && icon && name && type) {
@@ -44,7 +50,7 @@ const CategoryDetails = () => {
     if (data || deletedCategory) {
       router.back()
     }
-  },[isSuccess, isDeleted])
+  }, [isSuccess, isDeleted])
 
   useMemo(() => {
     const category = categories.find((category) => category._id === id)
@@ -57,7 +63,7 @@ const CategoryDetails = () => {
     if (!editable) {
       return
     }
-    router.push('/(authenticated)/(tabs)/account/icons')
+    router.push('/account/icons')
   }
 
   const handleUpdateCategory = async () => {
@@ -88,7 +94,6 @@ const CategoryDetails = () => {
         style: 'destructive',
       },
     ])
- 
   }
 
   return (
@@ -117,7 +122,7 @@ const CategoryDetails = () => {
                       type='btn'
                       button={() => (
                         <Image
-                          source={require('@/src/assets/icons/edit.png')}
+                          source={require('@/assets/icons/edit.png')}
                           style={{ width: 24, height: 24, resizeMode: 'contain' }}
                         />
                       )}
@@ -139,7 +144,7 @@ const CategoryDetails = () => {
           {category?.icon ? (
             <Image source={getImg(category.icon)} style={styles.img} />
           ) : (
-            <Image source={require('@/src/assets/icons/smile.png')} style={styles.img} />
+            <Image source={require('@/assets/icons/smile.png')} style={styles.img} />
           )}
         </TouchableOpacity>
         <Input
@@ -172,7 +177,7 @@ const CategoryDetails = () => {
           state='normal'
           buttonLeft={() => (
             <Image
-              source={require('@/src/assets/icons/recycle-bin.png')}
+              source={require('@/assets/icons/recycle-bin.png')}
               style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
           )}

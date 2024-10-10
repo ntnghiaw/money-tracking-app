@@ -894,7 +894,7 @@ export const Currency = [
     rounding: 0,
     code: 'VND',
     name_plural: 'Vietnamese dong',
-    icon: require('@/src/assets/flags/vietnam.png'),
+    icon: require('@/assets/flags/vietnam.png'),
   },
   {
     symbol: 'FCFA',
@@ -1049,7 +1049,7 @@ export const currencies = [
     rounding: 0,
     code: 'VND',
     name_plural: 'Vietnamese dong',
-    icon: require('@/src/assets/flags/vietnam.png'),
+    icon: require('@/assets/flags/vietnam.png'),
   },
   {
     symbol: '$',
@@ -1059,7 +1059,7 @@ export const currencies = [
     rounding: 0,
     code: 'USD',
     name_plural: 'US dollars',
-    icon: require('@/src/assets/flags/united-states.png'),
+    icon: require('@/assets/flags/united-states.png'),
   },
   {
     symbol: 'CA$',
@@ -1069,7 +1069,7 @@ export const currencies = [
     rounding: 0,
     code: 'CAD',
     name_plural: 'Canadian dollars',
-    icon: require('@/src/assets/flags/canada.png'),
+    icon: require('@/assets/flags/canada.png'),
   },
   {
     symbol: '€',
@@ -1079,7 +1079,7 @@ export const currencies = [
     rounding: 0,
     code: 'EUR',
     name_plural: 'euros',
-    icon: require('@/src/assets/flags/european-union.png'),
+    icon: require('@/assets/flags/european-union.png'),
   },
   {
     symbol: 'AU$',
@@ -1089,7 +1089,7 @@ export const currencies = [
     rounding: 0,
     code: 'AUD',
     name_plural: 'Australian dollars',
-    icon: require('@/src/assets/flags/australia.png'),
+    icon: require('@/assets/flags/australia.png'),
   },
   {
     symbol: 'CN¥',
@@ -1099,7 +1099,7 @@ export const currencies = [
     rounding: 0,
     code: 'CNY',
     name_plural: 'Chinese yuan',
-    icon: require('@/src/assets/flags/china.png'),
+    icon: require('@/assets/flags/china.png'),
   },
 
   {
@@ -1110,7 +1110,7 @@ export const currencies = [
     rounding: 0,
     code: 'THB',
     name_plural: 'Thai baht',
-    icon: require('@/src/assets/flags/thailand.png'),
+    icon: require('@/assets/flags/thailand.png'),
   },
   {
     symbol: '¥',
@@ -1120,7 +1120,7 @@ export const currencies = [
     rounding: 0,
     code: 'JPY',
     name_plural: 'Japanese yen',
-    icon: require('@/src/assets/flags/japan.png'),
+    icon: require('@/assets/flags/japan.png'),
   },
   {
     symbol: '₩',
@@ -1130,7 +1130,7 @@ export const currencies = [
     rounding: 0,
     code: 'KRW',
     name_plural: 'South Korean won',
-    icon: require('@/src/assets/flags/south-korea.png'),
+    icon: require('@/assets/flags/south-korea.png'),
   },
   {
     symbol: 'KHR',
@@ -1140,7 +1140,7 @@ export const currencies = [
     rounding: 0,
     code: 'KHR',
     name_plural: 'Cambodian riels',
-    icon: require('@/src/assets/flags/cambodia.png'),
+    icon: require('@/assets/flags/cambodia.png'),
   },
   {
     symbol: 'S$',
@@ -1150,7 +1150,7 @@ export const currencies = [
     rounding: 0,
     code: 'SGD',
     name_plural: 'Singapore dollars',
-    icon: require('@/src/assets/flags/singapore.png'),
+    icon: require('@/assets/flags/singapore.png'),
   },
   {
     symbol: 'Rp',
@@ -1160,7 +1160,7 @@ export const currencies = [
     rounding: 0,
     code: 'IDR',
     name_plural: 'Indonesian rupiahs',
-    icon: require('@/src/assets/flags/indonesia.png'),
+    icon: require('@/assets/flags/indonesia.png'),
   },
   {
     symbol: '₱',
@@ -1170,7 +1170,7 @@ export const currencies = [
     rounding: 0,
     code: 'PHP',
     name_plural: 'Philippine pesos',
-    icon: require('@/src/assets/flags/philippines.png'),
+    icon: require('@/assets/flags/philippines.png'),
   },
   {
     symbol: 'RM',
@@ -1180,7 +1180,7 @@ export const currencies = [
     rounding: 0,
     code: 'MYR',
     name_plural: 'Malaysian ringgits',
-    icon: require('@/src/assets/flags/malaysia.png'),
+    icon: require('@/assets/flags/malaysia.png'),
   },
   {
     symbol: 'AR$',
@@ -1190,7 +1190,7 @@ export const currencies = [
     rounding: 0,
     code: 'ARS',
     name_plural: 'Argentine pesos',
-    icon: require('@/src/assets/flags/argentina.png'),
+    icon: require('@/assets/flags/argentina.png'),
   },
 ]
 

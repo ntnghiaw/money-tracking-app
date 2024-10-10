@@ -1,4 +1,4 @@
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
 import {
   Alert,
   AnimatableStringValue,
@@ -21,25 +21,25 @@ import {
   set
 } from 'date-fns'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocale } from '@/src/hooks/useLocale'
+import { useLocale } from '@/hooks/useLocale'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
-import Input from '@/src/components/Input'
+import Input from '@/components/Input'
 
 import { SafeAreaView } from 'react-native'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { ChevronDown, ChevronRight, Plus, X } from 'react-native-feather'
-import { ThemedText } from '@/src/components/ThemedText'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { TextType } from '@/types/text'
 import { Dimensions } from 'react-native'
-import { getImg } from '@/src/utils/getImgFromUri'
-import {  useAppSelector } from '@/src/hooks/hooks'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
-import Button from '@/src/components/buttons/Button'
+import { getImg } from '@/utils/getImgFromUri'
+import {  useAppSelector } from '@/hooks/hooks'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
+import Button from '@/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Budget, Category, FinancialPlan, Transaction } from '@/src/types/enum'
+import { Budget, Category, FinancialPlan, Transaction } from '@/types/enum'
 import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
-import { useCreatePlanMutation } from '@/src/features/plan/plan.service'
+import { useCreatePlanMutation } from '@/features/plan/plan.service'
 
 import {
   Stack,
@@ -47,11 +47,11 @@ import {
   useRouter,
 } from 'expo-router'
 
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import CurrencyInput from 'react-native-currency-input-fields'
-import { validations } from '@/src/utils/validations'
+import { validations } from '@/utils/validations'
 import dayjs, { Dayjs } from 'dayjs'
 import DateTimePicker from 'react-native-ui-datepicker'
 import Modal from 'react-native-modal'
@@ -375,7 +375,7 @@ const Page = () => {
           <Input
             placeholder={t('transaction.addtitle')}
             value={budget.name}
-            buttonLeft={() => <Image source={require('@/src/assets/icons/note.png')} />}
+            buttonLeft={() => <Image source={require('@/assets/icons/note.png')} />}
             onChangeText={(text) => {
               setBudget((pre) => {
                 return { ...pre, name: text }
@@ -391,7 +391,7 @@ const Page = () => {
               source={
                 budget.attributes.categories?.length > 0
                   ? getImg(budget.attributes.categories[0].icon)
-                  : require('@/src/assets/icons/categories.png')
+                  : require('@/assets/icons/categories.png')
               }
               style={styles.iconCategory}
             />
@@ -418,7 +418,7 @@ const Page = () => {
             >
               <Pressable onPress={openActionSheet} style={[styles.button, { width: '100%' }]}>
                 <Image
-                  source={require('@/src/assets/icons/calendar.png')}
+                  source={require('@/assets/icons/calendar.png')}
                   style={{ width: 24, height: 24, resizeMode: 'contain' }}
                 />
                 <View style={{ flex: 3 }}>
@@ -481,12 +481,12 @@ const Page = () => {
                     <TouchableOpacity onPress={() => selectCategory(category)}>
                       {selectedCategoryIds.includes(category._id) ? (
                         <Image
-                          source={require('@/src/assets/icons/checked.png')}
+                          source={require('@/assets/icons/checked.png')}
                           style={{ width: 24, height: 24 }}
                         />
                       ) : (
                         <Image
-                          source={require('@/src/assets/icons/circle_plus2.png')}
+                          source={require('@/assets/icons/circle_plus2.png')}
                           style={{ width: 24, height: 24 }}
                         />
                       )}

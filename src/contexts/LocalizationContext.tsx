@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import React, { createContext, useEffect, useState } from 'react'
-import { StorageService } from '@/src/services/storage.service'
+import { StorageService } from '@/services/storage.service'
 import { getLocales, getCurrencies } from 'react-native-localize'
 const USER_LANGUAGE_KEY = 'USER_LANGUAGE'
 const USER_CURRENCY_KEY = 'USER_CURRENCY'

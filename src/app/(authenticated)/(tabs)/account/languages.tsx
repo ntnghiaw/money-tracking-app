@@ -1,7 +1,7 @@
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
 import { DefaultTheme } from '@react-navigation/native'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -17,7 +17,7 @@ const Page = () => {
           <TouchableOpacity style={styles.item} onPress={() => changeLanguage('en')}>
             <Image
               style={styles.imageIcon}
-              source={require('@/src/assets/icons/united-kingdom.png')}
+              source={require('@/assets/icons/united-kingdom.png')}
             />
 
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
@@ -25,18 +25,18 @@ const Page = () => {
             </ThemedText>
             {languageCode === 'en' && (
               <View style={styles.right}>
-                <Image source={require('@/src/assets/icons/checked.png')} />
+                <Image source={require('@/assets/icons/checked.png')} />
               </View>
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.item} onPress={() => changeLanguage('vi')}>
-            <Image style={styles.imageIcon} source={require('@/src/assets/icons/vietnam.png')} />
+            <Image style={styles.imageIcon} source={require('@/assets/icons/vietnam.png')} />
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
               {t('settings.vietnamese')}
             </ThemedText>
             {languageCode === 'vi' && (
               <View style={styles.right}>
-                <Image source={require('@/src/assets/icons/checked.png')} />
+                <Image source={require('@/assets/icons/checked.png')} />
               </View>
             )}
           </TouchableOpacity>

@@ -1,16 +1,16 @@
-import BottomContainer from '@/src/components/BottomContainer'
-import Button from '@/src/components/buttons/Button'
-import Input from '@/src/components/Input'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useCreateNewWalletMutation } from '@/src/features/wallet/wallet.service'
-import { useLocale } from '@/src/hooks/useLocale'
-import { Wallet } from '@/src/types/enum'
-import { TextType } from '@/src/types/text'
-import { getImg, getWaleltImg } from '@/src/utils/getImgFromUri'
-import { isEntityError } from '@/src/utils/helpers'
+import BottomContainer from '@/components/BottomContainer'
+import Button from '@/components/buttons/Button'
+import Input from '@/components/Input'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useCreateNewWalletMutation } from '@/features/wallet/wallet.service'
+import { useLocale } from '@/hooks/useLocale'
+import { Wallet } from '@/types/enum'
+import { TextType } from '@/types/text'
+import { getImg, getWaleltImg } from '@/utils/getImgFromUri'
+import { isEntityError } from '@/utils/helpers'
 import { AntDesign } from '@expo/vector-icons'
 import { Href, Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
@@ -20,10 +20,6 @@ import { SafeAreaView } from 'react-native'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 
-
-
-
-
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
@@ -32,27 +28,23 @@ const initWallet = {
   type: 'private' as 'private' | 'shared',
 }
 
-
 type FormError =
   | {
       [key in keyof typeof initWallet]: string
     }
   | null
 
-
 const types = [
   { label: 'Private', value: 'private' },
   // { label: 'Shared', value: 'shared' },
 ]
 
-
-
 const Page = () => {
- const router = useRouter()
- const {t} = useLocale()
- const {icon} = useLocalSearchParams() as {icon: string}
- const [wallet, setWallet] = useState<typeof initWallet>(initWallet)
- const [isFocusType, setIsFocusType] = useState(false)
+  const router = useRouter()
+  const { t } = useLocale()
+  const { icon } = useLocalSearchParams() as { icon: string }
+  const [wallet, setWallet] = useState<typeof initWallet>(initWallet)
+  const [isFocusType, setIsFocusType] = useState(false)
   const [isValidFields, setIsValidFields] = useState({
     name: false,
   })
@@ -68,23 +60,20 @@ const Page = () => {
     return null
   }, [createWalletResult])
 
-
   useEffect(() => {
-    if(createWalletResult.isSuccess) {
+    if (createWalletResult.isSuccess) {
       router.back()
     }
-
   }, [createWalletResult])
 
-  const handleCreateWallet = async() => {
+  const handleCreateWallet = async () => {
     try {
       console.log('wallet::', { ...wallet, icon: icon.toString() })
-      await createWallet({...wallet, icon: icon.toString()}).unwrap()
+      await createWallet({ ...wallet, icon: icon.toString() }).unwrap()
     } catch (error) {
-      console.log("🚀 ~ handleCreateWal ~ error:", error)
+      console.log('🚀 ~ handleCreateWal ~ error:', error)
     }
   }
-
 
   return (
     <View style={styles.container}>
@@ -111,10 +100,10 @@ const Page = () => {
       <View style={styles.form}>
         <TouchableOpacity
           style={[styles.iconSmile, { alignSelf: 'center' }]}
-          onPress={() => router.push('/(authenticated)/(tabs)/wallet/icons' as Href)}
+          onPress={() => router.push('/wallet/icons' as Href)}
         >
           <Image
-            source={icon ? getWaleltImg(icon.toString()) : require('@/src/assets/icons/smile.png')}
+            source={icon ? getWaleltImg(icon.toString()) : require('@/assets/icons/smile.png')}
             style={styles.img}
           />
         </TouchableOpacity>

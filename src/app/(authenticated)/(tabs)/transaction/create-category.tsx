@@ -1,22 +1,22 @@
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { useEffect, useMemo, useState } from 'react'
-import { useLocale } from '@/src/hooks/useLocale'
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
+import { useLocale } from '@/hooks/useLocale'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
 import { TouchableOpacity } from 'react-native'
-import Input from '@/src/components/Input'
+import Input from '@/components/Input'
 import { Image } from 'react-native'
-import Button from '@/src/components/buttons/Button'
+import Button from '@/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Href, router, Stack } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
-import { icons } from '@/src/constants/Icons'
-import { useCreateCategoryMutation } from '@/src/features/category/category.service'
-import { useAppSelector } from '@/src/hooks/hooks'
-import { getImg } from '@/src/utils/getImgFromUri'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import { icons } from '@/constants/Icons'
+import { useCreateCategoryMutation } from '@/features/category/category.service'
+import { useAppSelector } from '@/hooks/hooks'
+import { getImg } from '@/utils/getImgFromUri'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import Header from '@/src/components/navigation/Header'
+import Header from '@/components/navigation/Header'
 
 enum CustomTab {
   Tab1,
@@ -80,10 +80,10 @@ const Page = () => {
         <TabButtons buttons={buttons} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         <TouchableOpacity
           style={[styles.icon, { alignSelf: 'center' }]}
-          onPress={() => router.push('/(authenticated)/(tabs)/account/icons')}
+          onPress={() => router.push('/account/icons')}
         >
           <Image
-            source={icon ? getImg(icon.toString()) : require('@/src/assets/icons/smile.png')}
+            source={icon ? getImg(icon.toString()) : require('@/assets/icons/smile.png')}
             style={styles.img}
           />
         </TouchableOpacity>

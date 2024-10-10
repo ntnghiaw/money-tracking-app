@@ -1,10 +1,10 @@
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
 import { View, StyleSheet, Text } from 'react-native'
 import { PieChart, pieDataItem } from 'react-native-gifted-charts'
 import { ThemedText } from '../ThemedText'
-import { TextType } from '@/src/types/text'
-import { useLocale } from '@/src/hooks/useLocale'
-import { isDefaultCategory } from '@/src/utils/isDefaultCategory'
+import { TextType } from '@/types/text'
+import { useLocale } from '@/hooks/useLocale'
+import { isDefaultCategory } from '@/utils/isDefaultCategory'
 import { Alert } from 'react-native'
 
 interface PieData {

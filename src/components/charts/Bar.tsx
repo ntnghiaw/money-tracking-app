@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { BrandColor } from '@/src/constants/Colors'
+import { BrandColor } from '@/constants/Colors'
 import { BarChart } from 'react-native-gifted-charts'
 import { formatValue, abbrValue } from 'react-native-currency-input-fields'
-import { useLocale } from '@/src/hooks/useLocale'
+import { useLocale } from '@/hooks/useLocale'
 import { useMemo, useState } from 'react'
 import { set } from 'date-fns'
 

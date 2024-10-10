@@ -1,9 +1,9 @@
-import { AuthState, Category, Response } from '@/src/types/enum'
+import { AuthState, Category, Response } from '@/types/enum'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from '@/src/features'
-import categories from '@/src/constants/Categories'
-import config from '@/src/config'
-import { appApi } from '@/src/features/api.service'
+import { baseQuery } from '@/features'
+import categories from '@/constants/Categories'
+import config from '@/config'
+import { appApi } from '@/features/api.service'
 
 
 

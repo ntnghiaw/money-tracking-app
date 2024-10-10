@@ -1,47 +1,43 @@
-import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
+import { BackgroundColor, BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { CustomTab } from '@/src/app/(authenticated)/(tabs)/analytics/index'
+import { CustomTab } from '@/types/enum'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocale } from '@/src/hooks/useLocale'
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
+import { useLocale } from '@/hooks/useLocale'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
 import { TouchableOpacity } from 'react-native'
 import { Image } from 'react-native'
-import Input from '@/src/components/Input'
-import { formatter } from '@/src/utils/formatAmount'
-import formatDate from '@/src/utils/formatDate'
+import Input from '@/components/Input'
+import formatDate from '@/utils/formatDate'
 import { SafeAreaView } from 'react-native'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import { ChevronDown } from 'react-native-feather'
-import { ThemedText } from '@/src/components/ThemedText'
-import { TextType } from '@/src/types/text'
+import { ThemedText } from '@/components/ThemedText'
+import { TextType } from '@/types/text'
 import { Dimensions } from 'react-native'
-import { getImg } from '@/src/utils/getImgFromUri'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
-import Button from '@/src/components/buttons/Button'
+import { getImg } from '@/utils/getImgFromUri'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
+import Button from '@/components/buttons/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Category, Transaction } from '@/src/types/enum'
-import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
+import { Category, Transaction } from '@/types/enum'
+import { AntDesign } from '@expo/vector-icons'
 
 import {
-  useCreateTransactionMutation,
   useGetTransactionByIdQuery,
   useUpdateTransactionMutation,
-} from '@/src/features/transaction/transaction.service'
+} from '@/features/transaction/transaction.service'
 
-import { Stack, useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import Toast from 'react-native-toast-message'
 
 import CurrencyInput from 'react-native-currency-input-fields'
-import { clearTransaction } from '@/src/features/transaction/transactionSlice'
-import Loading from '@/src/components/Loading'
-import { usePrefetchImmediately } from '@/src/hooks/usePrefetchImmediately'
-import { CommonActions, StackActions } from '@react-navigation/native'
-import categoriesDefault from '@/src/constants/Categories'
+import Loading from '@/components/Loading'
+
+import categoriesDefault from '@/constants/Categories'
+import { useAppSelector } from '@/hooks/hooks'
 
 type AndroidMode = 'date' | 'time'
 const screenWidth = Dimensions.get('window').width
@@ -57,7 +53,7 @@ const initialTransaction: Omit<Transaction, '_id'> = {
 
 const Page = () => {
   const { walletId } = useAppSelector((state) => state.auth)
-  const {id} = useLocalSearchParams() as {id: string}
+  const { id } = useLocalSearchParams() as { id: string }
   const navigation = useNavigation()
   const { currencyCode, languageCode, languageTag } = useLocale()
   // const transactionState = useAppSelector((state) => state.transaction)
@@ -153,11 +149,11 @@ const Page = () => {
   }
 
   useEffect(() => {
-    if ( updatedTransactionResult.isSuccess) {
+    if (updatedTransactionResult.isSuccess) {
       setTransaction(initialTransaction)
       router.back()
     }
-  }, [ updatedTransactionResult])
+  }, [updatedTransactionResult])
 
   useEffect(() => {
     if (img_url && title && createdAt && total) {
@@ -214,7 +210,7 @@ const Page = () => {
           },
           walletId,
         }).unwrap()
-      } 
+      }
     } catch (error) {
       console.log('🚀 ~ handleSubmit ~ error:', error)
     }
@@ -240,7 +236,7 @@ const Page = () => {
               headerRight={() => (
                 <HeaderButton
                   type='text'
-                  onPress={() => router.navigate('/(authenticated)/(tabs)/home/camera')}
+                  onPress={() => router.navigate('/home/camera')}
                   text={t('transaction.scan')}
                 />
               )}
@@ -272,7 +268,7 @@ const Page = () => {
           <Input
             placeholder={t('transaction.addtitle')}
             value={transaction.title}
-            buttonLeft={() => <Image source={require('@/src/assets/icons/note.png')} />}
+            buttonLeft={() => <Image source={require('@/assets/icons/note.png')} />}
             onChangeText={(text) => {
               setTransaction((pre) => {
                 return { ...pre, title: text }
@@ -287,7 +283,7 @@ const Page = () => {
               source={
                 transaction.category._id
                   ? getImg(transaction.category.icon)
-                  : require('@/src/assets/icons/categories.png')
+                  : require('@/assets/icons/categories.png')
               }
               style={styles.iconCategory}
             />
@@ -314,7 +310,7 @@ const Page = () => {
             >
               <Pressable onPress={showDatepicker} style={[styles.button, { width: '48%' }]}>
                 <Image
-                  source={require('@/src/assets/icons/calendar.png')}
+                  source={require('@/assets/icons/calendar.png')}
                   style={{ width: 24, height: 24, resizeMode: 'contain' }}
                 />
                 <View style={{ flex: 3 }}>
@@ -326,7 +322,7 @@ const Page = () => {
               </Pressable>
               <TouchableOpacity style={[styles.button, { width: '48%' }]} onPress={showTimepicker}>
                 <Image
-                  source={require('@/src/assets/icons/clock.png')}
+                  source={require('@/assets/icons/clock.png')}
                   style={{ width: 24, height: 24, resizeMode: 'contain' }}
                 />
                 <View style={{ flex: 3 }}>
@@ -400,7 +396,7 @@ const Page = () => {
                       : category.name}
                   </ThemedText>
                   {/* { transaction.category._id === category._id && (  <View style={{position: 'absolute', right: 12}}>
-                      <Image source={require('@/src/assets/icons/checked.png')} style={{width: 18, height: 18}} />
+                      <Image source={require('@/assets/icons/checked.png')} style={{width: 18, height: 18}} />
                     </View>)} */}
                 </TouchableOpacity>
               ))}

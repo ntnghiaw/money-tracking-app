@@ -1,8 +1,8 @@
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
 import { AntDesign } from '@expo/vector-icons'
 import { Stack, useRouter } from 'expo-router'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -15,23 +15,23 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import { useCreatePlanMutation, useGetAllPlansQuery } from '@/src/features/plan/plan.service'
-import { useAppSelector } from '@/src/hooks/hooks'
-import { TextType } from '@/src/types/text'
+import { useCreatePlanMutation, useGetAllPlansQuery } from '@/features/plan/plan.service'
+import { useAppSelector } from '@/hooks/hooks'
+import { TextType } from '@/types/text'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
 
-import { formatter } from '@/src/utils/formatAmount'
+import { formatter } from '@/utils/formatAmount'
 import { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import { Sliders } from 'react-native-feather'
 
-import Button from '@/src/components/buttons/Button'
-import { getImg } from '@/src/utils/getImgFromUri'
-import Loading from '@/src/components/Loading'
-import { abbrValueFormat } from '@/src/utils/abbrValueFormat'
+import Button from '@/components/buttons/Button'
+import { getImg } from '@/utils/getImgFromUri'
+import Loading from '@/components/Loading'
+import { abbrValueFormat } from '@/utils/abbrValueFormat'
 import { formatValue } from 'react-native-currency-input-fields'
-import { getCurrencySymbol } from '@/src/utils/getCurrencySymbol'
-import { useSettings } from '@/src/hooks/useSetting'
+import { getCurrencySymbol } from '@/utils/getCurrencySymbol'
+import { useSettings } from '@/hooks/useSetting'
 type AndroidMode = 'date' | 'time'
 
 const screenHeight = Dimensions.get('window').height
@@ -55,8 +55,6 @@ const Page = () => {
     type: 'budget',
   })
 
-
-
   const [createPlan, { data: createPlanResponse, isSuccess }] = useCreatePlanMutation()
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
@@ -64,10 +62,10 @@ const Page = () => {
   const snapPoints = useMemo(() => ['96%'], [])
   // sort end_date desc
   const budgets = useMemo(() => {
-    if(!data) return []
+    if (!data) return []
     const newData = [...data]
     return newData.sort((pre, cur) => {
-      if (pre.end_date > cur.end_date) return -1 
+      if (pre.end_date > cur.end_date) return -1
       else if (pre.end_date < cur.end_date) return 1
       return 0
     })
@@ -139,12 +137,7 @@ const Page = () => {
         <Stack.Screen
           options={{
             headerTitle: t('budgets.runningbudgets'),
-            header: (props) => (
-              <Header
-                {...props}
- 
-              />
-            ),
+            header: (props) => <Header {...props} />,
           }}
         />
         <Loading isLoading={isFetching} text='Loading..' />
@@ -213,10 +206,15 @@ const Page = () => {
             return (
               <TouchableOpacity
                 key={budget._id}
-                style={[styles.item, new Date(budget.end_date) <= new Date() ? {backgroundColor: BrandColor.Gray[300]} : {}]}
+                style={[
+                  styles.item,
+                  new Date(budget.end_date) <= new Date()
+                    ? { backgroundColor: BrandColor.Gray[300] }
+                    : {},
+                ]}
                 onPress={() =>
                   router.push({
-                    pathname: '/(authenticated)/(tabs)/account/budget/[id]',
+                    pathname: '/account/budget/[id]',
                     params: { id: budget._id },
                   })
                 }
@@ -342,7 +340,7 @@ const Page = () => {
       <View style={styles.bottom}>
         <Button
           style={{ marginTop: 24 }}
-          onPress={() => router.push('/(authenticated)/(tabs)/account/budget/create-budget')}
+          onPress={() => router.push('/account/budget/create-budget')}
           text={t('budgets.createbudget')}
           type='primary'
           state='normal'

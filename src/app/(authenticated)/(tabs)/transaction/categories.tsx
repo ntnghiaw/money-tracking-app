@@ -1,27 +1,26 @@
-import { ThemedText } from '@/src/components/ThemedText'
-import { BackgroundColor, BrandColor, TextColor } from '@/src/constants/Colors'
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { useLocale } from '@/src/hooks/useLocale'
-import { TextType } from '@/src/types/text'
-import { getImg } from '@/src/utils/getImgFromUri'
+import { ThemedText } from '@/components/ThemedText'
+import { BackgroundColor, BrandColor, TextColor } from '@/constants/Colors'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { useLocale } from '@/hooks/useLocale'
+import { TextType } from '@/types/text'
+import { getImg } from '@/utils/getImgFromUri'
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { useCallback, useMemo, useState } from 'react'
 import { Image, SafeAreaView, ScrollView } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-import TabButtons, { TabButtonType } from '@/src/components/navigation/TabButtons'
+import TabButtons, { TabButtonType } from '@/components/navigation/TabButtons'
 
 import { Stack } from 'expo-router'
-import Header from '@/src/components/navigation/Header'
-import HeaderButton from '@/src/components/navigation/HeaderButton'
+import Header from '@/components/navigation/Header'
+import HeaderButton from '@/components/navigation/HeaderButton'
 import { AntDesign } from '@expo/vector-icons'
-import Loading from '@/src/components/Loading'
-import { useGetAllCategoriesQuery } from '@/src/features/category/category.service'
-import { Category } from '@/src/types/enum'
-import  categoriesDefault from '@/src/constants/Categories'
+import Loading from '@/components/Loading'
+import { useGetAllCategoriesQuery } from '@/features/category/category.service'
+import { Category } from '@/types/enum'
+import categoriesDefault from '@/constants/Categories'
 
-
- enum CustomTab {
+enum CustomTab {
   Tab1,
   Tab2,
 }
@@ -39,8 +38,6 @@ const history = () => {
     { title: t('transaction.income') },
   ]
 
-
- 
   const categoriesFilteredByType = useMemo(
     () =>
       categories?.filter((category) =>
@@ -50,13 +47,10 @@ const history = () => {
   )
 
   const chooseCategory = (category: Category) => {
-      router.navigate({
-        pathname: `/(authenticated)/(tabs)/transaction?categoryId=${category._id}&icon=${category.icon}&name=${category.name}&type=${category.type}&transactionId=${id}`,
-      })
+    router.navigate({
+      pathname: `/transaction?categoryId=${category._id}&icon=${category.icon}&name=${category.name}&type=${category.type}&transactionId=${id}`,
+    })
   }
-
-
-
 
   return (
     <SafeAreaView
@@ -81,7 +75,7 @@ const history = () => {
               )}
               headerRight={() => (
                 <HeaderButton
-                  onPress={() => router.push('/(authenticated)/(tabs)/transaction/create-category')}
+                  onPress={() => router.push('/transaction/create-category')}
                   type='text'
                   text={t('actions.add')}
                 />
@@ -106,7 +100,9 @@ const history = () => {
               <Image source={getImg(category.icon)} style={styles.iconCategory} />
             </View>
             <ThemedText type={TextType.SubheadlineRegular} color={TextColor.Primary}>
-              { categoriesDefault.includes(category.icon) ? t(`categories.${category.icon}`):category.name}
+              {categoriesDefault.includes(category.icon)
+                ? t(`categories.${category.icon}`)
+                : category.name}
             </ThemedText>
           </TouchableOpacity>
         ))}

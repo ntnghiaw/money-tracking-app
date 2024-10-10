@@ -9,10 +9,10 @@ const getLanguage = () => {
 
 const resources = {
   en: {
-    translation: require('@/src/utils/i18n/locales/en/en.json'),
+    translation: require('@/utils/i18n/locales/en/en.json'),
   },
   vi: {
-    translation: require('@/src/utils/i18n/locales/vi/vi.json'),
+    translation: require('@/utils/i18n/locales/vi/vi.json'),
   },
 }
 

@@ -1,43 +1,26 @@
+import React, { useState, useMemo } from 'react'
 import {
   View,
-  Text,
   StyleSheet,
-  TextInput,
   TouchableWithoutFeedback,
   Keyboard,
-  Image,
   Dimensions,
-  ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity,
 } from 'react-native'
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { useCreateFirstWalletMutation } from '@/features/wallet/wallet.service'
+import { BrandColor, NeutralColor, TextColor } from '@/constants/Colors'
+import { useLocale } from '@/hooks/useLocale'
+import { ThemedText } from '@/components/ThemedText'
+import { TextType } from '@/types/text'
+import Input from '@/components/Input'
+import Button from '@/components/buttons/Button'
+import { isFetchBaseQueryError } from '@/utils/helpers'
 
-import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks'
-import { setWallets } from '@/src/features/wallet/walletSlice'
-import { useCreateFirstWalletMutation } from '@/src/features/wallet/wallet.service'
-import { useRouter } from 'expo-router'
-import { setAuth } from '@/src/features/auth/authSlice'
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet'
-import { ChevronDown } from 'react-native-feather'
-import { useActionSheet } from '@expo/react-native-action-sheet'
-import { DefaultTheme } from '@react-navigation/native'
-import { Currency } from '@/src/constants/Currency'
-import { BrandColor, NeutralColor, TextColor } from '@/src/constants/Colors'
-import { useLocale } from '@/src/hooks/useLocale'
-import { ThemedText } from '@/src/components/ThemedText'
-import { TextType } from '@/src/types/text'
-import Input from '@/src/components/Input'
-import Button from '@/src/components/buttons/Button'
-import { isFetchBaseQueryError } from '@/src/utils/helpers'
+
+
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
@@ -53,38 +36,13 @@ type FormError =
   | null
 
 const Page = () => {
-  const router = useRouter()
   const { t } = useLocale()
   const [form, setForm] = useState(initialState)
-  const [keyboardOpen, setKeyboardOpen] = useState(false)
-  const auth = useAppSelector((state) => state.auth)
-  const { currentWallet } = useAppSelector((state) => state.wallets)
-   const [isValidated, setIsValidated] = useState({
-     name: false,
-   })
-  const dispatch = useAppDispatch()
-
-  const { showActionSheetWithOptions } = useActionSheet()
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null)
-  const snapPoints = useMemo(() => ['38%'], [])
-  const showModal = async () => {
-    bottomSheetModalRef.current?.present()
-  }
+  const [isValidated, setIsValidated] = useState({
+    name: false,
+  })
 
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 90 : 0
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        opacity={0.3}
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-        pressBehavior='collapse'
-        onPress={() => bottomSheetModalRef.current?.dismiss()}
-      />
-    ),
-    []
-  )
 
   const [createFirstWallet, addWalletResult] = useCreateFirstWalletMutation()
 
@@ -97,7 +55,6 @@ const Page = () => {
     return null
   }, [addWalletResult])
 
-
   const handleCreateWallet = async () => {
     try {
       await createFirstWallet({
@@ -109,27 +66,15 @@ const Page = () => {
   }
 
   return (
-    <BottomSheetModalProvider>
       <KeyboardAvoidingView
         style={styles.container}
         keyboardVerticalOffset={keyboardVerticalOffset}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* {isError && (
-          <Text style={{ color: 'red', marginTop: 20 }}>
-            {error.data.message ? error.data.message : 'Create Failed! Pls try again'}
-          </Text>
-        )} */}
-
         <SafeAreaView style={styles.inner}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.inner}>
-                {!keyboardOpen && (
-                  <View>
-                    <Image style={styles.image} source={require('@/src/assets/icons/logo.png')} />
-                  </View>
-                )}
                 <View>
                   <ThemedText
                     type={TextType.LargeTitleBold}
@@ -157,7 +102,7 @@ const Page = () => {
                       pattern: [/^[a-zA-Z0-9\s]+$/, 'Name must be alphanumeric'],
                     }}
                     error={!!errorForm}
-                    errorMessage={errorForm?.error.name}
+                    errorMessage={errorForm?.name}
                     validate={(isValid: boolean) => {
                       setIsValidated((prev) => ({ ...prev, name: isValid }))
                     }}
@@ -180,7 +125,6 @@ const Page = () => {
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>
-    </BottomSheetModalProvider>
   )
 }
 
